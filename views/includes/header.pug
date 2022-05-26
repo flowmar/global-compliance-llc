@@ -1,25 +1,21 @@
-header
-  .collapse.bg-dark#navbarHeader
-    .container
-      .row
-        .col-sm-8.col-md-7.py-4 
-          h4.text-white Hidden Content
-          p.text-white Add some information about the album below, the author, or any other background context. Make it a few sentences long so folks can pick up some informative tidbits. Then, link them off to some social networking sites or contact information.
-        .col-sm-4.offset-md-1.py-4
-          h4.text-white Contact
-          ul.list-unstyled
-            li
-              a.text-white(href='#') Facebook
-            li
-              a.text-white(href='#') Twitter
-            li
-              a.text-white(href='#') Instagram
-  nav.navbar.navbar-dark.bg-primary.shadow-sm
-    .container.d-flex.justify-content-between
-      a.navbar-brand.d-flex.align-items-center
-        include globalcompliance.svg
+style.
+  header
+    {
+      background-color:#276ED8;
+      color: white;
+    }
 
-      a(href="./search") Search
-      a(href="./add") Add
-      a(href="./reports") Reports
-      a(href=".Maintenance") Maintenance
+header
+  nav.navbar.navbar-expand-lg.navbar-dark.bg-primary.shadow-sm
+    .container-fluid
+      a.navbar-brand
+        include globalcompliance.svg
+        ul.navbar-nav
+          li.nav-item.active
+            a.nav-link(href="./search") Search
+          li.nav-item
+            a.nav-link(href="./add") Add
+          li.nav-item
+            a.nav-link(href="./reports") Reports
+          li.nav-item
+            a.nav-link(href=".Maintenance") Maintenance
