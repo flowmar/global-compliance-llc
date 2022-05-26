@@ -1,0 +1,13 @@
+{
+      "scripts": {
+        "start": "nodemon index.js"
+    },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "bootstrap": "^5.1.3",
+    "express": "^4.18.1",
+    "nodemon": "^2.0.16",
+    "pug": "^3.0.2",
+    "pug-bootstrap": "^0.0.16"
+  }
+}
