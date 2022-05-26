@@ -4,46 +4,20 @@ html
     meta(charset="utf-8")
     meta(name="viewport" content="width=device-width, initial-scale=1")
     meta(meta http-equiv="X-UA-Compatible" content="ie=edge")
-    title Global Compliance
-    link(rel='stylesheet' href='/public/bootstrap/dist/css/bootstrap.min.css')
-    style.
-      body
-      {
-        background-color:#1C3570;
-        color: white;
-      }
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
+    title #{title} | Global Compliance
 
-      footer {
-        padding-top: 3rem;
-        padding-bottom: 3rem;
-      }
-
-      footer p {
-        margin-bottom: .25rem;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
+    link(rel='stylesheet' href='/css/bootstrap.min.css')
+    link(rel='stylesheet' href='/css/mdb.dark.min.css')
+    link(rel='stylesheet' href='/css/mdb.min.css')
+    link(rel='stylesheet' href='/css/style.css')
 
   body
     include includes/header.pug
+    //- include includes/navigation.pug
 
     main#main
-      include includes/jumbotron.pug
+      //- include includes/jumbotron.pug
 
       block content
 
     include includes/footer.pug
-    
-    script(src='../public/bootstrap/dist/js/bootstrap.bundle.min.js')

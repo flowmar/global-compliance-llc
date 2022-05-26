@@ -1,21 +1,18 @@
 style.
-  header
-    {
-      background-color:#276ED8;
-      color: white;
-    }
+  
 
-header
-  nav.navbar.navbar-expand-lg.navbar-dark.bg-primary.shadow-sm
+header.shadow-3-strong
+  nav.navbar.navbar-expand-lg.navbar-dark.shadow-sm
     .container-fluid
       a.navbar-brand
+        //- img(src="/images/globalcompliance.svg" alt="Global Compliance Logo" height="100" width="100vw")
         include globalcompliance.svg
-        ul.navbar-nav
-          li.nav-item.active
-            a.nav-link(href="./search") Search
+      ul.navbar-nav
+          li.nav-item
+            a.nav-link.active#search-link(href="/search") Search
           li.nav-item
             a.nav-link(href="./add") Add
           li.nav-item
             a.nav-link(href="./reports") Reports
           li.nav-item
-            a.nav-link(href=".Maintenance") Maintenance
+            a.nav-link(href="./maintenance") Maintenance
