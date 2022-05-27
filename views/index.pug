@@ -8,5 +8,30 @@ block content
         .col-7
       .row.bg-dark.m-3.p-4
         .col-2
-        .col-8.shadow-4-strong.bg-light.bg-opacity-25 Login Form Here
+        .col-8.shadow-4-strong.bg-light.bg-opacity-25 
+          .container
+            br
+            .row
+              .col
+                div.text-center Please enter your credentials.
+                br
+                br
+            .row
+              .col  
+                .form-outline.form-white
+                  input.form-control.bg-white.text-dark#typeUsername(type="text")
+                  label.form-label.text-dark(for="typeUsername") Username
+                br
+            .row
+              .col
+                .form-outline.form-white
+                  input.form-control.bg-white.text-dark#typePassword(type="password")
+                  label.form-label.text-dark(for="typePassword") Password
+                br
+            .row
+              .col-9
+              .col-3
+                button.btn.btn-lg.btn-success(type="button") Login
+                br
+                br
         .col-2

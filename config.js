@@ -22,7 +22,7 @@ const pool = mysql.createPool({
 
 
 module.exports = {
-  getConnection: (callback) => { 
+  getConnection: (callback) => {
     return pool.getConnection(callback);
   }
 }

@@ -2,7 +2,6 @@ const express = require("express");
 const axios = require("axios");
 const path = require("path");
 const PORT = process.env.PORT || 8000;
-const mysql = require("mysql2");
 const db = require("./config");
 
 
@@ -55,19 +54,29 @@ app.get("/maintenance", async (req, res) => {
   res.render("maintenance", {
     title: "Maintenance"
   })
-})
-
-db.getConnection(function (err, connection) {
-  // Test MySQL Database Connection
-  connection.query('SELECT * FROM client_schedule.appointments', function (err, results, fields) {
-    if (err) throw err;
-    console.log("Connection successful!");
-    console.log(results);
-    console.log(fields);
-    connection.release();
-  })
 });
 
+// Error Handling
+app.use((req, res) => { 
+  res.statusCode = 404;
+  res.end("404 Error... Page cannot be found! Please contact an administrator.");
+})
+
+
+// Database connection
+db.getConnection(function (err, connection) {
+  if (err) {
+    console.log("Error: Something went wrong! " + err.stack);
+   }
+  // // Test MySQL Database Connection
+  // connection.query('SELECT * FROM client_schedule.appointments', function (err, results, fields) {
+  //   if (err) throw err;
+  //   console.log("Connection successful!");
+  //   console.log(results);
+  //   console.log(fields);
+  //   connection.release();
+  // })
+});
 
 // Set the application to listen on a port for requests
 app.listen(PORT, () => {

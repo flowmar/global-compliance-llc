@@ -30,6 +30,9 @@ CREATE TABLE IF NOT EXISTS `Mariners` (
   BirthDate Date,
   ProcessingAgent INTEGER NOT NULL,
   Note TEXT DEFAULT NULL,
+  Credentials BOOLEAN NOT NULL DEFAULT FALSE,
+  IssuedStartDate DATE,
+  IssuedEndDate DATE,
   FOREIGN KEY (ProcessingAgent) REFERENCES Agents(AgentID),
   FOREIGN KEY (EmployerID) REFERENCES Employers(EmployerID)
 );

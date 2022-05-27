@@ -1,6 +1,3 @@
-style.
-  
-
 header.shadow-3-strong
   nav.navbar.navbar-expand-lg.navbar-dark.shadow-sm
     .container-fluid
@@ -9,10 +6,13 @@ header.shadow-3-strong
         include globalcompliance.svg
       ul.navbar-nav
           li.nav-item
-            a.nav-link.active#search-link(href="/search") Search
+            a.nav-link#search-link(href="/search") Search
           li.nav-item
             a.nav-link(href="./add") Add
           li.nav-item
             a.nav-link(href="./reports") Reports
           li.nav-item
             a.nav-link(href="./maintenance") Maintenance
+          if title != 'Login'
+            li.nav-item
+            a.nav-link(href="./logout") Logout
