@@ -27,7 +27,7 @@ const connection = mysql.createConnection(process.env.JAWSDB_URL);
 
 connection.connect();
 
-connection.query('SELECT * FROM global_compliance.Mariners', function (err, rows, fields) {
+connection.query("SELECT * FROM global_compliance.Mariners", function (err, rows, fields) {
   if (err) throw err;
   
   console.log('The solution is: ', rows[0].solution);

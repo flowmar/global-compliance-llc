@@ -73,7 +73,7 @@ db.getConnection(function (err, connection) {
     console.log("Error: Something went wrong! " + err.stack);
    }
   // Test MySQL Database Connection
-  connection.query('SELECT * FROM global_compliance.Mariners', function (err, results, fields) {
+  connection.query('SELECT * FROM et2g6mv72e6t4f88.Mariners', function (err, results, fields) {
     if (err) throw err;
     console.log("Connection successful!");
     console.log(results);
