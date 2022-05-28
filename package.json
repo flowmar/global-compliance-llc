@@ -1,10 +1,14 @@
 {
       "name": "global-compliance-llc",
       "version": "1.0.0",
+      "author": "flowmar",
+      "license": "ISC",
       "description": "",
       "main": "index.js",
       "scripts": {
-            "start": "nodemon index.js"
+            "dev": "nodemon index.js",
+            "ui": "browser-sync start --config bs-config.js",
+            "watch": "nodemon server.js -e js,pug"
       },
       "dependencies": {
             "axios": "^0.27.2",
@@ -13,9 +17,13 @@
             "mdb-ui-kit": "^4.1.0",
             "mysql2": "^2.3.3",
             "nodejs": "^0.0.0",
-            "nodemon": "^2.0.16",
             "path": "^0.12.7",
             "pug": "^3.0.2",
             "pug-bootstrap": "^0.0.16"
+      },
+      "devDependencies": {
+            "browser-sync": "^2.27.10",
+            "morgan": "^1.10.0",
+            "nodemon": "^2.0.16"
       }
 }

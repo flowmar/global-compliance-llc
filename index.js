@@ -1,13 +1,17 @@
 const express = require("express");
-const axios = require("axios");
+const axios = require("axios"); // HTTP request library
 const path = require("path");
 const PORT = process.env.PORT || 8000;
 const db = require("./config");
+const logger = require('morgan'); // Logger
 
 
 /* Express Setup */
 // Use Express to create the application
 const app = express();
+
+// Set up Logger
+app.use(logger('dev'));
 
 // Set views
 app.set("views", path.join(__dirname, "views"));
@@ -16,7 +20,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
 // Set the stylesheets as static
-app.use(express.static(path.join(__dirname,'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 /* Routing */

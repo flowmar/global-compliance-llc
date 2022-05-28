@@ -5,14 +5,34 @@ header.shadow-3-strong
         //- img(src="/images/globalcompliance.svg" alt="Global Compliance Logo" height="100" width="100vw")
         include globalcompliance.svg
       ul.navbar-nav
-          li.nav-item
-            a.nav-link#search-link(href="/search") Search
-          li.nav-item
-            a.nav-link(href="./add") Add
-          li.nav-item
-            a.nav-link(href="./reports") Reports
-          li.nav-item
-            a.nav-link(href="./maintenance") Maintenance
+          if title == 'Search'
+            li.nav-item
+              a.nav-link.active(href="/search") Search
+          else
+            li.nav-item
+              a.nav-link(href="/search") Search
+          
+          if title == 'Add'
+            li.nav-item
+              a.nav-link.active(href="/add") Add
+          else
+            li.nav-item
+              a.nav-link(href="/add") Add
+
+          if title == 'Reports'
+            li.nav-item
+              a.nav-link.active(href="/reports") Reports
+          else
+            li.nav-item
+              a.nav-link(href="/reports") Reports
+
+          if title == 'Maintenance'
+            li.nav-item
+              a.nav-link.active(href="/maintenance") Maintenance
+          else
+            li.nav-item
+              a.nav-link(href="/maintenance") Maintenance
+
           if title != 'Login'
             li.nav-item
             a.nav-link(href="./logout") Logout
