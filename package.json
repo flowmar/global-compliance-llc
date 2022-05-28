@@ -8,7 +8,8 @@
       "scripts": {
             "dev": "nodemon index.js",
             "ui": "browser-sync start --config bs-config.js",
-            "watch": "nodemon server.js -e js,pug"
+            "watch": "nodemon server.js -e js,pug",
+            "start": "node index.js"
       },
       "dependencies": {
             "axios": "^0.27.2",

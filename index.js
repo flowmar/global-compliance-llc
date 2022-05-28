@@ -72,14 +72,14 @@ db.getConnection(function (err, connection) {
   if (err) {
     console.log("Error: Something went wrong! " + err.stack);
    }
-  // // Test MySQL Database Connection
-  // connection.query('SELECT * FROM client_schedule.appointments', function (err, results, fields) {
-  //   if (err) throw err;
-  //   console.log("Connection successful!");
-  //   console.log(results);
-  //   console.log(fields);
-  //   connection.release();
-  // })
+  // Test MySQL Database Connection
+  connection.query('SELECT * FROM global_compliance.Mariners', function (err, results, fields) {
+    if (err) throw err;
+    console.log("Connection successful!");
+    console.log(results);
+    console.log(fields);
+    connection.release();
+  })
 });
 
 // Set the application to listen on a port for requests
