@@ -3,7 +3,7 @@ const axios = require("axios"); // HTTP request library
 const path = require("path");
 const PORT = process.env.PORT || 8000;
 const db = require("./config");
-const logger = require('morgan'); // Logger
+// const logger = require('morgan'); // Logger
 
 
 /* Express Setup */
