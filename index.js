@@ -11,7 +11,7 @@ const db = require("./config");
 const app = express();
 
 // Set up Logger
-app.use(logger('dev'));
+// app.use(logger('dev'));
 
 // Set views
 app.set("views", path.join(__dirname, "views"));
