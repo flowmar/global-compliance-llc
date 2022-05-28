@@ -47,6 +47,7 @@ connection.end();
 
 module.exports = {
   getConnection: (callback) => {
-    return pool.getConnection(callback);
+    // return pool.getConnection(callback);
+    return connection;
   }
 }
