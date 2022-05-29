@@ -61,25 +61,36 @@ app.get("/maintenance", async (req, res) => {
 });
 
 // Error Handling
-app.use((req, res) => { 
+app.use((req, res) => {
   res.statusCode = 404;
   res.end("404 Error... Page cannot be found! Please contact an administrator.");
-})
+});
 
-
-// Database connection
-// db.getConnection(function (err, connection) {
-//   if (err) {
-//     console.log("Error: Something went wrong! " + err.stack);
-//    }
+// Test DB Connection
+if (process.env.MACHINE == 'local') {
+  // Database connection
+  db.getConnection(function (err, connection) {
+    if (err) {
+      console.log("Error: Something went wrong! " + err.stack);
+    }
+    else { 
+      connection.query('SELECT * FROM global_compliance.Agents', function (err, results, fields) { 
+        if (err) throw err;
+        console.log(results);
+      })
+    }
+  });
+} else {
   // Test MySQL Database Connection
   db.query('SELECT * FROM et2g6mv72e6t4f88.mariners AS items', function (err, results, fields) {
-    if (err) throw err;
-    console.log("Connection successful!");
-    console.log("Results:" +  JSON.stringify(results[0]));
-    // db.release();
-  })
-// });
+  if (err) throw err;
+  console.log("Connection successful!");
+  console.log("Results:" + JSON.stringify(results));
+  // db.release();
+});
+}
+
+
 
 // Set the application to listen on a port for requests
 app.listen(PORT, () => {
