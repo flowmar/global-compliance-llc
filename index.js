@@ -68,10 +68,10 @@ app.use((req, res) => {
 
 
 // Database connection
-db.getConnection(function (err, connection) {
-  if (err) {
-    console.log("Error: Something went wrong! " + err.stack);
-   }
+// db.getConnection(function (err, connection) {
+//   if (err) {
+//     console.log("Error: Something went wrong! " + err.stack);
+//    }
   // Test MySQL Database Connection
   connection.query('SELECT * FROM et2g6mv72e6t4f88.Mariners', function (err, results, fields) {
     if (err) throw err;
@@ -80,7 +80,7 @@ db.getConnection(function (err, connection) {
     console.log(fields);
     connection.release();
   })
-});
+// });
 
 // Set the application to listen on a port for requests
 app.listen(PORT, () => {
