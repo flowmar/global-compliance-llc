@@ -78,7 +78,7 @@ app.use((req, res) => {
     console.log("Connection successful!");
     console.log(results);
     console.log(fields);
-    db.release();
+    // db.release();
   })
 // });
 
