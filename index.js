@@ -73,10 +73,10 @@ app.use((req, res) => {
 //     console.log("Error: Something went wrong! " + err.stack);
 //    }
   // Test MySQL Database Connection
-  db.query('SELECT * FROM et2g6mv72e6t4f88.mariners', function (err, results, fields) {
+  db.query('SELECT * FROM et2g6mv72e6t4f88.mariners AS items', function (err, results, fields) {
     if (err) throw err;
     console.log("Connection successful!");
-    console.log(results);
+    console.log(results[0].items);
     console.log(fields);
     // db.release();
   })
