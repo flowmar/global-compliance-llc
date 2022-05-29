@@ -76,7 +76,7 @@ app.use((req, res) => {
   db.query('SELECT * FROM et2g6mv72e6t4f88.mariners AS items', function (err, results, fields) {
     if (err) throw err;
     console.log("Connection successful!");
-    console.log("Results:" +  results[0].items);
+    console.log("Results:" +  JSON.stringify(results[0]));
     // db.release();
   })
 // });
