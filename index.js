@@ -186,7 +186,7 @@ if (process.env.MACHINE == 'local') {
   //   else {
   console.log("HELLLLLLOOOOOOOOOOOOOOOOOOOO");
       // Test MySQL Database Connection
-      db.query('SELECT * FROM et2g6mv72e6t4f88.mariners AS items', function (err, results, fields) {
+      db.query('SELECT * FROM et2g6mv72e6t4f88.mariners AS items', (err, results) => {
         if (err) throw err;
         console.log("Connection successful!");
         console.log("Results:" + JSON.stringify(results));
