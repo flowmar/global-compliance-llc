@@ -36,11 +36,6 @@ else {
     })
   }
 
-  connection.getConnection((err, connection) => {
-    if (err) throw err;
-    console.log("DB connected:" + connection.threadId);
-  });
-
   // connection.connect();
   // Export connection
   module.exports = connection;

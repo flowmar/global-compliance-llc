@@ -181,9 +181,9 @@ if (process.env.MACHINE == 'local') {
     }
   });
 } else {
-  db.getConnection((err, connection) => {
-    if (err) throw err;
-    else {
+  // db.getConnection((err, connection) => {
+  //   if (err) throw err;
+  //   else {
       // Test MySQL Database Connection
       db.query('SELECT * FROM et2g6mv72e6t4f88.mariners AS items', function (err, results, fields) {
         if (err) throw err;
@@ -192,8 +192,8 @@ if (process.env.MACHINE == 'local') {
         // db.release();
       });
     }
-  });
-}
+  // });
+// }
 
 // Set the application to listen on a port for requests
 app.listen(PORT, () => {
