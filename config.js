@@ -25,7 +25,7 @@ else {
 // Config for Heroku
   // Make connection
   if (process.env.JAWSDB_URL) {
-    connection = mysql.createConnection(process.env.JAWSDB_URL)
+    connection = mysql.createPool(process.env.JAWSDB_URL)
   } else {
     connection = mysql.createConnection({
       port: 3306,
@@ -35,6 +35,11 @@ else {
       database: 'et2g6mv72e6t4f88'
     })
   }
+
+  connection.getConnection((err, connection) => {
+    if (err) throw err;
+    console.log("DB connected:" + connection.threadId);
+  });
 
   // connection.connect();
   // Export connection
