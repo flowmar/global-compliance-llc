@@ -1,37 +1,28 @@
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
+const bluebird = require("bluebird");
+require("dotenv").config();
 let connection;
 
 if (process.env.MACHINE == 'local') {
   // Local config
   const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'globalc',
-    password: 'c0mplianT?',
-    database: 'global_compliance',
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
     waitForConnections: true,
-    connectionLimit: 10,
+    connectionLimit: process.env.CONNECTION_LIMIT,
     queueLimit: 0
   });
-
-// pool.connect(function (err) {
-//     if (err) {
-//       console.error('error connecting: ' + err.stack)
-//       return
-//     }
-//     console.log('Connected as id ' + connection.threadId);
-// });
   
-  pool.query('SELECT * FROM global_compliance.mariners', function (err, results, fields) { 
+  // const promisePool = pool.promise();
+  pool.pool.query('SELECT * FROM global_compliance.mariners', function (err, results, fields) {
     console.log(results);
-  })
+  });
   
-    module.exports = {
-    getConnection: (callback) => {
-      return pool.getConnection(callback);
-    }
+  module.exports = pool;
   }
 
-}
 else {
 // Config for Heroku
   // Make connection
