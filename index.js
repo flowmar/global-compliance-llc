@@ -166,7 +166,7 @@ app.use((req, res) => {
 
 /** Test Database Connection */
 // Test MySQL DB Connection
-if (process.env.MACHINE == 'local') {
+if (process.env.MACHINE == 'locala') {
   // Database connection
   db.getConnection(function (err, connection) {
     if (err) {
@@ -174,7 +174,7 @@ if (process.env.MACHINE == 'local') {
     }
     else {
       // Select and print from the Agents table
-      connection.query('SELECT * FROM global_compliance.Agents', function (err, results, fields) {
+      db.connection.query('SELECT * FROM global_compliance.Agents', function (err, results, fields) {
         if (err) throw err;
         console.log(results);
       });
@@ -186,7 +186,7 @@ if (process.env.MACHINE == 'local') {
   //   else {
   console.log("HELLLLLLOOOOOOOOOOOOOOOOOOOO");
       // Test MySQL Database Connection
-      db.query('SELECT * FROM et2g6mv72e6t4f88.mariners AS items', (err, results) => {
+      db.connection.query('SELECT * FROM et2g6mv72e6t4f88.mariners AS items', (err, results) => {
         if (err) throw err;
         console.log("Connection successful!");
         console.log("Results:" + JSON.stringify(results));
