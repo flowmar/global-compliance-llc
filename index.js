@@ -4,7 +4,7 @@ const axios = require("axios"); // HTTP request library
 const path = require("path");
 const PORT = process.env.PORT;
 const db = require("./config");
-const mysql = require('mysql2/promise');
+const mysql = require('mysql2');
 const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
 
