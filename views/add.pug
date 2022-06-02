@@ -1,13 +1,121 @@
 extends layout.pug
 
 block content
+  form(action="/addMariner" method="post")
     .container-fluid
-      .row.mt-5
-        .col-1
-        .col-4.display-5.page-title Add Mariner
-        .col-7
-      .row.bg-dark.m-3.p-4
-        .col-2
-        .col-8.shadow-4-strong.bg-light.bg-opacity-25 Add Mariner
-            select(type="dropdown")
-        .col-2
+        .row.mt-5
+          .col-1
+          .col-4.display-5.page-title Add Mariner
+          .col-7
+        .row.bg-dark.m-3.p-1.py-3
+          .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.m-2.mb-0
+            .container
+              .row
+                .col-3
+                  label.form-label(for="mariner-id") Mariner ID:
+                  input.form-control(type="text" id="mariner-id" placeholder="ID" disabled)
+                .col-3
+                  label.form-label(for="first-name") First Name:
+                  input.form-control.bg-white(type="text" id="first-name")
+                .col-3
+                  label.form-label(for="middle-name") Middle Name:
+                  input.form-control.bg-white(type="text" id="middle-name")
+                .col-3
+                  label.form-label(for="last-name") Last Name:
+                  input.form-control.bg-white(type="text" id="last-name")
+              .row.my-4
+                .col-4
+                  label.form-label(for="address") Address:
+                  input.form-control.bg-white(type="text" id="address")
+                .col-4
+                  label.form-label(for="phone-number") Phone Number:
+                  input.form-control.bg-white(type="tel" id="phone-number")
+                .col-4
+                  label.form-label(for="email") Email:
+                  input.form-control.bg-white(type="email" id="email")
+              .row.my-4
+                .col-4
+                  label.form-label(for="employer") Employer:
+                  input.form-control.bg-white(type="dropdown" id="employer")
+                .col-4
+                  label.form-label(for="vessel-name") Vessel Name:
+                  input.form-control.bg-white(type="text" id="vessel-name")
+                .col-4
+                  label.form-label(for="mariner-reference-number") Mariner Reference Number:
+                  input.form-control.bg-white(type="number" id="mariner-reference-number")
+              .row.my-4
+                .col-4
+                  label.form-label(for="passport-number") Passport Number:
+                  input.form-control.bg-white(type="number" id="passport-number")
+                .col-4
+                  label.form-label(for="citizenship") Citizenship:
+                  select.form-select.bg-white(id="citizenship" aria-label="Select birth country")
+                    option
+                    option(value="1") One
+                    option(value="2") Two
+              .row.my-4
+                .col-3
+                  label.form-label(for="birth-city") City of Birth:
+                  input.form-control.bg-white(type="text" id="birth-city")
+                .col-3
+                  label.form-label(for="birth-state") State of Birth:
+                  input.form-control.bg-white(type="text" id="birth-state")
+                .col-3
+                  label.form-label(for="birth-country") Country of Birth:
+                  select.form-select.bg-white(id="birth-country" aria-label="Select birth country")
+                    option
+                    option(value="1") One
+                    option(value="2") Two
+                .col-3
+                  label.form-label(for="birth-date") Birth Date:
+                  input.form-control.bg-white.text-dark(type="date" id="birth-date")
+              .row.my-4
+                .col-8
+                  label(for="file-input-group") Application File:
+                    .input-group.mt-2#file-input-group
+                      input.form-control.text-dark(type="file" id="application-file")
+                      label.input-group-text.btn(style="background-color: var(--yellow-color); font-weight: bold;" for="application-file") Upload
+                .col-3
+              .row.my-4
+                .col-12
+                  label.form-label(for="notes") Notes:
+                  textarea.form-control.bg-white.text-dark(type="text" id="notes")
+              .row.my-4
+                .col-8
+                .col-2
+                  input.btn.btn-lg(style="background-color: var(--green-color);" type="submit" id="save-mariner" value="Save")
+                .col-1
+                  input.btn.btn-lg.bg-danger(type="" id="cancel" value="Cancel")
+                .col-1
+          //- .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.mx-2.my-0
+          //-   label(for="first-name") First Name:
+          //-   input(type="text" placeholder="First Name" id="first-name")
+          //-   label(for="middle-name") Middle Name:
+          //-   input(type="text" placeholder="Middle Name" id="middle-name")
+          //-   label(for="last-name") Last Name:
+          //-   input(type="text" placeholder="Last Name" id="last-name")
+          //- .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.mx-2.my-0
+          //-   label(for="first-name") First Name:
+          //-   input(type="text" placeholder="First Name" id="first-name")
+          //-   label(for="middle-name") Middle Name:
+          //-   input(type="text" placeholder="Middle Name" id="middle-name")
+          //-   label(for="last-name") Last Name:
+          //-   input(type="text" placeholder="Last Name" id="last-name")
+          //- .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.mx-2.my-0
+          //-   label(for="first-name") First Name:
+          //-   input(type="text" placeholder="First Name" id="first-name")
+          //-   label(for="middle-name") Middle Name:
+          //-   input(type="text" placeholder="Middle Name" id="middle-name")
+          //- .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.mx-2.my-0
+          //-   label(for="first-name") First Name:
+          //-   input(type="text" placeholder="First Name" id="first-name")
+          //-   label(for="middle-name") Middle Name:
+          //-   input(type="text" placeholder="Middle Name" id="middle-name")
+          //-   label(for="last-name") Last Name:
+          //-   input(type="text" placeholder="Last Name" id="last-name")
+          //-   label(for="last-name") Last Name:
+          //-   input(type="text" placeholder="Last Name" id="last-name")
+          //- .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.mx-2.my-0
+          //-   label(for="last-name") Last Name:
+          //-   input(type="text" placeholder="Last Name" id="last-name")
+          //- .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.mx-2.my-0

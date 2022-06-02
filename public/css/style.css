@@ -30,6 +30,14 @@ header
   font-weight: bold;
 }
 
+input {
+  color: black !important;
+}
+
+.form-label {
+  color: #FFF;
+}
+
 .bd-placeholder-img {
   font-size: 1.125rem;
   text-anchor: middle;
