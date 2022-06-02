@@ -1,7 +1,7 @@
+require("dotenv").config();
 const express = require("express");
 const axios = require("axios"); // HTTP request library
 const path = require("path");
-require("dotenv").config();
 const PORT = process.env.PORT;
 const db = require("./config");
 const mysql = require('mysql2/promise');
@@ -75,31 +75,36 @@ app.get("/maintenance", async (req, res) => {
 
 // Route for user creation
 app.post("/createUser", async (req, res) => {
-  const salt = 2;
-  console.log(req.body);
+  // Salt rounds for bcrypt
+  const salt = 10;
+  // Get username and password that was submitted
   const user = req.body.username;
-  console.log("USER:" + user);
-  console.log("Pw" + req.body.password);
-  const hashedPassword = await bcrypt.hash(req.body.password, salt);
-  console.log(hashedPassword);
+  const password = req.body.password;
+  // Create a hashed password
+  const hashedPassword = await bcrypt.hash(password, salt);
 
-  // db.pool.getConnection(async (err, connection) => {
-  // if (err) throw err;
+  // Prepare the SQL statement for searching
   const sqlSearch = "SELECT * FROM `users` WHERE user = ?";
   const search_query = mysql.format(sqlSearch, [user]);
-
+  // Prepare the SQL statement for inserting
   const sqlInsert = "INSERT INTO `users` VALUES (0, ?, ?)";
   const insert_query = mysql.format(sqlInsert, [user, hashedPassword]);
 
+  // Make the call to the database
   db.pool.query(search_query, async (err, result) => {
+    // Show error if it fails
     if (err) throw err;
+
     console.log("--------> Search Results");
     console.log(result.length);
+
+    // If the result exists, the user exists
     if (result.length != 0) {
       console.log("------> User already exists!");
       res.sendStatus(409);
     }
     else {
+      // Otherwise insert the new user into the database
       db.pool.query(insert_query, (err, result) => {
         if (err) throw err;
         console.log("------> Created new User!");
