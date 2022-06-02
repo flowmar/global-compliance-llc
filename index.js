@@ -184,6 +184,7 @@ if (process.env.MACHINE == 'local') {
   // db.getConnection((err, connection) => {
   //   if (err) throw err;
   //   else {
+  console.log("HELLLLLLOOOOOOOOOOOOOOOOOOOO");
       // Test MySQL Database Connection
       db.query('SELECT * FROM et2g6mv72e6t4f88.mariners AS items', function (err, results, fields) {
         if (err) throw err;
