@@ -8,8 +8,8 @@ block content
         .col-7
       .row.bg-dark.m-3.p-4
         .col-2
-        .col-8.shadow-4-strong.bg-light.bg-opacity-25 
-          .container
+        .col-8.shadow-4-strong.bg-light.bg-opacity-25
+          form(action="/authenticate" method="post" name="loginForm").container
             br
             .row
               .col
@@ -17,21 +17,21 @@ block content
                 br
                 br
             .row
-              .col  
+              .col
                 .form-outline.form-white
-                  input.form-control.bg-white.text-dark#typeUsername(type="text")
-                  label.form-label.text-dark(for="typeUsername") Username
+                  input.form-control.bg-white.text-dark#inputUsername(type="text" name="inputUsername" required)
+                  label.form-label.text-dark(for="inputUsername") Username
                 br
             .row
               .col
                 .form-outline.form-white
-                  input.form-control.bg-white.text-dark#typePassword(type="password")
-                  label.form-label.text-dark(for="typePassword") Password
+                  input.form-control.bg-white.text-dark#inputPassword(type="password" name="inputPassword" required)
+                  label.form-label.text-dark(for="inputPassword") Password
                 br
             .row
               .col-9
               .col-3
-                button#loginButton.btn.btn-lg.btn-success(type="button") Login
+                input#loginButton.btn.btn-lg.btn-success(type="submit" name="submit" value="Login")
                 br
                 br
         .col-2

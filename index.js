@@ -33,53 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware to read request params
 app.use(express.json());
-
 app.use(bodyParser.urlencoded({ extended: true }));
-
-app.post("/createUser", async (req, res) => { 
-  const salt = 2;
-  console.log(req.body);
-  const user = req.body.username;
-  console.log("USER:" + user);
-  console.log("Pw" + req.body.password);
-  const hashedPassword = await bcrypt.hash(req.body.password, salt);
-  console.log(hashedPassword);
-
-  // db.pool.getConnection(async (err, connection) => {
-    // if (err) throw err;
-    const sqlSearch = "SELECT * FROM `users` WHERE user = ?";
-    const search_query = mysql.format(sqlSearch, [user]);
-
-    const sqlInsert = "INSERT INTO `users` VALUES (0, ?, ?)";
-    const insert_query = mysql.format(sqlInsert, [user, hashedPassword]);
-
-     db.pool.query(search_query, async (err, result) => { 
-      if (err) throw err;
-      console.log("--------> Search Results");
-      console.log(result.length);
-
-      if (result.length != 0) {
-        // connection.release();
-        console.log("------> User already exists!");
-        res.sendStatus(409);
-      }
-      else { 
-        db.pool.query(insert_query, (err, result) => { 
-
-          // connection.release();
-
-          if (err) throw err;
-          console.log("------> Created new User!");
-          console.log(result.insertId);
-          res.sendStatus(201);
-        })
-      }
-
-    })
-
-  })
-// })
-
 
 
 /* Routing */
@@ -119,6 +73,79 @@ app.get("/maintenance", async (req, res) => {
   })
 });
 
+// Route for user creation
+app.post("/createUser", async (req, res) => {
+  const salt = 2;
+  console.log(req.body);
+  const user = req.body.username;
+  console.log("USER:" + user);
+  console.log("Pw" + req.body.password);
+  const hashedPassword = await bcrypt.hash(req.body.password, salt);
+  console.log(hashedPassword);
+
+  // db.pool.getConnection(async (err, connection) => {
+  // if (err) throw err;
+  const sqlSearch = "SELECT * FROM `users` WHERE user = ?";
+  const search_query = mysql.format(sqlSearch, [user]);
+
+  const sqlInsert = "INSERT INTO `users` VALUES (0, ?, ?)";
+  const insert_query = mysql.format(sqlInsert, [user, hashedPassword]);
+
+  db.pool.query(search_query, async (err, result) => {
+    if (err) throw err;
+    console.log("--------> Search Results");
+    console.log(result.length);
+    if (result.length != 0) {
+      console.log("------> User already exists!");
+      res.sendStatus(409);
+    }
+    else {
+      db.pool.query(insert_query, (err, result) => {
+        if (err) throw err;
+        console.log("------> Created new User!");
+        console.log(result.insertId);
+        res.sendStatus(201);
+      });
+    }
+  });
+});
+
+// Route for authentication
+app.post("/authenticate", async (req, res) => {
+  // Get the input from the request body
+  let user = req.body.inputUsername;
+  let password = req.body.inputPassword;
+
+  // Create and format the SQL query
+  const sqlSearch = 'SELECT * FROM `users` WHERE user = ? ';
+  const search_query = mysql.format(sqlSearch, [user]);
+
+  // Search for the username in the database
+  db.pool.query(search_query, async (err, result) => {
+    if (err) throw err;
+
+    // If no results, user does not exist
+    if (result.length == 0) {
+      console.log("The user does not exist.");
+      res.sendStatus(404);
+    }
+    else {
+      // Otherwise get the hashedPassword
+      let hashedPassword = result[0].password;
+
+      // Compare the passwords using bcrypt
+      if (await bcrypt.compare(password, hashedPassword)) {
+        console.log("Success!");
+        res.send(`${user}` + " has successfully logged in!");
+      }
+      else {
+        console.log("Password Incorrect!");
+        res.send("Your password was incorrect.");
+      }
+    }
+  });
+});
+
 // Error Handling
 app.use((req, res) => {
   res.statusCode = 404;
@@ -135,7 +162,7 @@ if (process.env.MACHINE == 'local') {
     }
     else { 
       // Select and print from the Agents table
-      connection.query('SELECT * FROM global_compliance.Agents', function (err, results, fields) { 
+      connection.query('SELECT * FROM global_compliance.Agents', function (err, results, fields) {
         if (err) throw err;
         console.log(results);
       })

@@ -1,5 +1,4 @@
 const mysql = require("mysql2/promise");
-const bluebird = require("bluebird");
 require("dotenv").config();
 let connection;
 
@@ -14,12 +13,11 @@ if (process.env.MACHINE == 'local') {
     connectionLimit: process.env.CONNECTION_LIMIT,
     queueLimit: 0
   });
-  
-  // const promisePool = pool.promise();
-  pool.pool.query('SELECT * FROM global_compliance.mariners', function (err, results, fields) {
-    console.log(results);
-  });
-  
+
+  // pool.pool.query('SELECT * FROM global_compliance.mariners', function (err, results, fields) {
+  //   console.log(results);
+  // });
+
   module.exports = pool;
   }
 
