@@ -146,6 +146,13 @@ app.post("/authenticate", async (req, res) => {
   });
 });
 
+// Route for logging out
+app.get("/logout", async (req, res) => { 
+  res.render("index", {
+    title: "Login"
+  })
+})
+
 // Error Handling
 app.use((req, res) => {
   res.statusCode = 404;
