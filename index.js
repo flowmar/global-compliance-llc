@@ -172,31 +172,28 @@ if (process.env.MACHINE == 'local') {
     if (err) {
       console.log("Error: Something went wrong! " + err.stack);
     }
-    else { 
+    else {
       // Select and print from the Agents table
       connection.query('SELECT * FROM global_compliance.Agents', function (err, results, fields) {
         if (err) throw err;
         console.log(results);
-      })
+      });
     }
   });
 } else {
-  db.getConnection((err, connection) => { 
+  db.getConnection((err, connection) => {
     if (err) throw err;
-    else { 
+    else {
       // Test MySQL Database Connection
-  db.query('SELECT * FROM et2g6mv72e6t4f88.mariners AS items', function (err, results, fields) {
-  if (err) throw err;
-  console.log("Connection successful!");
-  console.log("Results:" + JSON.stringify(results));
-  // db.release();
+      db.query('SELECT * FROM et2g6mv72e6t4f88.mariners AS items', function (err, results, fields) {
+        if (err) throw err;
+        console.log("Connection successful!");
+        console.log("Results:" + JSON.stringify(results));
+        // db.release();
+      });
     }
-  })
-  
-});
+  });
 }
-
-
 
 // Set the application to listen on a port for requests
 app.listen(PORT, () => {
