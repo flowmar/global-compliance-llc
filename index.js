@@ -8,8 +8,6 @@ const mysql = require('mysql2');
 const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
 
-
-
 /* Express Setup */
 // Use Express to create the application
 const app = express();
@@ -152,11 +150,90 @@ app.post("/authenticate", async (req, res) => {
 });
 
 // Route for logging out
-app.get("/logout", async (req, res) => { 
+app.get("/logout", async (req, res) => {
   res.render("index", {
     title: "Login"
   })
-})
+});
+
+// Route for /nextid
+app.get("/nextid", async (req, res) => {
+  let lastMarinerID;
+  let nextMarinerID;
+
+  let sqlSearch = 'SELECT MAX(MarinerID) FROM Mariners';
+  let search_query = mysql.format(sqlSearch);
+
+  db.query(search_query).then( (result) => {
+    // if (err) throw err;
+
+    console.log(result[0]);
+    lastMarinerID = result[0][0]['MAX(MarinerID)'];
+    console.log(lastMarinerID);
+    nextMarinerID = parseInt(lastMarinerID) + 1
+    res.render('add', {
+      title: "Add",
+      next: nextMarinerID
+    });
+  });
+});
+
+// Route for adding a Mariner
+app.post("/add", async (req, res) => {
+  console.log(req.body);
+  let marinerID = req.body.marinerId;
+  let firstName = req.body.firstName;
+  let middleName = req.body.middleName;
+  let lastName = req.body.lastName;
+  let address = req.body.address;
+  let phone = req.body.phone;
+  let email = req.body.email;
+  let employer = req.body.employer;
+  let vessel = req.body.vessel;
+  let marinerRefNum = req.body.marinerRefNum;
+  let passportNumber = req.body.passportNumber;
+  let citizenship = req.body.citizenship;
+  let birthCity = req.body.birthCity;
+  let birthState = req.body.birthState;
+  let birthCountry = req.body.birthCountry;
+  let birthDate = req.body.birthDate;
+  let processingAgent = 1;
+  // let application = req.body.application;
+  let notes = req.body.notes;
+
+  let sqlInsert = 'INSERT INTO `mariners` VALUES (0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, null, null)';
+  let insert_query = mysql.format(sqlInsert, [
+    lastName,
+    firstName,
+    middleName,
+    address,
+    phone,
+    email,
+    employer,
+    vessel,
+    marinerRefNum,
+    passportNumber,
+    citizenship,
+    birthCity,
+    birthState,
+    birthCountry,
+    birthDate,
+    processingAgent,
+    // application,
+    notes]);
+
+  db.pool.query(insert_query, async (err, result) => {
+    if (err) throw err;
+
+    console.log("New Mariner Added!");
+    console.log(result);
+    console.log(result.insertId);
+
+    res.render("search", {
+      title: "Search"
+    });
+  });
+});
 
 // Error Handling
 app.use((req, res) => {
@@ -181,19 +258,11 @@ if (process.env.MACHINE == 'local') {
     }
   });
 } else {
-  // db.getConnection((err, connection) => {
-  //   if (err) throw err;
-  //   else {
-  console.log("HELLLLLLOOOOOOOOOOOOOOOOOOOO");
       // Test MySQL Database Connection
-  db.query('SELECT * FROM et2g6mv72e6t4f88.mariners AS items').then(result => console.log(JSON.stringify(result[0])));
-        // if (err) throw err;
-        // console.log("Connection successful!");
-        // console.log("Results:" + JSON.stringify(results));
-        // db.release();
+  db.query('SELECT * FROM et2g6mv72e6t4f88.mariners AS items').then(result =>
+    console.log(JSON.stringify(result[0])));
+
       };
-  // });
-// }
 
 // Set the application to listen on a port for requests
 app.listen(PORT, () => {

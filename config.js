@@ -1,8 +1,7 @@
 const mysql = require("mysql2/promise");
 require("dotenv").config();
-let connection;
 
-if (process.env.MACHINE == 'locala') {
+if (process.env.MACHINE == 'local') {
   // Local config
   const pool = mysql.createPool({
     host: process.env.DB_HOST,
@@ -36,7 +35,6 @@ else {
     })
   }
 
-  // connection.connect();
   // Export connection
   module.exports = pool;
 }
