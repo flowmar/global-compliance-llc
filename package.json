@@ -4,7 +4,7 @@
       "author": "flowmar",
       "license": "ISC",
       "description": "",
-      "main": "index.js",
+      "main": "server.js",
       "scripts": {
             "dev": "nodemon index.js",
             "ui": "browser-sync start --config bs-config.js",
@@ -19,9 +19,11 @@
             "bootstrap": "^5.1.3",
             "dotenv": "^16.0.1",
             "express": "^4.18.1",
+            "jquery": "^3.6.0",
             "mdb-ui-kit": "^4.1.0",
             "mysql2": "^2.3.3",
             "nodejs": "^0.0.0",
+            "parsleyjs": "^2.9.2",
             "path": "^0.12.7",
             "pug": "^3.0.2"
       },

@@ -34,7 +34,10 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-/* Routing */
+/**
+ * Routing
+ * */
+
 // Request for root URL
 app.get("/", async (req, res) => {
   const query = await axios.get("https://randomuser.me/api/?results=9");
@@ -70,6 +73,10 @@ app.get("/maintenance", async (req, res) => {
     title: "Maintenance"
   })
 });
+
+/**
+ * User Creation and Authentication
+ */
 
 // Route for user creation
 app.post("/createUser", async (req, res) => {
@@ -159,27 +166,61 @@ app.get("/logout", async (req, res) => {
   })
 });
 
-// Route for /nextid
-app.get("/nextid", async (req, res) => {
+/** 
+ * Data Routes
+*/
+// Route for /form
+app.get("/form", async (req, res) => {
+
+  // Obtain Mariner ID number
   let lastMarinerID;
   let nextMarinerID;
-
+  // ID Query
   let sqlSearch = 'SELECT MAX(MarinerID) FROM Mariners';
-  let search_query = mysql.format(sqlSearch);
+  let id_query = mysql.format(sqlSearch);
+  // Country Query
+  let countrySearch = 'SELECT * FROM Countries';
+  let country_query = mysql.format(countrySearch);
+  // Employer Query
+  let employerSearch = 'SELECT * FROM Employers';
+  let employer_query = mysql.format(employerSearch);
 
-  db.query(search_query).then( (result) => {
-    // if (err) throw err;
+  // DB Access
+  db.query(id_query).then((result) => {
 
     console.log(result[0]);
     lastMarinerID = result[0][0]['MAX(MarinerID)'];
     console.log(lastMarinerID);
-    nextMarinerID = parseInt(lastMarinerID) + 1
-    res.render('add', {
-      title: "Add",
-      next: nextMarinerID
+    nextMarinerID = parseInt(lastMarinerID) + 1;
+  });
+
+  db.query(country_query).then(result => {
+
+    // console.log(result[0]);
+    let countriesArray = [];
+    let countries = result[0];
+
+    for (i = 0; i < countries.length; i++) {
+      countriesArray.push(countries[i]["CountryName"])
+    }
+
+    db.query(employer_query).then(result => {
+
+      console.log(result[0]);
+      let employers = result[0];
+      console.log(JSON.stringify(employers));
+      // console.log(countriesArray)
+      res.render('add', {
+        title: "Add",
+        next: nextMarinerID,
+        countries: countriesArray,
+        employers: employers
+      })
     });
+
   });
 });
+
 
 // Route for adding a Mariner
 app.post("/add", async (req, res) => {
