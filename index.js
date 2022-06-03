@@ -139,7 +139,10 @@ app.post("/authenticate", async (req, res) => {
       // Compare the passwords using bcrypt
       if (await bcrypt.compare(password, hashedPassword)) {
         console.log("Success!");
-        res.send(`${user}` + " has successfully logged in!");
+        // res.send(`${user}` + " has successfully logged in!");
+        res.render('search', {
+          title: "Search"
+        });
       }
       else {
         console.log("Password Incorrect!");
