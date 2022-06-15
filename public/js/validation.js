@@ -31,3 +31,33 @@ function phoneNumberFormatter() {
   // Set value to formatted input
   inputField.value = formattedInputValue;
 }
+
+function uploadApp(){
+        console.log("AAHHHHH")
+        let marinerID = document.getElementById("mariner-id").value;
+        let processingAgent = document.getElementById("processing-agent").value;
+        console.log(marinerID + "\n" + processingAgent);
+
+        $("#target").submit(function (e) {
+          e.preventDefault();
+          let formData = new FormData(this);
+          console.log("THIS:" +this);
+          // formData.append('file', e.target.files[0]);
+          console.log("Form-Data" + formData)
+
+          $.ajax({
+            type: "POST",
+            url: "/appUpload",
+            data: formData,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function(r) {
+              console.log("Result: " + r);
+            },
+            error: function(err) {
+              console.log("Error: " + err[0]);
+            }
+          })
+        })
+      }

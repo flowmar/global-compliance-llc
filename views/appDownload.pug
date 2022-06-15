@@ -1,0 +1,25 @@
+extends layout
+
+block content
+
+
+
+
+
+
+
+    script.
+      let file = !{pdf};
+      let downloadFile = (file, fileName) => {
+      
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(file);
+      link.download = fileName;
+
+      document.body.append(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(link.href), 10000);
+      }
+
+      downloadFile(new Blob (file, "application.pdf"));

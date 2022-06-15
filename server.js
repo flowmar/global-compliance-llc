@@ -7,6 +7,10 @@ const db = require("./config");
 const mysql = require('mysql2');
 const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
+const cors = require('cors')
+const multer = require('multer')
+const { Blob } = require('node:buffer');
+const fs = require('fs-extra');
 
 /* Express Setup */
 // Use Express to create the application
@@ -33,6 +37,75 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// User CORS
+app.use(cors());
+
+// Handle storage using Multer
+let storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/uploads');
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const name = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname);
+    cb(null, name);
+  }
+});
+
+let upload = multer({
+  storage: storage,
+  dest: 'public/uploads'
+});
+
+// If application uploaded, put into database
+app.post('/appUpload', upload.single('application'), (req, res) => {
+    if (!req.file) {
+      return res.status(400).send({ message: 'Please upload a file.' });
+    }
+  let file = req.file;
+  const file_buffer = fs.readFileSync('public/uploads/' + file.filename);
+  console.log(file_buffer);
+  console.log(file);
+  console.log(file.filename);
+
+  let applicationSql = 'INSERT INTO Applications VALUES (0, ?)';
+  let application_query = mysql.format(applicationSql, [file_buffer]);
+    
+  db.pool.query(application_query, (err, result) => {
+    if (err) throw err;
+    let uploadedFile = "public/uploads/" + file.filename;
+    fs.unlinkSync(uploadedFile);
+    console.log("File Uploaded!");
+    console.log("RESULT: " + result);
+    res.send(result);
+    
+    });
+    
+});
+
+// Route for downloading an application document
+app.get('/appDownload', (req, res) => {
+  db.pool.query("SELECT * FROM Applications WHERE ApplicationID = 1", (error, response) => {
+
+    if (error) throw error;
+
+    // Create a Buffer from the BLOB object
+    let buff = new Buffer.from(response[0]["ApplicationDocument"], {type: 'application/pdf'});
+    console.log(buff);
+    // res.render("appDownload", {
+    //   title: "Download Application",
+    //   pdf: pdf
+    // });
+
+    // Write the binary buffer data to a file
+    let pdf = fs.writeFileSync('application.pdf', response[0]["ApplicationDocument"]);
+   
+    console.log(pdf);
+    // Send the document to the browser for download
+    res.download("application.pdf");
+
+    });
+})
 
 /**
  * Routing
@@ -166,7 +239,9 @@ app.get("/logout", async (req, res) => {
   })
 });
 
-/** 
+
+
+/**
  * Data Routes
 */
 // Route for /form
@@ -184,6 +259,9 @@ app.get("/form", async (req, res) => {
   // Employer Query
   let employerSearch = 'SELECT * FROM Employers';
   let employer_query = mysql.format(employerSearch);
+  // Agent Query
+  let agentSearch = 'SELECT * FROM Agents';
+  let agent_query = mysql.format(agentSearch);
 
   // DB Access
   db.query(id_query).then((result) => {
@@ -194,30 +272,33 @@ app.get("/form", async (req, res) => {
     nextMarinerID = parseInt(lastMarinerID) + 1;
   });
 
-  db.query(country_query).then(result => {
+  db.query(country_query).then(countryResult => {
 
-    // console.log(result[0]);
     let countriesArray = [];
-    let countries = result[0];
+    let countries = countryResult[0];
 
-    for (i = 0; i < countries.length; i++) {
+    for (let i = 0; i < countries.length; i++) {
       countriesArray.push(countries[i]["CountryName"])
     }
 
-    db.query(employer_query).then(result => {
+    db.query(agent_query).then(agentResult => {
 
-      console.log(result[0]);
-      let employers = result[0];
-      console.log(JSON.stringify(employers));
-      // console.log(countriesArray)
+      console.log(agentResult[0]);
+      let agents = agentResult[0];
+
+    db.query(employer_query).then(employerResult => {
+
+      console.log(employerResult[0]);
+      let employers = employerResult[0];
       res.render('add', {
         title: "Add",
         next: nextMarinerID,
         countries: countriesArray,
-        employers: employers
+        employers: employers,
+        agents: agents
       })
     });
-
+    });
   });
 });
 
@@ -225,7 +306,7 @@ app.get("/form", async (req, res) => {
 // Route for adding a Mariner
 app.post("/add", async (req, res) => {
   console.log(req.body);
-  let marinerID = req.body.marinerId;
+  let marinerId = req.body.marinerId;
   let firstName = req.body.firstName;
   let middleName = req.body.middleName;
   let lastName = req.body.lastName;
@@ -242,11 +323,13 @@ app.post("/add", async (req, res) => {
   let birthCountry = req.body.birthCountry;
   let birthDate = req.body.birthDate;
   let processingAgent = 1;
-  // let application = req.body.application;
+  let application = req.body.application;
+  console.log(application);
   let notes = req.body.notes;
 
-  let sqlInsert = 'INSERT INTO `mariners` VALUES (0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, null, null)';
+  let sqlInsert = 'INSERT INTO `mariners` VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
   let insert_query = mysql.format(sqlInsert, [
+    marinerId,
     lastName,
     firstName,
     middleName,
@@ -263,9 +346,9 @@ app.post("/add", async (req, res) => {
     birthCountry,
     birthDate,
     processingAgent,
-    // application,
     notes]);
 
+  // Insert Mariner into database
   db.pool.query(insert_query, async (err, result) => {
     if (err) throw err;
 
@@ -295,7 +378,7 @@ if (process.env.MACHINE == 'local') {
     }
     else {
       // Select and print from the Agents table
-      db.query('SELECT * FROM global_compliance.Agents', function (err, results, fields) {
+      db.query('SELECT * FROM global_compliance.Agents', function (err, results) {
         if (err) throw err;
         console.log(results);
       });
@@ -306,7 +389,7 @@ if (process.env.MACHINE == 'local') {
   db.query('SELECT * FROM et2g6mv72e6t4f88.mariners AS items').then(result =>
     console.log(JSON.stringify(result[0])));
 
-      };
+      }
 
 // Set the application to listen on a port for requests
 app.listen(PORT, () => {
