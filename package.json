@@ -6,10 +6,10 @@
       "description": "",
       "main": "server.js",
       "scripts": {
-            "dev": "nodemon index.js",
+            "dev": "nodemon server.js",
             "ui": "browser-sync start --config bs-config.js",
-            "watch": "nodemon index.js -e js,pug",
-            "start": "node index.js"
+            "watch": "nodemon server.js -e js,pug",
+            "start": "node server.js"
       },
       "dependencies": {
             "axios": "^0.27.2",
