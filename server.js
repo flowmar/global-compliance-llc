@@ -88,7 +88,9 @@ app.get('/appDownload', (req, res) => {
   db.pool.query("SELECT * FROM Applications WHERE ApplicationID = 1", (error, response) => {
 
     if (error) throw error;
-
+    console.log(response);
+    console.log(response[0]);
+    console.log(response[0]['ApplicationID']);
     // Create a Buffer from the BLOB object
     let buff = new Buffer.from(response[0]["ApplicationDocument"], {type: 'application/pdf'});
     console.log(buff);
