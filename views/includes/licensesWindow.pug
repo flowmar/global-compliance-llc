@@ -11,7 +11,8 @@
             .input-group.mt-2#file-input-group
               input.form-control.form-control-file.text-dark(type="file" id="application-file" name="application")
               button.input-group-text.btn(style="background-color: var(--yellow-color); font-weight: bold;" onclick="uploadApp()" id="app-upload-button" value="Upload" type="submit") Upload
-        #appArea.text-center.mt-4 {}
+        #appArea.text-center.mt-4
+          em No application uploaded
       .modal-footer
         button.btn.btn-secondary(type="button" data-mdb-dismiss="modal") Cancel
         button.btn.btn-primary Save

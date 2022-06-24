@@ -383,26 +383,31 @@ app.post("/add", async (req, res) => {
 // Check if Application exists for a Mariner
 app.get("/getApp", async (req, res) => {
   console.log(req.query);
-  console.log("ROARR");
-
   let marinerID = req.query.marinerID;
 
   // Check database to see if an application for the mariner exists
   let appSQL = "SELECT ApplicationFileName FROM Applications WHERE marinerID = ?";
   let app_query = mysql.format(appSQL, [marinerID]);
 
+  // Check the database for an application with the matching MarinerID
   db.pool.query(app_query, async (err, result) => {
     if (err) throw err;
-
-    console.log("RESULT:" + JSON.stringify(result));
+    // Stringify and parse the result as JSON
     let resultJSON = JSON.parse(JSON.stringify(result));
-    console.log(resultJSON[0]);
-    console.log(resultJSON[0]["ApplicationFileName"]);
-
-    res.send({
-      appExists: true,
-      appFilename: resultJSON[0]["ApplicationFileName"]
-    });
+    if (resultJSON[0]) {
+      console.log(resultJSON[0]["ApplicationFileName"]);
+      // Send result back to frontend
+      res.send({
+        appExists: true,
+        appFilename: resultJSON[0]["ApplicationFileName"]
+      });
+    }
+    else { 
+      res.send({
+        appExists: false,
+        appFilename: "No Application Has Been Uploaded"
+      })
+    }
   });
 });
 

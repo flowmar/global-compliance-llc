@@ -110,7 +110,12 @@ function checkIfAppExists() {
     success: function (result) {
       console.log("result:" + JSON.stringify(result));
       let resultJSON = JSON.parse(JSON.stringify(result));
-      appArea.innerHTML = resultJSON["appFilename"];
+      if (resultJSON["appExists"] == true) {
+        appArea.innerHTML = "<span>" + resultJSON["appFilename"] + "</span> &nbsp; &nbsp; <div class='mt-3'><button class='btn btn-info pl-3'>Edit</button> <button class='btn btn-danger'>Delete</button></div>";
+      }
+      else {
+        appArea.innerHTML = "<strong><em>No application has been uploaded</em></strong>";
+      }
     },
     error: function (err) {
       console.log("error:" + err[0]);
