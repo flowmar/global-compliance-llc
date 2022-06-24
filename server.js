@@ -64,23 +64,21 @@ app.post('/appUpload', upload.single('application'), (req, res) => {
     }
   let file = req.file;
   const file_buffer = fs.readFileSync('public/uploads/' + file.filename);
-  console.log(file_buffer);
   console.log(file);
   console.log(file.filename);
-
-  let applicationSql = 'INSERT INTO Applications VALUES (0, ?)';
-  let application_query = mysql.format(applicationSql, [file_buffer]);
+  let marinerIDjson = JSON.parse(JSON.stringify(req.body));
+  let marinerID = marinerIDjson.marinerIDNumber[1];
+  console.log(marinerID);
+  let applicationSql = 'INSERT INTO Applications VALUES (0, ?, ?, ?)';
+  let application_query = mysql.format(applicationSql, [file_buffer, file.filename, marinerID]);
     
   db.pool.query(application_query, (err, result) => {
     if (err) throw err;
     let uploadedFile = "public/uploads/" + file.filename;
     fs.unlinkSync(uploadedFile);
     console.log("File Uploaded!");
-    console.log("RESULT: " + result);
-    res.send(result);
-    
+    console.log("RESULT: " + JSON.stringify(result));
     });
-    
 });
 
 // Route for downloading an application document

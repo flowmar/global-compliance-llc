@@ -31,7 +31,7 @@ block content
                   input.form-control.bg-white(type="tel" id="phone-number" name="phone" onkeydown="phoneNumberFormatter()" )
                 .col-4
                   label.form-label(for="email") Email:
-                  input.form-control.bg-white(type="email" id="email" name="email" data-parsley-required="true")
+                  input.form-control.bg-white(type="email" id="email" name="email" data-parsley-required="false")
               .row.my-4
                 .col-4
                   label.form-label(for="employer") Employer:
@@ -61,14 +61,14 @@ block content
                   select.form-select.bg-white(id="birth-country" aria-label="Select birth country" name="birthCountry"  )
                 .col-3
                   label.form-label(for="birth-date") Birth Date:
-                  input.form-control.bg-white.text-dark(type="date" id="birth-date" name="birthDate"  )
+                  input.form-control.bg-white.text-dark(type="date" id="birth-date" name="birthDate" data-parsley-required="true")
               .row.my-4
                 .col-4
                   label.form-label(for="processing-agent") Processing Agent
                   select.form-select.bg-white.text-dark(id="processing-agent")
               .row.my-4
                 .col-12
-                  label.form-label(for="notes") Notes:
+                  label.form-label(for="notes") Mariner Notes:
                   textarea.form-control.bg-white.text-dark(type="text" id="notes" name="notes")
               .row.my-4
                 .col
@@ -81,11 +81,11 @@ block content
                 .col-4
               .row.my-4
                 .col
-                
-                  a.btn.btn-lg(style="background-color: var(--yellow-color);" type="button" id="licenses" value="Licenses" data-mdb-toggle="modal" data-mdb-target="#licensesModal" href="/licenses") Licenses
-                  a.btn.btn-lg.my-3(style="background-color: var(--yellow-color);" type="button" value="Application" data-mdb-toggle="modal" data-mdb-target="#applicationModal" href="/application") Application
+                  button.btn.btn-lg.mx-2#appModalButton(style="background-color: var(--yellow-color);" type="button" value="Application" onclick="checkAppModal()" data-mdb-target="#applicationModal") Application
+                  a.btn.btn-lg.mx-1(style="background-color: var(--yellow-color);" type="button" id="licenses" value="Licenses" data-mdb-target="#licensesModal" href="/licenses" target="_blank") Licenses
 
     include includes/applicationModal
+
     script(src="/js/validation.js")
     script(src='/js/jquery.min.js')
     script(src='/js/parsley.min.js')
