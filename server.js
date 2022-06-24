@@ -57,23 +57,36 @@ let upload = multer({
   dest: 'public/uploads'
 });
 
-// If application uploaded, put into database
+// Route for uploading application document
 app.post('/appUpload', upload.single('application'), (req, res) => {
+    
+  // Error handling
     if (!req.file) {
       return res.status(400).send({ message: 'Please upload a file.' });
     }
+  
+  // Get the file from the request
   let file = req.file;
+
+  // Read the file as a buffer
   const file_buffer = fs.readFileSync('public/uploads/' + file.filename);
   console.log(file);
   console.log(file.filename);
+
+  // Parse the request body
   let marinerIDjson = JSON.parse(JSON.stringify(req.body));
+
+  // Get the marinerID from the request body
   let marinerID = marinerIDjson.marinerIDNumber[1];
   console.log(marinerID);
+
+  // Query for inserting file into database
   let applicationSql = 'INSERT INTO Applications VALUES (0, ?, ?, ?)';
   let application_query = mysql.format(applicationSql, [file_buffer, file.filename, marinerID]);
-    
+  
   db.pool.query(application_query, (err, result) => {
     if (err) throw err;
+    // Delete the uploaded file from memory after insertion into the db
     let uploadedFile = "public/uploads/" + file.filename;
     fs.unlinkSync(uploadedFile);
     console.log("File Uploaded!");
@@ -146,6 +159,13 @@ app.get("/maintenance", async (req, res) => {
     title: "Maintenance"
   })
 });
+
+// Request for '/licenses' URL
+app.get("/licenses/:id", async (req, res) => { 
+  res.render("licenses", {
+
+  });
+})
 
 /**
  * User Creation and Authentication
@@ -264,32 +284,30 @@ app.get("/form", async (req, res) => {
   let agent_query = mysql.format(agentSearch);
 
   // DB Access
+  // Sets the MarinerID to the next number
   db.query(id_query).then((result) => {
-
     console.log(result[0]);
     lastMarinerID = result[0][0]['MAX(MarinerID)'];
     console.log(lastMarinerID);
     nextMarinerID = parseInt(lastMarinerID) + 1;
   });
-
+  // Gets the country list from the databse
   db.query(country_query).then(countryResult => {
-
     let countriesArray = [];
     let countries = countryResult[0];
-
-    for (let i = 0; i < countries.length; i++) {
-      countriesArray.push(countries[i]["CountryName"])
+    for (const element of countries) {
+      countriesArray.push(element["CountryName"])
     }
 
+    // Gets the agent list from the database
     db.query(agent_query).then(agentResult => {
-
       console.log(agentResult[0]);
       let agents = agentResult[0];
-
+    // Gets the employer list from the database
     db.query(employer_query).then(employerResult => {
-
       console.log(employerResult[0]);
       let employers = employerResult[0];
+      // Pass the variables to the page to be rendered
       res.render('add', {
         title: "Add",
         next: nextMarinerID,
@@ -355,9 +373,35 @@ app.post("/add", async (req, res) => {
     console.log("New Mariner Added!");
     console.log(result);
     console.log(result.insertId);
-
+    // Render the Search page after insertion
     res.render("search", {
       title: "Search"
+    });
+  });
+});
+
+// Check if Application exists for a Mariner
+app.get("/getApp", async (req, res) => {
+  console.log(req.query);
+  console.log("ROARR");
+
+  let marinerID = req.query.marinerID;
+
+  // Check database to see if an application for the mariner exists
+  let appSQL = "SELECT ApplicationFileName FROM Applications WHERE marinerID = ?";
+  let app_query = mysql.format(appSQL, [marinerID]);
+
+  db.pool.query(app_query, async (err, result) => {
+    if (err) throw err;
+
+    console.log("RESULT:" + JSON.stringify(result));
+    let resultJSON = JSON.parse(JSON.stringify(result));
+    console.log(resultJSON[0]);
+    console.log(resultJSON[0]["ApplicationFileName"]);
+
+    res.send({
+      appExists: true,
+      appFilename: resultJSON[0]["ApplicationFileName"]
     });
   });
 });
