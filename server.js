@@ -80,11 +80,11 @@ app.post('/appUpload', upload.single('application'), (req, res) => {
   let marinerID = marinerIDjson.marinerIDNumber[1];
   console.log(marinerID);
 
-  // Query for inserting file into database
+  // Query for inserting application into database
   let applicationSql = 'INSERT INTO Applications VALUES (0, ?, ?, ?)';
   let application_query = mysql.format(applicationSql, [file_buffer, file.filename, marinerID]);
   
-  db.pool.query(application_query, (err, result) => {
+  db.pool.query(application_query, async (err, result) => {
     if (err) throw err;
     // Delete the uploaded file from memory after insertion into the db
     let uploadedFile = "public/uploads/" + file.filename;
@@ -95,30 +95,53 @@ app.post('/appUpload', upload.single('application'), (req, res) => {
 });
 
 // Route for downloading an application document
-app.get('/appDownload', (req, res) => {
-  db.pool.query("SELECT * FROM Applications WHERE ApplicationID = 1", (error, response) => {
+app.get('/appDownload', async (req, res) => {
+
+  // Get the MarinerID from the request body
+  let marinerID = req.query.marinerID;
+  console.log("MarinerID: " + marinerID);
+
+  // SQL to find Application that matches the mariner ID
+  let appSQL = "SELECT * FROM Applications WHERE MarinerID = ?";
+  let app_query = mysql.format(appSQL, [marinerID]);
+
+  // Get the Blob object from the database
+  db.pool.query(app_query, async (error, response) => {
 
     if (error) throw error;
-    console.log(response);
     console.log(response[0]);
     console.log(response[0]['ApplicationID']);
+
     // Create a Buffer from the BLOB object
     let buff = new Buffer.from(response[0]["ApplicationDocument"], {type: 'application/pdf'});
     console.log(buff);
-    // res.render("appDownload", {
-    //   title: "Download Application",
-    //   pdf: pdf
-    // });
 
+    const appFileName = "application_for_mariner_" + marinerID + ".pdf";
     // Write the binary buffer data to a file
-    let pdf = fs.writeFileSync('application.pdf', response[0]["ApplicationDocument"]);
+    let pdf = fs.writeFileSync(appFileName, response[0]["ApplicationDocument"]);
    
-    console.log(pdf);
     // Send the document to the browser for download
-    res.download("application.pdf");
-
+    res.download(appFileName);
     });
-})
+});
+    
+// Route for Deleting an Application Document from the database
+app.post("/deleteApp", async (req, res) => {
+  console.log(req);
+  // Get ID from request parameters
+  let marinerID = req.body.marinerID;
+  // SQL Statement to Delete Application
+  let deleteSQL = "DELETE FROM Applications WHERE MarinerID = ?";
+  let delete_query = mysql.format(deleteSQL, [marinerID]);
+
+  // Delete the Application Document
+  db.pool.query(delete_query, async (err, res) => {
+    if (err) throw err;
+    console.log("Application Deleted for MarinerID: " + marinerID);
+  });
+
+  res.render("add");
+});
 
 /**
  * Routing
@@ -203,7 +226,7 @@ app.post("/createUser", async (req, res) => {
     }
     else {
       // Otherwise insert the new user into the database
-      db.pool.query(insert_query, (err, result) => {
+      db.pool.query(insert_query, async (err, result) => {
         if (err) throw err;
         console.log("------> Created new User!");
         console.log(result.insertId);
@@ -369,7 +392,6 @@ app.post("/add", async (req, res) => {
   // Insert Mariner into database
   db.pool.query(insert_query, async (err, result) => {
     if (err) throw err;
-
     console.log("New Mariner Added!");
     console.log(result);
     console.log(result.insertId);
@@ -412,7 +434,7 @@ app.get("/getApp", async (req, res) => {
 });
 
 // Error Handling
-app.use((req, res) => {
+app.use(async (req, res) => {
   res.statusCode = 404;
   res.end("404 Error... Page cannot be found! Please contact an administrator.");
 });

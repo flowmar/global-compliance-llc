@@ -8,27 +8,14 @@ const marinerID = document.getElementById("mariner-id").value;
 const applicationButton = document.getElementById('appModalButton');
 const licensesButton = document.getElementById('licenses-button');
 const appArea = document.getElementById('appArea');
-console.log(appArea);
+const downloadAppButton = document.getElementById('download-app-button');
+const deleteAppButton = document.getElementById('delete-app-button');
+      const appModal = new mdb.Modal(applicationModal);
 
 
 
 // Places the Mariner ID into the Licenses Button URL
 licensesButton.href = `/licenses/${marinerID}`;
-
-
-window.addEventListener('DOMContentLoaded', (e) => {
-  $.ajax({
-    type: "GET",
-    url: `/getApp`,
-    data: {"marinerID": marinerID},
-    success: function (result) {
-      console.log("result:" + result);
-    },
-    error: function (err) {
-      console.log("error:" + err[0]);
-    }
-  })
-});
 
 // Formats Phone Number
 function formatPhoneNumber(value) {
@@ -93,6 +80,8 @@ function uploadApp(){
       contentType: false,
       success: function (r) {
         console.log("Result: " + r);
+        applicationModal.hide();
+        applicationModal.show();
       },
       error: function (err) {
         console.log("Error: " + err[0]);
@@ -100,6 +89,36 @@ function uploadApp(){
     });
   });
 }
+
+// Downloads Application for a given MarinerID
+function downloadApp(id) {
+  // Opens a new window to download the application for the requested ID
+  // This is because an AJAX call will send the information to the console
+  // instead of downloading the file
+  window.open('/appDownload?marinerID=' + id);
+}
+
+// Deletes an Application for a given MarinerID
+function deleteAppConfirm(id) {
+  // Open a confirmation window for deleting the application
+  let deleteConfirm = confirm("Are you sure you want to delete this application? This cannot be undone.");
+  if (deleteConfirm) {
+    $.ajax({
+      type: "POST",
+      url: "/deleteApp",
+      data: { "marinerID": id },
+      success: function (result) { 
+        console.log(result);
+      },
+      error: function (error) { 
+        console.log("Error: " + error);
+      }
+    });
+  }
+  else { 
+    console.log("Delete Cancelled!");
+  }
+ }
 
 // Checks to see if an application for the specified MarinerID exists,
 function checkIfAppExists() {
@@ -111,7 +130,7 @@ function checkIfAppExists() {
       console.log("result:" + JSON.stringify(result));
       let resultJSON = JSON.parse(JSON.stringify(result));
       if (resultJSON["appExists"] == true) {
-        appArea.innerHTML = "<span>" + resultJSON["appFilename"] + "</span> &nbsp; &nbsp; <div class='mt-3'><button class='btn btn-info pl-3'>Edit</button> <button class='btn btn-danger'>Delete</button></div>";
+        appArea.innerHTML = "<span>" + resultJSON["appFilename"] + "</span> &nbsp; &nbsp; <div class='mt-3'><button class='btn text-white fw-bold' id='download-app-button' onclick='downloadApp(" + marinerID + ")' class='btn pl-3 text-white fw-bold' style='background-color: var(--green-color);'>Download</button> &nbsp; &nbsp; <button id='delete-app-button' class='btn btn-danger fw-bold' onclick='deleteAppConfirm(" + marinerID + ")'>Delete</button></div>";
       }
       else {
         appArea.innerHTML = "<strong><em>No application has been uploaded</em></strong>";
@@ -128,7 +147,6 @@ function checkAppModal() {
   if (1 === 1) {
       console.log("HEYYYO");
       console.log(applicationModal);
-      const appModal = new mdb.Modal(applicationModal);
     applicationModal.addEventListener('show.mdb.modal', (e) => {
       console.log("AADFAD"); 
       checkIfAppExists();
@@ -141,19 +159,6 @@ function checkAppModal() {
 }
 
 $('#appModalButton').click(function () {
-  console.log("AGADFa");
   checkAppModal();
 });
 
-
-// Display the file name in the UI, along with buttons for
-// downloading or deleting the application file
-function displayApplicationAndControls() { }
-
-
-// Deletes the application for the selected MarinerID
-// Pop-up window that confirms delete before continuing
-function deleteApplicationForMarinerID(marinerID) { }
-
-// Download the previously uploaded application file for the specified MarinerID
-function downloadApplicationForMarinerID(marinerID) { }
