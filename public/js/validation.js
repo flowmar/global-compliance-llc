@@ -85,7 +85,13 @@ function uploadApp(){
   });
 }
 
-// let marinerID = document.getElementById("mariner-id").value;
+// Checks to see if an application for the specified MarinerID exists,
+function checkIfAppExists(marinerID) { }
+
+
+// Display the file name in the UI, along with buttons for
+// downloading or deleting the application file
+function displayApplicationAndControls() { }
 
 // applicationModal.addEventListener('shown.mdb.modal', (e) => {
 //   $.ajax({
@@ -94,3 +100,10 @@ function uploadApp(){
 //     data:
 //   })
 // });
+
+// Deletes the application for the selected MarinerID
+// Pop-up window that confirms delete before continuing
+function deleteApplicationForMarinerID(marinerID) { }
+
+// Download the previously uploaded application file for the specified MarinerID
+function downloadApplicationForMarinerID(marinerID) { }
