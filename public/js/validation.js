@@ -80,8 +80,7 @@ function uploadApp(){
       contentType: false,
       success: function (r) {
         console.log("Result: " + r);
-        applicationModal.hide();
-        applicationModal.show();
+        $('#closeApplicationModal').trigger('click');
       },
       error: function (err) {
         console.log("Error: " + err[0]);
@@ -109,6 +108,7 @@ function deleteAppConfirm(id) {
       data: { "marinerID": id },
       success: function (result) { 
         console.log(result);
+        $('#closeApplicationModal').trigger('click');
       },
       error: function (error) { 
         console.log("Error: " + error);

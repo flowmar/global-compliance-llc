@@ -1,0 +1,41 @@
+.modal.fade#newApplicationModal(tabindex="-1" aria-labelledby="newApplicationModalLabel" aria-hidden="true")
+  .modal-dialog.text-dark.modal-lg
+    .modal-content
+      .modal-header.bg-dark
+        h5.text-white.modal-title#licensesModalLabel Mariner Application
+        button.btn-close(type="button" data-mdb-dismiss="modal" aria-label="Close")
+      .modal-body
+        form.form-horizontal.d-inline.container(method="POST" action="/newAppUpload" enctype="multipart/form-data" id="target" data-parsley-validate)
+          .row
+            .col-3
+              input(type="text" hidden id="marinerIDNumber" name="marinerIDNumber" value="marinerID")
+              label.form-label(for="mariner-id")  &nbsp;Mariner ID:
+              input.form-control(type="text" id="mariner-id" name="marinerID" value=`${next}` required)
+            .col-3
+              label.form-label(for="first-name")  &nbsp;First Name:
+              input.form-control.bg-white(type="text" id="first-name" name="firstName" data-parsley-required="true")
+            .col-3
+              label.form-label(for="middle-name") &nbsp; Middle Name:
+              input.form-control.bg-white(type="text" id="middle-name" name="middleName")
+            .col-3
+              label.form-label(for="last-name")  &nbsp;Last Name:
+              input.form-control.bg-white(type="text" id="last-name" name="lastName" data-parsley-required="true")
+          .row.mt-4
+            .col-6
+              label.form-label(for="birth-date")  &nbsp; Date of Birth:
+              input.form-control.bg-white(type="date" id="birth-date" name="birthDate" data-parsley-required="true")
+          //- .row.mt-4
+          //-   .col-6
+          //-     label.form-label(for="processing-agent") Processing Agent
+          //-       select.form-select.bg-white.text-dark(id="processing-agent")
+          .row.mt-4
+            .col-8
+              label(for="file-input-group") &nbsp; Application File:
+                .input-group.mt-2#file-input-group
+                  input.form-control.form-control-file.text-dark(type="file" id="application-file" name="application")
+                  button.input-group-text.btn(style="background-color: var(--yellow-color); font-weight: bold;" onclick="uploadApp()" id="app-upload-button" value="Upload" type="submit") Upload
+            .col-4
+        //- #appArea.text-center.mt-4
+      .modal-footer
+        button.btn.btn-secondary(type="button" data-mdb-dismiss="modal" id="newModalClose") Cancel
+        button.btn.btn-primary Save

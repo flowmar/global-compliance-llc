@@ -1,0 +1,14 @@
+ form(action="/add" method="post" name="addMarinerForm" data-parsley-validate).container
+              .row
+                .col-3
+                  label.form-label(for="mariner-id") Mariner ID:
+                  input.form-control(type="text" id="mariner-id" name="marinerID" value=`${next}` disabled required)
+                .col-3
+                  label.form-label(for="first-name") First Name:
+                  input.form-control.bg-white(type="text" id="first-name" name="firstName" data-parsley-required="true")
+                .col-3
+                  label.form-label(for="middle-name") Middle Name:
+                  input.form-control.bg-white(type="text" id="middle-name" name="middleName"  )
+                .col-3
+                  label.form-label(for="last-name") Last Name:
+                  input.form-control.bg-white(type="text" id="last-name" name="lastName" data-parsley-required="true" )

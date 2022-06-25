@@ -57,8 +57,83 @@ let upload = multer({
   dest: 'public/uploads'
 });
 
+// Route for uploading newApplication document
+app.post('/newAppUpload', upload.single('application'), async (req, res) => {
+  // Error handling
+  if (!req.file) {
+    return res.status(400).send({ message: 'Please upload a file.' });
+  }
+
+  // Get the file from the request
+  let file = req.file;
+  console.log(file);
+  console.log(req.body);
+
+  // Read the file as a buffer
+  const file_buffer = fs.readFileSync('public/uploads/' + file.filename);
+  console.log(file);
+  console.log(file.filename);
+
+  // Get all the parameters for the new Mariner from the request body
+  let requestJSON = JSON.parse(JSON.stringify(req.body));
+  console.log(requestJSON);
+  let marinerID = requestJSON.marinerIDNumber[1];
+  let firstName = requestJSON.firstName;
+  let middleName = requestJSON.middleName;
+  let lastName = requestJSON.lastName;
+  let birthDate = requestJSON.birthDate;
+
+  // SQL for inserting new Mariner along with application file
+  const insertMarinerSQL = 'INSERT INTO Mariners SET MarinerID = ?, FirstName = ?, MiddleName = ?, LastName = ?, BirthDate = ?';
+  const insert_mariner_query = mysql.format(insertMarinerSQL, [marinerID, firstName, middleName, lastName, birthDate]);
+
+  db.pool.query(insert_mariner_query, async (err, res) => {
+    if (err) throw err;
+
+    // Query for inserting application into database
+    let applicationSql = 'INSERT INTO Applications VALUES (0, ?, ?, ?)';
+    let application_query = mysql.format(applicationSql, [file_buffer, file.filename, marinerID]);
+    
+    db.pool.query(application_query, async (error, result) => {
+      if (error) throw error;
+      // Delete the uploaded file from memory after insertion into the db
+      let uploadedFile = "public/uploads/" + file.filename;
+      fs.unlinkSync(uploadedFile);
+      console.log("File Uploaded!");
+      console.log("RESULT: " + JSON.stringify(result));
+
+      // Query for setting the ApplicationID in the Mariners table to the corresponding one in the Applications table
+      let checkAppIdSQL = "SELECT ApplicationID FROM Applications WHERE MarinerID = ?";
+      let check_app_id_query = mysql.format(checkAppIdSQL, [marinerID]);
+
+      db.pool.query(check_app_id_query, async (e, r) => {
+        if (e) throw e;
+
+        console.log(r);
+        let rJSON = JSON.parse(JSON.stringify(r));
+        console.log(rJSON);
+        let appId = rJSON[0]["ApplicationID"];
+        console.log(appId);
+
+        let updateMarinerSQL = "UPDATE Mariners SET ApplicationID = ? WHERE MarinerID = ? ";
+        let update_mariner_query = mysql.format(updateMarinerSQL, [appId, marinerID]);
+        db.pool.query(update_mariner_query, async (erro, resul) => {
+          if (erro) throw erro;
+
+          console.log(JSON.stringify(resul));
+        });
+
+      });
+    });
+
+  });
+ res.send({
+            finish: true
+          });
+});
+
 // Route for uploading application document
-app.post('/appUpload', upload.single('application'), (req, res) => {
+app.post('/appUpload', upload.single('application'), async (req, res) => {
     
   // Error handling
     if (!req.file) {
@@ -78,7 +153,7 @@ app.post('/appUpload', upload.single('application'), (req, res) => {
 
   // Get the marinerID from the request body
   let marinerID = marinerIDjson.marinerIDNumber[1];
-  console.log(marinerID);
+  console.log(marinerIDjson);
 
   // Query for inserting application into database
   let applicationSql = 'INSERT INTO Applications VALUES (0, ?, ?, ?)';
@@ -91,7 +166,11 @@ app.post('/appUpload', upload.single('application'), (req, res) => {
     fs.unlinkSync(uploadedFile);
     console.log("File Uploaded!");
     console.log("RESULT: " + JSON.stringify(result));
-    });
+  });
+  res.send({
+    appUploaded: true,
+    appFilename: file.filename
+  });
 });
 
 // Route for downloading an application document
@@ -167,6 +246,32 @@ app.get("/add", async (req, res) => {
   res.render("add", {
     title: "Add"
   })
+})
+
+// Request for '/new' URL
+app.get("/new", async (req, res) => { 
+
+  // Obtain Mariner ID number
+  let lastMarinerID;
+  let nextMarinerID;
+  // ID Query
+  let sqlSearch = 'SELECT MAX(MarinerID) FROM Mariners';
+  let id_query = mysql.format(sqlSearch);
+
+  // Sets the MarinerID to the next number
+  db.query(id_query).then((result) => {
+    console.log(result[0]);
+    lastMarinerID = result[0][0]['MAX(MarinerID)'];
+    console.log(lastMarinerID);
+    nextMarinerID = parseInt(lastMarinerID) + 1;
+   
+    res.render("new", {
+    title: "New",
+    next: nextMarinerID
+  })
+  });
+
+  ;
 })
 
 // Request for '/reports' URL

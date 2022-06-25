@@ -1,5 +1,11 @@
 extends layout.pug
 
+block style
+    style.
+      .form-label{
+      color: #fff;
+      }
+
 block content
     .container-fluid
         .row.mt-5
@@ -86,8 +92,6 @@ block content
     include includes/applicationModal
 
     script(src="/js/validation.js")
-    script(src='/js/jquery.min.js')
-    script(src='/js/parsley.min.js')
     script.
       let countriesArray = !{JSON.stringify(countries)};
       let employersArray = !{JSON.stringify(employers)};
