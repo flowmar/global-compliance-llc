@@ -10,7 +10,7 @@ const licensesButton = document.getElementById('licenses-button');
 const appArea = document.getElementById('appArea');
 const downloadAppButton = document.getElementById('download-app-button');
 const deleteAppButton = document.getElementById('delete-app-button');
-      const appModal = new mdb.Modal(applicationModal);
+const appModal = new mdb.Modal(applicationModal);
 
 
 
@@ -130,7 +130,7 @@ function checkIfAppExists() {
       console.log("result:" + JSON.stringify(result));
       let resultJSON = JSON.parse(JSON.stringify(result));
       if (resultJSON["appExists"] == true) {
-        appArea.innerHTML = "<span>" + resultJSON["appFilename"] + "</span> &nbsp; &nbsp; <div class='mt-3'><button class='btn text-white fw-bold' id='download-app-button' onclick='downloadApp(" + marinerID + ")' class='btn pl-3 text-white fw-bold' style='background-color: var(--green-color);'>Download</button> &nbsp; &nbsp; <button id='delete-app-button' class='btn btn-danger fw-bold' onclick='deleteAppConfirm(" + marinerID + ")'>Delete</button></div>";
+        appArea.innerHTML = "<span>" + resultJSON["appFilename"] + "</span> &nbsp; &nbsp; <div class='mt-3'><button class='btn text-white fw-bold' id='download-app-button' onclick='downloadApp(" + marinerID + ") class='btn pl-3 text-white fw-bold' style='background-color: var(--green-color);'><i class='bi bi-download'></i>&nbsp;Download</button> &nbsp; &nbsp; <button id='delete-app-button' class='btn btn-danger fw-bold' onclick='deleteAppConfirm(" + marinerID + ")'><i class='bi bi-trash'></i>&nbsp;Delete</button></div>";
       }
       else {
         appArea.innerHTML = "<strong><em>No application has been uploaded</em></strong>";
@@ -142,6 +142,10 @@ function checkIfAppExists() {
   });
 }
 
+/**
+ * @function checkAppModal
+ * @return {description}
+ */
 function checkAppModal() {
   // if (firstNameInput.value != '' && lastNameInput != '' && birthDateInput.value != '') {
   if (1 === 1) {

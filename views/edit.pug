@@ -79,56 +79,15 @@ block content
               .row.my-4
                 .col
                 .col.d-flex.justify-content-end
-                  button.btn.btn-lg.m-2.text-dark(style="background-color: var(--green-color); color:#4f4f4f" type="submit" id="save-mariner" value="Save")
-                    i.bi.bi-save(style="font-size=.9rem")
-                    span    &nbsp;Save
+                  input.btn.btn-lg.m-2.text-dark(style="background-color: var(--green-color); color:#4f4f4f" type="submit" id="save-mariner" value="Save")
               //- .row.my-4
               //-   .col-8
               //-.col-4
               .row.my-4
                 .col
-                  button.btn.btn-lg.mx-2#appModalButton(style="background-color: var(--yellow-color);" type="button" value="Application" data-mdb-target="#applicationModal") 
-                    i.bi.bi-file-medical(style="font-size: 1rem;")
-                    span   &nbsp;Application
-                  a.btn.btn-lg.mx-1(style="background-color: var(--yellow-color);" type="button" id="licenses-button" value="Licenses" data-mdb-target="#licensesModal" href='/licenses' target="_blank")
-                    i.bi.bi-credit-card(style="font-size: 1rem;")
-                    span   &nbsp;Licenses
+                  button.btn.btn-lg.mx-2#appModalButton(style="background-color: var(--yellow-color);" type="button" value="Application" data-mdb-target="#applicationModal") Application
+                  a.btn.btn-lg.mx-1(style="background-color: var(--yellow-color);" type="button" id="licenses-button" value="Licenses" data-mdb-target="#licensesModal" href=`#` target="_blank") Licenses
 
     include includes/applicationModal
 
     script(src="/js/validation.js")
-    script.
-      let countriesArray = !{JSON.stringify(countries)};
-      let employersArray = !{JSON.stringify(employers)};
-      let agentsArray = !{JSON.stringify(agents)};
-      console.log(agentsArray)
-      let citizenshipInput = document.getElementById('citizenship')
-      let birthCountryInput = document.getElementById('birth-country')
-      let employerInput = document.getElementById('employer')
-      let agentInput = document.getElementById('processing-agent')
-      for(i = 0; i < countriesArray.length; i++) {
-
-        let element = document.createElement('option')
-        element.value = i
-        element.text = countriesArray[i]
-        citizenshipInput.appendChild(element)
-
-        let element2 = document.createElement('option')
-        element2.value = i
-        element2.text = countriesArray[i]
-        birthCountryInput.appendChild(element2)
-      }
-
-      for(k = 0; k  < employersArray.length; k++) {
-        let element3 = document.createElement('option')
-        element3.value= employersArray[k]["EmployerID"]
-        element3.text = employersArray[k]["EmployerID"] + " - " + employersArray[k]["EmployerName"]
-        employerInput.appendChild(element3)
-      }
-
-      for(l = 0; l < agentsArray.length; l++) {
-        let element4 = document.createElement('option')
-        element4.value = agentsArray[l]["AgentID"]
-        element4.text = agentsArray[l]["AgentID"] + "-" + agentsArray[l]["AgentName"]
-        agentInput.appendChild(element4)
-      }

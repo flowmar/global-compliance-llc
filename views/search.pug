@@ -1,13 +1,48 @@
 extends layout.pug
 
 block content
-    .container-fluid
-      .row.mt-5
-        .col-1
-        .col-4.display-5.page-title Search
-        .col-7
-      .row.bg-dark.m-3.p-4
-        .col-2
-        .col-8.shadow-4-strong.bg-light.bg-opacity-25 Search area
-            select(type="dropdown")
-        .col-2
+  style.
+    .form-label {
+      color: #FFFFFF;
+    }
+    option {
+      color: #FFFFFF;
+    }
+
+  .container-fluid
+        .row.mt-5
+          .col-1
+          .col-4.display-5.page-title Search
+          .col-7
+        .row.bg-dark.m-3.p-1.py-3
+          .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.m-2.mb-0
+            form.container(action="/add" method="post" name="addMarinerForm" data-parsley-validate)
+              .row
+                .col-1
+                .col-3
+                  label.form-label(for="search-by") Search By:
+                  select.form-select.bg-white(id="search-by" aria-label="Select a search category" name="searchBy")
+                    option(value="marinerID") Mariner ID
+                    option(value="name") Name
+                    option(value="email") Email
+                    option(value="birthDate") Birth Date
+                    option(value="applicationID") Application ID
+                    option(value="processingAgent") Processing Agent
+                .col-7
+                  label.form-label(for="search") Search:
+                  input.form-control.bg-white(type="text" id="search-text" name="searchText"  )
+                .col-1
+              .row
+                .col
+                  include includes/tableHead
+              .row
+                .col-8
+                .col-4
+                  button.btn.btn-lg.btn-info.mx-3(type="button" id="edit-mariner-button")
+                    i.bi.bi-pencil-square(style="font-size: 1rem;")
+                    span   &nbsp;Edit
+                  button.btn.btn-lg.btn-danger(type="button" id="delete-mariner-button")
+                    i.bi.bi-x-circle-fill(style="font-size: 1rem;")
+                    span   &nbsp;Delete
+
+  script(src="/js/search.js")

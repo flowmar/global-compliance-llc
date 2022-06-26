@@ -1,3 +1,5 @@
+"use strict";
+
 require("dotenv").config();
 const express = require("express");
 const axios = require("axios"); // HTTP request library
@@ -9,7 +11,6 @@ const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
 const cors = require('cors')
 const multer = require('multer')
-const { Blob } = require('node:buffer');
 const fs = require('fs-extra');
 
 /* Express Setup */
@@ -93,7 +94,7 @@ app.post('/newAppUpload', upload.single('application'), async (req, res) => {
     // Query for inserting application into database
     let applicationSql = 'INSERT INTO Applications VALUES (0, ?, ?, ?)';
     let application_query = mysql.format(applicationSql, [file_buffer, file.filename, marinerID]);
-    
+
     db.pool.query(application_query, async (error, result) => {
       if (error) throw error;
       // Delete the uploaded file from memory after insertion into the db
@@ -134,12 +135,12 @@ app.post('/newAppUpload', upload.single('application'), async (req, res) => {
 
 // Route for uploading application document
 app.post('/appUpload', upload.single('application'), async (req, res) => {
-    
+
   // Error handling
     if (!req.file) {
       return res.status(400).send({ message: 'Please upload a file.' });
     }
-  
+
   // Get the file from the request
   let file = req.file;
 
@@ -158,7 +159,7 @@ app.post('/appUpload', upload.single('application'), async (req, res) => {
   // Query for inserting application into database
   let applicationSql = 'INSERT INTO Applications VALUES (0, ?, ?, ?)';
   let application_query = mysql.format(applicationSql, [file_buffer, file.filename, marinerID]);
-  
+
   db.pool.query(application_query, async (err, result) => {
     if (err) throw err;
     // Delete the uploaded file from memory after insertion into the db
@@ -173,7 +174,10 @@ app.post('/appUpload', upload.single('application'), async (req, res) => {
   });
 });
 
-// Route for downloading an application document
+/**
+ *  Route for downloading an application document
+ */
+
 app.get('/appDownload', async (req, res) => {
 
   // Get the MarinerID from the request body
@@ -198,12 +202,12 @@ app.get('/appDownload', async (req, res) => {
     const appFileName = "application_for_mariner_" + marinerID + ".pdf";
     // Write the binary buffer data to a file
     let pdf = fs.writeFileSync(appFileName, response[0]["ApplicationDocument"]);
-   
+
     // Send the document to the browser for download
     res.download(appFileName);
     });
 });
-    
+
 // Route for Deleting an Application Document from the database
 app.post("/deleteApp", async (req, res) => {
   console.log(req);
@@ -249,7 +253,7 @@ app.get("/add", async (req, res) => {
 })
 
 // Request for '/new' URL
-app.get("/new", async (req, res) => { 
+app.get("/new", async (req, res) => {
 
   // Obtain Mariner ID number
   let lastMarinerID;
@@ -264,7 +268,7 @@ app.get("/new", async (req, res) => {
     lastMarinerID = result[0][0]['MAX(MarinerID)'];
     console.log(lastMarinerID);
     nextMarinerID = parseInt(lastMarinerID) + 1;
-   
+
     res.render("new", {
     title: "New",
     next: nextMarinerID
@@ -289,9 +293,9 @@ app.get("/maintenance", async (req, res) => {
 });
 
 // Request for '/licenses' URL
-app.get("/licenses/:id", async (req, res) => { 
+app.get("/licenses/", async (req, res) => {
   res.render("licenses", {
-
+    title: "Licenses"
   });
 })
 
@@ -529,7 +533,7 @@ app.get("/getApp", async (req, res) => {
         appFilename: resultJSON[0]["ApplicationFileName"]
       });
     }
-    else { 
+    else {
       res.send({
         appExists: false,
         appFilename: "No Application Has Been Uploaded"

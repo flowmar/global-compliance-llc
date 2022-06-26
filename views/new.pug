@@ -8,11 +8,14 @@ block content
           .col-7
         .row.bg-dark.m-3.p-1.py-3
           .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.m-2.mb-0
-           
               .row.my-4
                 .col
-                  button.btn.btn-lg.mx-2#addAppButton(type="button" onclick="" style="background-color: var(--yellow-color);" value="Add Application" data-mdb-target="#newApplicationModal" data-mdb-toggle="modal") Add Application
-                  a.btn.btn-lg.btn-primary#marinerFormButton(type="button" href="/form") Mariner Form
+                  button.btn.btn-lg.mx-2#addAppButton(type="button" onclick="" style="background-color: var(--yellow-color);" value="Add Application" data-mdb-target="#newApplicationModal" data-mdb-toggle="modal")
+                    i.bi.bi-file-medical(style="font-size: 1rem;")
+                    span   &nbsp;Add Application
+                  a.btn.btn-lg.btn-primary#marinerFormButton(type="button" href="/form") 
+                    i.bi.bi-clipboard2-fill(style="font-size: 1rem;")
+                    span  &nbsp;Mariner Form
 
         include includes/newModal
 
