@@ -32,14 +32,14 @@ function formatPhoneNumber(value) {
   if (phoneNumberLength < 4) return phoneNumber;
 
   // If past area code, return with formatting
-  if (phoneNumberLength < 7) { 
+  if (phoneNumberLength < 7) {
     return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
   }
 
   // If length is greater than 7, format and return
   return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 9)}`;
 }
- 
+
 // Phone number formatter
 function phoneNumberFormatter() {
   // Get input field
@@ -152,7 +152,7 @@ function checkAppModal() {
       console.log("HEYYYO");
       console.log(applicationModal);
     applicationModal.addEventListener('show.mdb.modal', (e) => {
-      console.log("AADFAD"); 
+      console.log("AADFAD");
       checkIfAppExists();
       });
       appModal.show();

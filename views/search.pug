@@ -46,3 +46,13 @@ block content
                     span   &nbsp;Delete
 
   script(src="/js/search.js")
+  script.
+      window.addEventListener('DOMContentLoaded', (event) => {
+      let allMarinersArray = !{JSON.stringify(allMariners)};
+      console.log(allMarinersArray);
+      let tableBody = $('tbody');
+      for (let mariner of allMarinersArray) 
+      {
+      tableBody.append("<tr style='text-align: center;'> <td>" + mariner.marinerID + "</td><td>" + mariner.fullName + "</td><td>" + mariner.birthDate + "</td><td>" + mariner.employer + "</td><td>" + mariner.processingAgent + "</td><td>" + mariner.status);
+      }
+      });

@@ -128,9 +128,11 @@ app.post('/newAppUpload', upload.single('application'), async (req, res) => {
     });
 
   });
- res.send({
-            finish: true
-          });
+  res.send(
+    {
+      finish: true
+    }
+  );
 });
 
 // Route for uploading application document
@@ -240,17 +242,62 @@ app.get("/", async (req, res) => {
 
 // Request for '/search' URL
 app.get("/search", async (req, res) => {
-  res.render("search", {
-    title: "Search"
-  })
-})
+
+  // Retrieve all records from database
+  const searchSQL = "SELECT * FROM Mariners";
+  const search_query = mysql.format(searchSQL);
+
+  db.pool.query(search_query, async (err, response) => {
+    if (err) throw err;
+
+    let mariners = [];
+
+    for (const mariner of response)
+    {
+      let formatted = {};
+      formatted["marinerID"] = mariner["MarinerID"];
+      formatted["firstName"] = mariner["FirstName"];
+      formatted["lastName"] = mariner["LastName"];
+      formatted["middleName"] = mariner["MiddleName"];
+      // Check the employers table for the EmployerID and retrieve the name
+      formatted["employer"] = mariner["EmployerID"];
+      // Check the Agents table for the AgentID and retrieve the name
+      formatted["processingAgent"] = mariner["ProcessingAgent"];
+      // Change the format of the birth date to DATE-MONTH(3 Letter)-YEAR
+      formatted["birthDate"] = mariner["BirthDate"];
+      formatted["status"] = "Null";
+
+      let firstName = mariner["FirstName"];
+      let lastName = mariner["LastName"];
+      let middleName = mariner["MiddleName"];
+      let fullName = firstName + " " + middleName + " " + lastName;
+      formatted["fullName"] = firstName + " " + middleName + " " + lastName;
+      let employer = mariner["EmployerID"];
+      let processingAgent = mariner["ProcessingAgent"];
+      let status = "Null";
+      console.log(formatted);
+
+      mariners.push(formatted);
+    }
+    
+    console.log(mariners);
+
+    // Place records into variables
+    // Send all records over to the page to be rendered
+
+    res.render("search", {
+      title: "Search",
+      allMariners: mariners
+    });
+  });
+});
 
 // Request for '/add' URL
 app.get("/add", async (req, res) => {
   res.render("add", {
     title: "Add"
-  })
-})
+  });
+});
 
 // Request for '/new' URL
 app.get("/new", async (req, res) => {
@@ -270,26 +317,24 @@ app.get("/new", async (req, res) => {
     nextMarinerID = parseInt(lastMarinerID) + 1;
 
     res.render("new", {
-    title: "New",
-    next: nextMarinerID
-  })
+      title: "New",
+      next: nextMarinerID
+    });
   });
-
-  ;
-})
+});
 
 // Request for '/reports' URL
 app.get("/reports", async (req, res) => {
   res.render("reports", {
     title: "Reports"
-  })
-})
+  });
+});
 
 // Request for '/maintenance' URL
 app.get("/maintenance", async (req, res) => {
   res.render("maintenance", {
     title: "Maintenance"
-  })
+  });
 });
 
 // Request for '/licenses' URL
@@ -297,7 +342,7 @@ app.get("/licenses/", async (req, res) => {
   res.render("licenses", {
     title: "Licenses"
   });
-})
+});
 
 /**
  * User Creation and Authentication
@@ -537,7 +582,7 @@ app.get("/getApp", async (req, res) => {
       res.send({
         appExists: false,
         appFilename: "No Application Has Been Uploaded"
-      })
+      });
     }
   });
 });
@@ -568,7 +613,6 @@ if (process.env.MACHINE == 'local') {
       // Test MySQL Database Connection
   db.query('SELECT * FROM et2g6mv72e6t4f88.mariners AS items').then(result =>
     console.log(JSON.stringify(result[0])));
-
       }
 
 // Set the application to listen on a port for requests
