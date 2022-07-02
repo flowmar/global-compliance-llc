@@ -285,6 +285,7 @@ app.get("/search", async (_req, res) => {
     const agentRows = await db.query(agent_query);
     // Parse the result and place the AgentName into the Object
     let agentJSON = JSON.parse(JSON.stringify(agentRows[0]));
+    console.log(agentJSON);
     agentName = agentJSON[0]['AgentName'];
     if (agentName) {
       formatted['processingAgent'] = agentName;
