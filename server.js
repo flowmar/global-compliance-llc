@@ -286,9 +286,12 @@ app.get("/search", async (_req, res) => {
     // Parse the result and place the AgentName into the Object
     let agentJSON = JSON.parse(JSON.stringify(agentRows[0]));
     console.log(agentJSON);
-    agentName = agentJSON[0]['AgentName'];
-    if (agentName) {
+    if (agentJSON[0]) {
+      agentName = agentJSON[0]['AgentName'];
       formatted['processingAgent'] = agentName;
+    }
+    else {
+      formatted['processingAgent'] = " ";
     }
 
     // Get the date from the database
