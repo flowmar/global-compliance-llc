@@ -34,20 +34,23 @@ block content
                 .col-2.p-0
                   button.btn.text-white(style="background-color: var(--purple-color);" type="submit" id="search-button")
                     span
-                      i.bi.bi-search
-                      span &nbsp;Search
+                      i.bi.bi-search(style="font-size: .88rem;")
+                      span(style="font-size: .85rem;") &nbsp;&nbsp;Search
               .row
                 .col
                   include includes/tableHead
               .row
-                .col-8
-                .col-4
-                  button.btn.btn-lg.btn-info.mx-3(type="button" id="edit-mariner-button")
+                .col-7
+                .col-5.d-flex.justify-content-end
+                  button.btn.btn-lg.mx-2.text-white(style="background-color: var(--indigo-color)" type="button" id="view-mariner-button")
+                    i.bi.bi-eye-fill(style="font-size: 1rem;")
+                    span(style="font-size: 1.05rem;")   &nbsp;View
+                  button.btn.btn-lg.btn-info.mx-2(type="button" id="edit-mariner-button")
                     i.bi.bi-pencil-square(style="font-size: 1rem;")
-                    span   &nbsp;Edit
-                  button.btn.btn-lg.btn-danger(type="button" id="delete-mariner-button")
+                    span(style="font-size: 1.05rem;")   &nbsp;Edit
+                  button.btn.btn-lg.btn-danger.mx-2(type="button" id="delete-mariner-button")
                     i.bi.bi-x-circle-fill(style="font-size: 1rem;")
-                    span   &nbsp;Delete
+                    span(style="font-size: 1.05rem;")   &nbsp;Delete
 
   script(src="/js/search.js")
   script.
