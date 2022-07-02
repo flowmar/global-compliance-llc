@@ -115,19 +115,22 @@ block content
       let employerInput = document.getElementById('employer');
       let agentInput = document.getElementById('processing-agent');
 
+      //- Create option elements for Countries
       for(i = 0; i < countriesArray.length; i++) {
 
         let element = document.createElement('option');
         element.value = i;
         element.text = countriesArray[i];
         citizenshipInput.appendChild(element);
+        birthCountryInput.appendChild(element);
 
-        let element2 = document.createElement('option');
-        element2.value = i;
-        element2.text = countriesArray[i];
-        birthCountryInput.appendChild(element2);
+        //- let element2 = document.createElement('option');
+        //- element2.value = i;
+        //- element2.text = countriesArray[i];
+        //- birthCountryInput.appendChild(element2);
       }
 
+      //- Create option elements for Employers
       for(k = 0; k  < employersArray.length; k++) {
         let element3 = document.createElement('option');
         element3.value= employersArray[k]["EmployerID"];
@@ -135,6 +138,7 @@ block content
         employerInput.appendChild(element3);
       }
 
+      //- Create option elements for Agents
       for(l = 0; l < agentsArray.length; l++) {
         let element4 = document.createElement('option');
         element4.value = agentsArray[l]["AgentID"];

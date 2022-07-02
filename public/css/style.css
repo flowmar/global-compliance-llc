@@ -27,17 +27,17 @@ header
       font-weight: bold;
     }
 
-.page-title 
+.page-title
 {
   font-weight: bold;
 }
 
-input {
-  /* color: black; */
-}
-
 .form-label {
   color: black;
+}
+
+table tbody tr.selected {
+  background-color: var(--tertiary-bg-color);
 }
 
 .bd-placeholder-img {

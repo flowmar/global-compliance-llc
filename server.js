@@ -218,7 +218,7 @@ app.post("/deleteApp", async (req, res) => {
  * */
 
 // Request for root URL
-app.get("/", async (req, res) => {
+app.get("/", async (_req, res) => {
   const query = await axios.get("https://randomuser.me/api/?results=9");
   res.render("index", {
     users: query.data.results,
@@ -226,7 +226,7 @@ app.get("/", async (req, res) => {
 });
 
 // Request for '/search' URL
-app.get("/search", async (req, res) => {
+app.get("/search", async (_req, res) => {
 
   let marinerData = [];
   let mariners = [];
@@ -304,19 +304,20 @@ app.get("/search", async (req, res) => {
     // Send all records over to the page to be rendered
     res.render('search', {
       title: 'Search',
-      allMariners: mariners
+      searched: false,
+      results: mariners
     });
   });
 
 // Request for '/add' URL
-app.get("/add", async (req, res) => {
+app.get("/add", async (_req, res) => {
   res.render("add", {
     title: "Add"
   });
 });
 
 // Request for '/new' URL
-app.get("/new", async (req, res) => {
+app.get("/new", async (_req, res) => {
 
   // Obtain next AppID number
   let lastAppID;
@@ -372,21 +373,21 @@ app.get("/new", async (req, res) => {
 });
 
 // Request for '/reports' URL
-app.get("/reports", async (req, res) => {
+app.get("/reports", async (_req, res) => {
   res.render("reports", {
     title: "Reports"
   });
 });
 
 // Request for '/maintenance' URL
-app.get("/maintenance", async (req, res) => {
+app.get("/maintenance", async (_req, res) => {
   res.render("maintenance", {
     title: "Maintenance"
   });
 });
 
 // Request for '/licenses' URL
-app.get("/licenses/", async (req, res) => {
+app.get("/licenses/", async (_req, res) => {
   res.render("licenses", {
     title: "Licenses"
   });
@@ -428,10 +429,10 @@ app.post("/createUser", async (req, res) => {
     }
     else {
       // Otherwise insert the new user into the database
-      db.pool.query(insert_query, async (err, result) => {
-        if (err) throw err;
+      db.pool.query(insert_query, async (_err, _result) => {
+        if (_err) throw _err;
         console.log("------> Created new User!");
-        console.log(result.insertId);
+        console.log(_result.insertId);
         res.sendStatus(201);
       });
     }
@@ -476,7 +477,7 @@ app.post("/authenticate", async (req, res) => {
 });
 
 // Route for logging out
-app.get("/logout", async (req, res) => {
+app.get("/logout", async (_req, res) => {
   res.render("index", {
     title: "Login"
   })
@@ -488,7 +489,7 @@ app.get("/logout", async (req, res) => {
  * Data Routes
 */
 // Route for /form
-app.get("/form", async (req, res) => {
+app.get("/form", async (_req, res) => {
 
   // Variables for holding ID numbers
   let lastMarinerID;
@@ -521,7 +522,7 @@ app.get("/form", async (req, res) => {
     nextMarinerID = parseInt(lastMarinerID) + 1;
   });
   // Sets the ApplicationID to the next number
-  db.query(applicationID_query).then((result) => { 
+  db.query(applicationID_query).then((result) => {
     console.log(result[0]);
     lastAppID = result[0][0]['MAX(ApplicationID)'];
     console.log(lastAppID);
@@ -652,8 +653,136 @@ app.get("/getApp", async (req, res) => {
   });
 });
 
+// Search the database
+app.post('/search', async (_req, res) => {
+  console.log(_req.body);
+  let category = _req.body.searchBy;
+  console.log(category);
+  let sqlStatement;
+  let parameterArray = [];
+  let searchText = _req.body.searchText;
+  parameterArray.push(searchText);
+  console.log(parameterArray);
+
+  switch (category) {
+    case 'marinerID':
+      sqlStatement =
+        'SELECT MarinerID, FirstName, MiddleName, LastName, BirthDate, EmployerID, ProcessingAgent, Status FROM Mariners WHERE MarinerID = ?';
+      break;
+
+    case 'Processing Agent':
+      sqlStatement =
+        'SELECT MarinerID, FirstName, MiddleName, LastName, BirthDate, EmployerID, ProcessingAgent, Status FROM Mariners WHERE ProcessingAgent = ?';
+      break;
+
+    default:
+      sqlStatement = 'SELECT * FROM Mariners';
+  }
+
+  // Format SQL Query
+  let search_query = mysql.format(sqlStatement, parameterArray);
+  // console.log(search_query);
+  // Perform SQL query
+  let searchResultsRows =await db.query(search_query);
+  // console.log(searchResultsRows);
+  // Format result
+  // let searchJSON = JSON.parse(JSON.stringify(searchResultsRows));
+  // console.log(searchJSON[0]);
+  let results = searchResultsRows[0];
+
+  const employerSQL = 'SELECT EmployerName FROM Employers WHERE EmployerID = ?';
+  const agentSQL = 'SELECT AgentName FROM Agents WHERE AgentID = ?';
+  let mariners = [];
+
+  for (let mariner of results) {
+    let formatted = {};
+    formatted['marinerID'] = mariner['MarinerID'];
+    formatted['firstName'] = mariner['FirstName'];
+    formatted['lastName'] = mariner['LastName'];
+    formatted['middleName'] = mariner['MiddleName'];
+
+    // Format the Name of the Mariner into a Full Name
+    let firstName = mariner['FirstName'];
+    let lastName = mariner['LastName'];
+    let middleName = mariner['MiddleName'];
+    let fullName = firstName + ' ' + middleName + ' ' + lastName;
+    formatted['fullName'] = fullName;
+
+    if (mariner['EmployerID'] != null) {
+
+      // Get the employerID Number
+      let employerIDNumber = mariner['EmployerID'];
+      console.log(employerIDNumber);
+      // Place it in the query
+      let employer_query = mysql.format(employerSQL, [employerIDNumber]);
+      let employerName;
+      // Check the employers table for the EmployerID and retrieve the name
+      const employerRows = await db.query(employer_query);
+      // Parse the result and place the employerName into the object
+      let employerJSON = JSON.parse(JSON.stringify(employerRows[0]));
+      console.log(employerJSON);
+      if (employerJSON[0]) {
+        employerName = employerJSON[0]['EmployerName'];
+        formatted['employer'] = employerName;
+      } else {
+        formatted['employer'] = " ";
+      }
+    }
+    else {
+      formatted['employer'] = ' ';
+    }
+
+
+    // Get the AgentID Number
+    let agentIDNumber = mariner['ProcessingAgent'];
+    console.log(agentIDNumber);
+    // Place it in the query
+    let agent_query = mysql.format(agentSQL, [agentIDNumber]);
+    let agentName;
+    // Check the Agents table for the AgentID and retrieve the name
+    const agentRows = await db.query(agent_query);
+    // Parse the result and place the AgentName into the Object
+    let agentJSON = JSON.parse(JSON.stringify(agentRows[0]));
+    console.log(agentJSON);
+    agentName = agentJSON[0]['AgentName'];
+    if (agentName) {
+      formatted['processingAgent'] = agentName;
+    }
+
+    // Get the date from the database
+    let mySQLbirthDate = mariner['BirthDate'];
+    console.log(mySQLbirthDate);
+    let jsDate = Date.parse(mySQLbirthDate);
+    console.log(jsDate);
+    // Convert to a String
+    let dateString = mySQLbirthDate.toString();
+    console.log(dateString);
+    // Create an array with the components of the string
+    let splitDate = dateString.split(' ');
+    // Change the format of the birth date to date-MON-year
+    let formattedDate =
+      splitDate[2] + '-' + splitDate[1].toUpperCase() + '-' + splitDate[3];
+    formatted['birthDate'] = formattedDate;
+
+    formatted['status'] = ' ';
+
+    mariners.push(formatted);
+  }
+  console.log(searchText);
+  res.render('search',
+    {
+      title: 'Search',
+      results: mariners,
+      searched: true,
+      searchText: searchText,
+      searchCategory: category
+    }
+  );
+
+});
+
 // Error Handling
-app.use(async (req, res) => {
+app.use(async (_req, res) => {
   res.statusCode = 404;
   res.end("404 Error... Page cannot be found! Please contact an administrator.");
 });

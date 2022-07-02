@@ -36,13 +36,6 @@ block content
                     span
                       i.bi.bi-search(style="font-size: .88rem;")
                       span(style="font-size: .85rem;") &nbsp;&nbsp;Search
-              if searched == true
-                .row.mt-4
-                  .col-4.border#search-text-display
-                      span.h4 Your Search:
-                      p.text-info Category:&nbsp;
-                        i #{searchCategory}
-                      p.text-warning Search Term:&nbsp; "<i>#{searchText}</i>"
               .row
                 .col
                   include includes/tableHead
@@ -61,24 +54,17 @@ block content
 
   script(src="/js/search.js")
   script.
-
-      //- Wait until DOM is loaded
-      window.addEventListener('DOMContentLoaded', (event) => {
-      //- Use Pug to bring in data from database
-      let allMarinersArray = !{JSON.stringify(results)};
-      let searched = #{searched};
-      console.log(allMarinersArray);
-      //- Loop through array of Mariners and add data to table
+      let result = !{JSON.stringify(results)};
+      console.log(result);
       let tableBody = $('tbody');
-      for (let mariner of allMarinersArray)
+      for (let mariner of result)
       {
-      tableBody.append("<tr style='text-align: center;'> <td>" + mariner.marinerID + "</td><td>" + mariner.fullName + "</td><td>" + mariner.birthDate + "</td><td>" + mariner.employer + "</td><td>" + mariner.processingAgent + "</td><td>" + mariner.status);
-      }
-      console.log(searched);
-      //- if (searched)
-      //- {
-      //- let searchText = #{searchText};
-      //- console.log(searchText);
-      //-   $('#search-text-display').innerHTML = "<p>" + searchText + "</p>";
-      //- }
-      });
+      let marinerID = mariner.MarinerID;
+      let firstName = mariner.firstName;
+      let middleName = mariner.middleName;
+      let lastName = mariner.lastName;
+      let fullName = firstName + " " + middleName + " " + lastName;
+      let birthDate = mariner.BirthDate;
+
+      //- tableBody.append("<tr style='text-align: center;'> <td>" + mariner.MarinerID + "</td><td>" + mariner.FirstName + "</td><td>" + mariner.birthDate + "</td><td>" + mariner.employer + "</td><td>" + mariner.processingAgent + "</td><td>" + mariner.status);
+      };
