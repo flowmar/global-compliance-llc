@@ -661,11 +661,10 @@ app.post('/search', async (_req, res) => {
   let sqlStatement;
   let parameterArray = [];
   let searchText = _req.body.searchText;
-  parameterArray.push(searchText);
-  console.log(parameterArray);
+ 
 
   switch (category) {
-    case 'marinerID':
+    case 'Mariner ID':
       sqlStatement =
         'SELECT MarinerID, FirstName, MiddleName, LastName, BirthDate, EmployerID, ProcessingAgent, Status FROM Mariners WHERE MarinerID = ?';
       break;
@@ -675,9 +674,26 @@ app.post('/search', async (_req, res) => {
         'SELECT MarinerID, FirstName, MiddleName, LastName, BirthDate, EmployerID, ProcessingAgent, Status FROM Mariners WHERE ProcessingAgent = ?';
       break;
 
+    case 'Birth Date':
+      sqlStatement =
+        'SELECT MarinerID, FirstName, MiddleName, LastName, BirthDate, EmployerID, ProcessingAgent, Status FROM Mariners WHERE BirthDate = ?';
+      break;
+
+    case 'Name':
+      break;
+
+    case 'Employer':
+      sqlStatement =
+        'SELECT MarinerID, FirstName, MiddleName, LastName, BirthDate, EmployerID, ProcessingAgent, Status FROM Mariners WHERE Employer = ?';
+      break;
+
     default:
       sqlStatement = 'SELECT * FROM Mariners';
   }
+
+  // Place the Searched Text into the parameterArray
+  parameterArray.push(searchText);
+  console.log(parameterArray);
 
   // Format SQL Query
   let search_query = mysql.format(sqlStatement, parameterArray);

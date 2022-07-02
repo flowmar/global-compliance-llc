@@ -21,16 +21,17 @@ block content
                 .col-3.mx-1
                   label.form-label(for="search-by") Search By:
                   select.form-select.bg-white(id="search-by" aria-label="Select a search category" name="searchBy")
-                    option(value="marinerID") Mariner ID
-                    option(value="name") Name
-                    option(value="email") Email
-                    option(value="birthDate") Birth Date
-                    option(value="applicationID") Application ID
-                    option(value="processingAgent") Processing Agent
+                    option()
+                    option(value="Mariner ID") Mariner ID
+                    option(value="Name") Name
+                    option(value="Birth Date") Birth Date
+                    option(value="Employer") Employer
+                    option(value="Processing Agent") Processing Agent
                 .col-2
                 .col-4
-                  label.form-label(for="search") Search:
-                  input.form-control.bg-white(type="text" id="search-text" name="searchText")
+                  label.form-label(for="search-input" id="search-label") Search:
+                  div#search-input
+                  //- input.form-control.bg-white(type="text" id="search-input" name="searchText")
                 .col-2.p-0
                   button.btn.text-white(style="background-color: var(--purple-color);" id="search-button" onclick="search()")
                     span
@@ -65,20 +66,14 @@ block content
       //- Wait until DOM is loaded
       window.addEventListener('DOMContentLoaded', (event) => {
       //- Use Pug to bring in data from database
-      let allMarinersArray = !{JSON.stringify(results)};
+      let marinerResultArray = !{JSON.stringify(results)};
       let searched = #{searched};
-      console.log(allMarinersArray);
+      console.log(marinerResultArray);
+      
       //- Loop through array of Mariners and add data to table
       let tableBody = $('tbody');
-      for (let mariner of allMarinersArray)
+      for (let mariner of marinerResultArray)
       {
       tableBody.append("<tr style='text-align: center;'> <td>" + mariner.marinerID + "</td><td>" + mariner.fullName + "</td><td>" + mariner.birthDate + "</td><td>" + mariner.employer + "</td><td>" + mariner.processingAgent + "</td><td>" + mariner.status);
       }
-      console.log(searched);
-      //- if (searched)
-      //- {
-      //- let searchText = #{searchText};
-      //- console.log(searchText);
-      //-   $('#search-text-display').innerHTML = "<p>" + searchText + "</p>";
-      //- }
       });
