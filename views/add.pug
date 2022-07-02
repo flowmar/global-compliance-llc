@@ -15,17 +15,22 @@ block content
         .row.bg-dark.m-3.p-1.py-3
           .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.m-2.mb-0
             form(action="/add" method="post" name="addMarinerForm" data-parsley-validate).container
-              .row
+              .row.my-4
                 .col-3
                   label.form-label(for="mariner-id") Mariner ID:
-                  input.form-control(type="text" id="mariner-id" name="marinerID" value=`${next}` disabled required)
+                  input.form-control(style="background-color: var(--highlight-bg-color);" type="text" id="mariner-id" name="marinerID" value=`${next}` disabled required)
+                .col-6
                 .col-3
+                  label.form-label(for="application-id") Application ID:
+                  input.form-control(style="background-color: var(--highlight-bg-color);" type="text" id="application-id" name="applicationID" value=`${nextAppID}` disabled required)
+              .row.my-4
+                .col-4
                   label.form-label(for="first-name") First Name:
                   input.form-control.bg-white(type="text" id="first-name" name="firstName" data-parsley-required="true")
-                .col-3
+                .col-4
                   label.form-label(for="middle-name") Middle Name:
                   input.form-control.bg-white(type="text" id="middle-name" name="middleName"  )
-                .col-3
+                .col-4
                   label.form-label(for="last-name") Last Name:
                   input.form-control.bg-white(type="text" id="last-name" name="lastName" data-parsley-required="true" )
               .row.my-4
@@ -71,7 +76,14 @@ block content
               .row.my-4
                 .col-4
                   label.form-label(for="processing-agent") Processing Agent
-                  select.form-select.bg-white.text-dark(id="processing-agent")
+                  select.form-select.bg-white.text-dark(id="processing-agent" name="processingAgent")
+                .col-4
+                .col-4
+                  label.form-label(for="status") Status:
+                  select.form-select.bg-white.text-dark(id="status" name="status")
+                    option(value="1") Pending
+                    option(value="2") Submitted
+                    option(value="3") Completed
               .row.my-4
                 .col-12
                   label.form-label(for="notes") Mariner Notes:

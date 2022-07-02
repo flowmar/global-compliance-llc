@@ -9,8 +9,8 @@ const db = require("./config");
 const mysql = require('mysql2');
 const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
-const cors = require('cors')
-const multer = require('multer')
+const cors = require('cors');
+const multer = require('multer');
 const fs = require('fs-extra');
 
 /* Express Setup */
@@ -23,7 +23,6 @@ if (process.env.MACHINE == 'local') {
   // Set up Logger
   app.use(logger('dev'));
 }
-
 
 // Set views
 app.set("views", path.join(__dirname, "views"));
@@ -444,12 +443,18 @@ app.get("/logout", async (req, res) => {
 // Route for /form
 app.get("/form", async (req, res) => {
 
-  // Obtain Mariner ID number
+  // Variables for holding ID numbers
   let lastMarinerID;
   let nextMarinerID;
+  let lastAppID;
+  let nextAppID;
+
   // ID Query
-  let sqlSearch = 'SELECT MAX(MarinerID) FROM Mariners';
-  let id_query = mysql.format(sqlSearch);
+  let marinerIDSQL = 'SELECT MAX(MarinerID) FROM Mariners';
+  let id_query = mysql.format(marinerIDSQL);
+  // ApplicationID Query
+  let applicationIDSQL = 'SELECT MAX(ApplicationID) FROM Applications';
+  let applicationID_query = mysql.format(applicationIDSQL);
   // Country Query
   let countrySearch = 'SELECT * FROM Countries';
   let country_query = mysql.format(countrySearch);
@@ -468,6 +473,13 @@ app.get("/form", async (req, res) => {
     console.log(lastMarinerID);
     nextMarinerID = parseInt(lastMarinerID) + 1;
   });
+  // Sets the ApplicationID to the next number
+  db.query(applicationID_query).then((result) => { 
+    console.log(result[0]);
+    lastAppID = result[0][0]['MAX(ApplicationID)'];
+    console.log(lastAppID);
+    nextAppID = parseInt(lastAppID) + 1;
+  })
   // Gets the country list from the databse
   db.query(country_query).then(countryResult => {
     let countriesArray = [];
@@ -488,6 +500,7 @@ app.get("/form", async (req, res) => {
       res.render('add', {
         title: "Add",
         next: nextMarinerID,
+        nextAppID: nextAppID,
         countries: countriesArray,
         employers: employers,
         agents: agents
@@ -517,12 +530,14 @@ app.post("/add", async (req, res) => {
   let birthState = req.body.birthState;
   let birthCountry = req.body.birthCountry;
   let birthDate = req.body.birthDate;
-  let processingAgent = 1;
+  let processingAgent = req.body.processingAgent;
+  let marinerStatus = req.body.status;
+  let applicationID = req.body.applicationID;
   let application = req.body.application;
   console.log(application);
   let notes = req.body.notes;
 
-  let sqlInsert = 'INSERT INTO `mariners` VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  let sqlInsert = 'INSERT INTO `mariners` VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
   let insert_query = mysql.format(sqlInsert, [
     marinerId,
     lastName,
@@ -541,7 +556,9 @@ app.post("/add", async (req, res) => {
     birthCountry,
     birthDate,
     processingAgent,
-    notes]);
+    notes,
+    applicationID,
+    marinerStatus]);
 
   // Insert Mariner into database
   db.pool.query(insert_query, async (err, result) => {
