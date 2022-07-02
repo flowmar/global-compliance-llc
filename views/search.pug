@@ -23,12 +23,13 @@ block content
                   select.form-select.bg-white(id="search-by" aria-label="Select a search category" name="searchBy")
                     option()
                     option(value="Mariner ID") Mariner ID
-                    option(value="Name") Name
+                    option(value="First Name") First Name
+                    option(value="Last Name") Last Name
                     option(value="Birth Date") Birth Date
                     option(value="Employer") Employer
                     option(value="Processing Agent") Processing Agent
-                .col-2
-                .col-4
+                .col-1
+                .col
                   label.form-label(for="search-input" id="search-label") Search:
                   div#search-input
                   //- input.form-control.bg-white(type="text" id="search-input" name="searchText")
@@ -50,7 +51,7 @@ block content
               .row
                 .col-7
                 .col-5.d-flex.justify-content-end
-                  button.btn.btn-lg.mx-2.text-white(style="background-color: var(--indigo-color)" type="button" id="view-mariner-button")
+                  button.btn.btn-lg.mx-2.text-white(style="background-color: var(--seafoam-color)" type="button" id="view-mariner-button")
                     i.bi.bi-eye-fill(style="font-size: 1rem;")
                     span(style="font-size: 1.05rem;")   &nbsp;View
                   button.btn.btn-lg.btn-info.mx-2(type="button" id="edit-mariner-button")
@@ -59,17 +60,114 @@ block content
                   button.btn.btn-lg.btn-danger.mx-2(type="button" id="delete-mariner-button")
                     i.bi.bi-x-circle-fill(style="font-size: 1rem;")
                     span(style="font-size: 1.05rem;")   &nbsp;Delete
-
   script(src="/js/search.js")
   script.
 
+    let employersArray = !{JSON.stringify(employers)};
+    console.log(employersArray);
+    // Change the Search Input based on the category that is chosen
+    $('#search-by').on('change', function (_e) {
+    let searchInput = $('#search-input');
+    let selectedValue = this.value;
+    let element;
+    let agents = ['Arlene Martin', 'Margaret Landry', 'Austin Martin'];
+
+    // Show the label
+    $('#search-label').show();
+
+    // Clear searchInput if it has any children
+    if (searchInput.children().length > 0) searchInput.empty();
+
+    switch (selectedValue) {
+      case 'Mariner ID':
+        // Create an number input element
+        element = document.createElement('input');
+        element.classList = 'form-control bg-white';
+        element.type = 'number';
+        element.name = 'searchText';
+        element.min = '10001';
+        element.value = '10001';
+        searchInput.append(element);
+        break;
+
+      case 'Processing Agent':
+        // Create a select element
+        element = document.createElement('select');
+        element.classList = 'form-select bg-white';
+        element.id = 'agentSelect';
+        element.name = 'searchText';
+        searchInput.append(element);
+
+        // Add the agents to the dropdown
+        for (let agent of agents) {
+          let option = document.createElement('option');
+          option.value = parseInt(agents.indexOf(agent)) + 1;
+          option.text = agent;
+          let agentSelect = $('#agentSelect');
+          agentSelect.append(option);
+        }
+        break;
+
+      case 'First Name':
+        element = document.createElement('input');
+        element.classList = 'form-control bg-white';
+        element.id = 'first-name-input';
+        element.name = 'searchText';
+        searchInput.append(element);
+        break;
+
+      case 'Last Name':
+        element = document.createElement('input');
+        element.classList = 'form-control bg-white';
+        element.id = 'first-name-input';
+        element.name = 'searchText';
+        searchInput.append(element);
+        break;
+
+      case 'Birth Date':
+        // Create a date input element
+        element = document.createElement('div');
+        element.classList = 'input-group';
+        element.id = 'birth-date-picker';
+        element.name = 'searchText';
+        searchInput.append(element);
+        let bdpicker = $("#birth-date-picker").dropdownDatepicker({
+          monthFormat: "short"
+        });
+        bdpicker.addClass("form-control");
+        bdpicker.addClass('bg-indigo');
+        // $('.date-dropdowns select').addClass('form-control');
+        $('.date-dropdowns select').addClass('form-select');
+
+        break;
+
+      case 'Employer':
+        // Create a select element
+        element = document.createElement('select');
+        element.classList = 'form-select bg-white';
+        element.id = 'employerSelect';
+        element.name = 'searchText';
+        searchInput.append(element);
+        // Place the employers into the UI
+        for (let y = 0; y < employersArray.length; y++) {
+          let option = document.createElement('option');
+          option.value = parseInt(y) + 1;
+          option.text = employersArray[y]['EmployerName'];
+          let employerSelect = $('#employerSelect');
+          employerSelect.append(option);
+        }
+        break;
+
+      default:
+        break;
+      }
+      });
       //- Wait until DOM is loaded
       window.addEventListener('DOMContentLoaded', (event) => {
       //- Use Pug to bring in data from database
       let marinerResultArray = !{JSON.stringify(results)};
       let searched = #{searched};
-      console.log(marinerResultArray);
-      
+
       //- Loop through array of Mariners and add data to table
       let tableBody = $('tbody');
       for (let mariner of marinerResultArray)

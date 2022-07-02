@@ -10,7 +10,8 @@
   --light-blue-color: #4FC3F7;
   --green-color: #019D51;
   --purple-color: #9749a9;
-  --indigo-color: #00BFA5;
+  --seafoam-color: #00BFA5;
+  --indigo-color: #160145;
 }
 
 
@@ -34,6 +35,14 @@ header
 
 .form-label {
   color: black;
+}
+
+.bg-indigo {
+  background-color: var(--indigo-color) !important;
+}
+
+#birth-date-picker {
+  padding: .7rem;
 }
 
 table tbody tr.selected {

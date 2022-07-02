@@ -233,8 +233,13 @@ app.get("/search", async (_req, res) => {
   // Retrieve all records from database
   const searchSQL = "SELECT * FROM Mariners";
   const search_query = mysql.format(searchSQL);
+
   const employerSQL = "SELECT EmployerName FROM Employers WHERE EmployerID = ?";
   const agentSQL = "SELECT AgentName FROM Agents WHERE AgentID = ?";
+  const allEmployersSQL = 'SELECT * FROM Employers';
+  const all_employers_query = mysql.format(allEmployersSQL);
+  const allEmployersRows = await db.query(all_employers_query);
+  const allEmployersJSON = allEmployersRows[0];
 
   await db.query(search_query).then((result) => {
     // console.log(result[0]);
@@ -305,7 +310,8 @@ app.get("/search", async (_req, res) => {
     res.render('search', {
       title: 'Search',
       searched: false,
-      results: mariners
+      results: mariners,
+      employers: allEmployersJSON
     });
   });
 
@@ -660,8 +666,8 @@ app.post('/search', async (_req, res) => {
   console.log(category);
   let sqlStatement;
   let parameterArray = [];
-  let searchText = _req.body.searchText;
- 
+  let searchText = _req.body.searchText || _req.body.date;
+
 
   switch (category) {
     case 'Mariner ID':
@@ -679,17 +685,28 @@ app.post('/search', async (_req, res) => {
         'SELECT MarinerID, FirstName, MiddleName, LastName, BirthDate, EmployerID, ProcessingAgent, Status FROM Mariners WHERE BirthDate = ?';
       break;
 
-    case 'Name':
+    case 'First Name':
+      sqlStatement =
+        'SELECT MarinerID, FirstName, MiddleName, LastName, BirthDate, EmployerID, ProcessingAgent, Status FROM Mariners WHERE FirstName = ?';
+      break;
+
+    case 'Last Name':
+      sqlStatement =
+        'SELECT MarinerID, FirstName, MiddleName, LastName, BirthDate, EmployerID, ProcessingAgent, Status FROM Mariners WHERE LastName = ?';
       break;
 
     case 'Employer':
       sqlStatement =
-        'SELECT MarinerID, FirstName, MiddleName, LastName, BirthDate, EmployerID, ProcessingAgent, Status FROM Mariners WHERE Employer = ?';
+        'SELECT MarinerID, FirstName, MiddleName, LastName, BirthDate, EmployerID, ProcessingAgent, Status FROM Mariners WHERE EmployerID = ?';
       break;
 
     default:
       sqlStatement = 'SELECT * FROM Mariners';
   }
+  const allEmployersSQL = 'SELECT * FROM Employers';
+  const all_employers_query = mysql.format(allEmployersSQL);
+  const allEmployersRows = await db.query(all_employers_query);
+  const allEmployersJSON = allEmployersRows[0];
 
   // Place the Searched Text into the parameterArray
   parameterArray.push(searchText);
@@ -699,7 +716,7 @@ app.post('/search', async (_req, res) => {
   let search_query = mysql.format(sqlStatement, parameterArray);
   // console.log(search_query);
   // Perform SQL query
-  let searchResultsRows =await db.query(search_query);
+  let searchResultsRows = await db.query(search_query);
   // console.log(searchResultsRows);
   // Format result
   // let searchJSON = JSON.parse(JSON.stringify(searchResultsRows));
@@ -789,6 +806,7 @@ app.post('/search', async (_req, res) => {
     {
       title: 'Search',
       results: mariners,
+      employers: allEmployersJSON,
       searched: true,
       searchText: searchText,
       searchCategory: category
