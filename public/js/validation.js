@@ -124,7 +124,7 @@ function deleteAppConfirm(id) {
 function checkIfAppExists() {
   $.ajax({
     type: "GET",
-    url: "/getApp",
+    url: "/appDownload",
     data: { "marinerID": marinerID },
     success: function (result) {
       console.log("result:" + JSON.stringify(result));

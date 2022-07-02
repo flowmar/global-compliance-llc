@@ -5,12 +5,18 @@
         h5.text-white.modal-title#licensesModalLabel Mariner Application
         button.btn-close(type="button" data-mdb-dismiss="modal" aria-label="Close")
       .modal-body
-        form.form-horizontal.d-inline.container(method="POST" action="/newAppUpload" enctype="multipart/form-data" id="target" data-parsley-validate)
+        form.form-horizontal.d-inline.container(method="POST" action="/newAppUpload" enctype="multipart/form-data" id="newAppUploadForm" data-parsley-validate)
           .row
             .col-3
-              input(type="text" hidden id="marinerIDNumber" name="marinerIDNumber" value="marinerID")
+              input.form-control(type="text" hidden id="marinerIDNumber" name="marinerIDNumber" value=`${next}`)
+              input.form-control(type="text" hidden id="applicationIDNumber" name="applicationIDNumber" value=`${nextAppID}`)
               label.form-label(for="mariner-id")  &nbsp;Mariner ID:
-              input.form-control(type="text" id="mariner-id" name="marinerID" value=`${next}` required)
+              input.form-control(style="background-color: var(--highlight-bg-color);" type="text" id="mariner-id" name="marinerID" value=`${next}` required disabled)
+            .col-6
+            .col-3
+              label.form-label(for="application-id") Application ID:
+              input.form-control(style="background-color: var(--highlight-bg-color);" type="text" id="application-id" name="applicationID" value=`${nextAppID}` required disabled)
+          .row.mt-4
             .col-3
               label.form-label(for="first-name")  &nbsp;First Name:
               input.form-control.bg-white(type="text" id="first-name" name="firstName" data-parsley-required="true")
@@ -29,13 +35,19 @@
           //-     label.form-label(for="processing-agent") Processing Agent
           //-       select.form-select.bg-white.text-dark(id="processing-agent")
           .row.mt-4
-            .col-8
+            .col-7
               label(for="file-input-group") &nbsp; Application File:
                 .input-group.mt-2#file-input-group
-                  input.form-control.form-control-file.text-dark(type="file" id="application-file" name="application")
-                  button.input-group-text.btn(style="background-color: var(--yellow-color); font-weight: bold;" onclick="uploadApp()" id="app-upload-button" value="Upload" type="submit") Upload
-            .col-4
+                  input.form-control.form-control-file.text-dark(type="file" id="application-file" name="application" data-parsley-required="true")
+                  //- button.input-group-text.btn(style="background-color: var(--yellow-color); font-weight: bold;" onclick="uploadApp()" id="app-upload-button" value="Upload" type="submit") Upload
+            .col-5
+              label.form-label(for="processing-agent") &nbsp;Processing Agent:
+              select.form-select.bg-white(id="processing-agent" name="processingAgent" data-parsley-required="true")
+          .row.mt-4
+            .col.d-flex.justify-content-end
+              button.btn.btn-secondary.mx-3(type="button" data-mdb-dismiss="modal" id="newModalClose") Cancel
+              button.btn.btn-primary(type="submit" onclick="appOnlyUpload()" id="app-only-save-button" value="Save") Save
         //- #appArea.text-center.mt-4
-      .modal-footer
-        button.btn.btn-secondary(type="button" data-mdb-dismiss="modal" id="newModalClose") Cancel
-        button.btn.btn-primary Save
+      //- .modal-footer
+      //-   button.btn.btn-secondary(type="button" data-mdb-dismiss="modal" id="newModalClose") Cancel
+      //-   button.btn.btn-primary() Save

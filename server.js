@@ -2,6 +2,7 @@
 
 require("dotenv").config();
 const express = require("express");
+const router = express.Router();
 const axios = require("axios"); // HTTP request library
 const path = require("path");
 const PORT = process.env.PORT;
@@ -59,79 +60,61 @@ let upload = multer({
 
 // Route for uploading newApplication document
 app.post('/newAppUpload', upload.single('application'), async (req, res) => {
-  // Error handling
-  if (!req.file) {
-    return res.status(400).send({ message: 'Please upload a file.' });
-  }
 
   // Get the file from the request
   let file = req.file;
-  console.log(file);
+  // console.log(file);
   console.log(req.body);
 
   // Read the file as a buffer
   const file_buffer = fs.readFileSync('public/uploads/' + file.filename);
   console.log(file);
-  console.log(file.filename);
+  // console.log(file.filename);
 
   // Get all the parameters for the new Mariner from the request body
   let requestJSON = JSON.parse(JSON.stringify(req.body));
-  console.log(requestJSON);
-  let marinerID = requestJSON.marinerIDNumber[1];
+  // console.log(requestJSON);
+  let marinerID = requestJSON.marinerIDNumber;
+  let applicationID = requestJSON.applicationIDNumber;
+  let processingAgent = requestJSON.processingAgent;
   let firstName = requestJSON.firstName;
   let middleName = requestJSON.middleName;
   let lastName = requestJSON.lastName;
   let birthDate = requestJSON.birthDate;
 
   // SQL for inserting new Mariner along with application file
-  const insertMarinerSQL = 'INSERT INTO Mariners SET MarinerID = ?, FirstName = ?, MiddleName = ?, LastName = ?, BirthDate = ?';
-  const insert_mariner_query = mysql.format(insertMarinerSQL, [marinerID, firstName, middleName, lastName, birthDate]);
+  const insertMarinerSQL = 'INSERT INTO Mariners SET MarinerID = ?, FirstName = ?, MiddleName = ?, LastName = ?, BirthDate = ?, ProcessingAgent = ?, ApplicationID = ?';
+  const insert_mariner_query = mysql.format(insertMarinerSQL, [marinerID, firstName, middleName, lastName, birthDate, processingAgent, applicationID]);
 
-  db.pool.query(insert_mariner_query, async (err, res) => {
-    if (err) throw err;
+  await db.query(insert_mariner_query);
 
-    // Query for inserting application into database
-    let applicationSql = 'INSERT INTO Applications VALUES (0, ?, ?, ?)';
-    let application_query = mysql.format(applicationSql, [file_buffer, file.filename, marinerID]);
+  // Query for inserting application into database
+  let applicationSql = 'INSERT INTO Applications VALUES (0, ?, ?, ?)';
+  let application_query = mysql.format(applicationSql, [file_buffer, file.filename, marinerID]);
 
-    db.pool.query(application_query, async (error, result) => {
-      if (error) throw error;
-      // Delete the uploaded file from memory after insertion into the db
-      let uploadedFile = "public/uploads/" + file.filename;
-      fs.unlinkSync(uploadedFile);
-      console.log("File Uploaded!");
-      console.log("RESULT: " + JSON.stringify(result));
+  await db.query(application_query);
 
-      // Query for setting the ApplicationID in the Mariners table to the corresponding one in the Applications table
-      let checkAppIdSQL = "SELECT ApplicationID FROM Applications WHERE MarinerID = ?";
-      let check_app_id_query = mysql.format(checkAppIdSQL, [marinerID]);
+  // Delete the uploaded file from memory after insertion into the db
+  let uploadedFile = "public/uploads/" + file.filename;
+  await fs.unlinkSync(uploadedFile);
+  console.log("File Uploaded!");
 
-      db.pool.query(check_app_id_query, async (e, r) => {
-        if (e) throw e;
+  // Query for setting the ApplicationID in the Mariners table to the corresponding one in the Applications table
+  let checkAppIdSQL = "SELECT ApplicationID FROM Applications WHERE MarinerID = ?";
+  let check_app_id_query = mysql.format(checkAppIdSQL, [marinerID]);
 
-        console.log(r);
-        let rJSON = JSON.parse(JSON.stringify(r));
-        console.log(rJSON);
-        let appId = rJSON[0]["ApplicationID"];
+        let checkAppRows = await db.query(check_app_id_query);
+        // console.log(checkAppRows);
+        let rJSON = JSON.parse(JSON.stringify(checkAppRows));
+        // console.log(rJSON);
+        let appId = rJSON[0][0]["ApplicationID"];
         console.log(appId);
 
-        let updateMarinerSQL = "UPDATE Mariners SET ApplicationID = ? WHERE MarinerID = ? ";
-        let update_mariner_query = mysql.format(updateMarinerSQL, [appId, marinerID]);
-        db.pool.query(update_mariner_query, async (erro, resul) => {
-          if (erro) throw erro;
+  let updateMarinerSQL = "UPDATE Mariners SET ApplicationID = ? WHERE MarinerID = ? ";
+  let update_mariner_query = mysql.format(updateMarinerSQL, [appId, marinerID]);
+  await db.query(update_mariner_query);
 
-          console.log(JSON.stringify(resul));
-        });
-
-      });
-    });
-
-  });
-  res.send(
-    {
-      finish: true
-    }
-  );
+  res.redirect("/search");
 });
 
 // Route for uploading application document
@@ -161,14 +144,17 @@ app.post('/appUpload', upload.single('application'), async (req, res) => {
   let applicationSql = 'INSERT INTO Applications VALUES (0, ?, ?, ?)';
   let application_query = mysql.format(applicationSql, [file_buffer, file.filename, marinerID]);
 
+  // Upload application to database
   db.pool.query(application_query, async (err, result) => {
     if (err) throw err;
     // Delete the uploaded file from memory after insertion into the db
     let uploadedFile = "public/uploads/" + file.filename;
     fs.unlinkSync(uploadedFile);
     console.log("File Uploaded!");
-    console.log("RESULT: " + JSON.stringify(result));
+    // console.log("RESULT: " + JSON.stringify(result));
   });
+
+
   res.send({
     appUploaded: true,
     appFilename: file.filename
@@ -197,12 +183,12 @@ app.get('/appDownload', async (req, res) => {
     console.log(response[0]['ApplicationID']);
 
     // Create a Buffer from the BLOB object
-    let buff = new Buffer.from(response[0]["ApplicationDocument"], {type: 'application/pdf'});
+    let buff = await new Buffer.from(response[0]["ApplicationDocument"], {type: 'application/pdf'});
     console.log(buff);
 
     const appFileName = "application_for_mariner_" + marinerID + ".pdf";
     // Write the binary buffer data to a file
-    let pdf = fs.writeFileSync(appFileName, response[0]["ApplicationDocument"]);
+    let pdf = await fs.writeFileSync(appFileName, response[0]["ApplicationDocument"]);
 
     // Send the document to the browser for download
     res.download(appFileName);
@@ -278,9 +264,13 @@ app.get("/search", async (req, res) => {
     const employerRows = await db.query(employer_query);
     // Parse the result and place the employerName into the object
     let employerJSON = JSON.parse(JSON.stringify(employerRows[0]));
-    employerName = employerJSON[0]['EmployerName'];
-    formatted['employer'] = employerName;
-
+    console.log(employerJSON);
+    if (employerJSON[0]) {
+      employerName = employerJSON[0]['EmployerName'];
+      formatted['employer'] = employerName;
+    } else {
+      formatted['employer'] = " ";
+    }
     // Get the AgentID Number
     let agentIDNumber = mariner['ProcessingAgent'];
     // Place it in the query
@@ -291,7 +281,9 @@ app.get("/search", async (req, res) => {
     // Parse the result and place the AgentName into the Object
     let agentJSON = JSON.parse(JSON.stringify(agentRows[0]));
     agentName = agentJSON[0]['AgentName'];
-    formatted['processingAgent'] = agentName;
+    if (agentName) {
+      formatted['processingAgent'] = agentName;
+    }
 
     // Get the date from the database
     let mySQLbirthDate = mariner['BirthDate'];
@@ -304,7 +296,7 @@ app.get("/search", async (req, res) => {
       splitDate[2] + '-' + splitDate[1].toUpperCase() + '-' + splitDate[3];
     formatted['birthDate'] = formattedDate;
 
-    formatted['status'] = 'Null';
+    formatted['status'] = ' ';
 
     mariners.push(formatted);
   }
@@ -326,6 +318,33 @@ app.get("/add", async (req, res) => {
 // Request for '/new' URL
 app.get("/new", async (req, res) => {
 
+  // Obtain next AppID number
+  let lastAppID;
+  let nextAppID;
+  // AppID Query
+  let appIDSQL = 'SELECT MAX(ApplicationID) FROM Applications';
+  let appID_query = mysql.format(appIDSQL);
+  let appIDRows = await db.query(appID_query);
+  lastAppID = appIDRows[0][0]['MAX(ApplicationID)'];
+  if (lastAppID != null) {
+    nextAppID = parseInt(lastAppID) + 1;
+  } else {
+    nextAppID = 1;
+  }
+  // Agents Query
+  let agentsSQL = 'SELECT AgentName FROM Agents';
+  let agents_query = mysql.format(agentsSQL);
+
+  // Get all agent names from the database
+  let processingAgents = [];
+  let processingAgentsRows = await db.query(agents_query);
+  let agentJSON = JSON.parse(JSON.stringify(processingAgentsRows));
+  let agentObjects = agentJSON[0];
+  for (let agentObject of agentObjects) {
+    processingAgents.push(agentObject['AgentName']);
+  }
+  console.log(processingAgents);
+
   // Obtain Mariner ID number
   let lastMarinerID;
   let nextMarinerID;
@@ -338,11 +357,16 @@ app.get("/new", async (req, res) => {
     console.log(result[0]);
     lastMarinerID = result[0][0]['MAX(MarinerID)'];
     console.log(lastMarinerID);
-    nextMarinerID = parseInt(lastMarinerID) + 1;
-
-    res.render("new", {
-      title: "New",
-      next: nextMarinerID
+    if (lastMarinerID != null) {
+      nextMarinerID = parseInt(lastMarinerID) + 1;
+    } else {
+      nextMarinerID = 10001;
+    }
+    res.render('new', {
+      title: 'New',
+      next: nextMarinerID,
+      nextAppID: nextAppID,
+      agents: processingAgents
     });
   });
 });

@@ -18,3 +18,14 @@ block content
                     span  &nbsp;Mariner Form
         include includes/newModal
         script(src="/js/appUpload.js")
+        script.
+            let agentsArray = !{JSON.stringify(agents)};
+            let agentInput = document.getElementById('processing-agent');
+            console.log(agentsArray);
+            for(l = 0; l < agentsArray.length; l++)
+            {
+              let element = document.createElement('option');
+              element.value = l + 1;
+              element.text = agentsArray[l];
+              agentInput.appendChild(element);
+            }

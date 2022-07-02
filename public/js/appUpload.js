@@ -34,3 +34,29 @@ function uploadApp() {
     });
   });
 }
+
+// Uploads application document and bare minimum Mariner Data
+function appOnlyUpload() {
+  // Handle click of Save Button
+  $('#app-only-save-button').submit((e) => {
+    e.preventDefault();
+    let formData = new FormData(this);
+
+  // Make a POST request with the selected file and the accompanying data
+  $.ajax({
+    type: 'POST',
+    url: '/newAppUpload',
+    data: formData,
+    cache: false,
+    processData: false,
+    contentType: false,
+    success: (result) => {
+      console.log('Result: ' + result);
+      $('newModalClose').trigger('click');
+    },
+    error: (error) => {
+      console.log('Error: ' + error[0]);
+    }
+  });
+  });
+}
