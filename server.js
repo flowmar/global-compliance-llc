@@ -224,7 +224,7 @@ app.post("/deleteApp", async (req, res) => {
     console.log("Application Deleted for MarinerID: " + marinerID);
   });
 
-  res.render("add");
+  // res.render("form");
 });
 
 /**
@@ -242,54 +242,79 @@ app.get("/", async (req, res) => {
 // Request for '/search' URL
 app.get("/search", async (req, res) => {
 
+  let marinerData = [];
+  let mariners = [];
   // Retrieve all records from database
   const searchSQL = "SELECT * FROM Mariners";
   const search_query = mysql.format(searchSQL);
+  const employerSQL = "SELECT EmployerName FROM Employers WHERE EmployerID = ?";
+  const agentSQL = "SELECT AgentName FROM Agents WHERE AgentID = ?";
 
-  db.pool.query(search_query, async (err, response) => {
-    if (err) throw err;
+  await db.query(search_query).then((result) => {
+    // console.log(result[0]);
+    marinerData = result[0];
+  });
 
-    let mariners = [];
+  for (const mariner of marinerData) {
+    let formatted = {};
+    formatted['marinerID'] = mariner['MarinerID'];
+    formatted['firstName'] = mariner['FirstName'];
+    formatted['lastName'] = mariner['LastName'];
+    formatted['middleName'] = mariner['MiddleName'];
 
-    for (const mariner of response)
-    {
-      let formatted = {};
-      formatted["marinerID"] = mariner["MarinerID"];
-      formatted["firstName"] = mariner["FirstName"];
-      formatted["lastName"] = mariner["LastName"];
-      formatted["middleName"] = mariner["MiddleName"];
-      // Check the employers table for the EmployerID and retrieve the name
-      formatted["employer"] = mariner["EmployerID"];
-      // Check the Agents table for the AgentID and retrieve the name
-      formatted["processingAgent"] = mariner["ProcessingAgent"];
-      // Change the format of the birth date to DATE-MONTH(3 Letter)-YEAR
-      formatted["birthDate"] = mariner["BirthDate"];
-      formatted["status"] = "Null";
+    // Format the Name of the Mariner into a Full Name
+    let firstName = mariner['FirstName'];
+    let lastName = mariner['LastName'];
+    let middleName = mariner['MiddleName'];
+    let fullName = firstName + ' ' + middleName + ' ' + lastName;
+    formatted['fullName'] = fullName;
 
-      let firstName = mariner["FirstName"];
-      let lastName = mariner["LastName"];
-      let middleName = mariner["MiddleName"];
-      let fullName = firstName + " " + middleName + " " + lastName;
-      formatted["fullName"] = firstName + " " + middleName + " " + lastName;
-      let employer = mariner["EmployerID"];
-      let processingAgent = mariner["ProcessingAgent"];
-      let status = "Null";
-      console.log(formatted);
+    // Get the employerID Number
+    let employerIDNumber = mariner['EmployerID'];
+    // Place it in the query
+    let employer_query = mysql.format(employerSQL, [employerIDNumber]);
+    let employerName;
+    // Check the employers table for the EmployerID and retrieve the name
+    const employerRows = await db.query(employer_query);
+    // Parse the result and place the employerName into the object
+    let employerJSON = JSON.parse(JSON.stringify(employerRows[0]));
+    employerName = employerJSON[0]['EmployerName'];
+    formatted['employer'] = employerName;
 
-      mariners.push(formatted);
-    }
-    
-    console.log(mariners);
+    // Get the AgentID Number
+    let agentIDNumber = mariner['ProcessingAgent'];
+    // Place it in the query
+    let agent_query = mysql.format(agentSQL, [agentIDNumber]);
+    let agentName;
+    // Check the Agents table for the AgentID and retrieve the name
+    const agentRows = await db.query(agent_query);
+    // Parse the result and place the AgentName into the Object
+    let agentJSON = JSON.parse(JSON.stringify(agentRows[0]));
+    agentName = agentJSON[0]['AgentName'];
+    formatted['processingAgent'] = agentName;
 
-    // Place records into variables
+    // Get the date from the database
+    let mySQLbirthDate = mariner['BirthDate'];
+    // Convert to a String
+    let dateString = mySQLbirthDate.toString();
+    // Create an array with the components of the string
+    let splitDate = dateString.split(' ');
+    // Change the format of the birth date to date-MON-year
+    let formattedDate =
+      splitDate[2] + '-' + splitDate[1].toUpperCase() + '-' + splitDate[3];
+    formatted['birthDate'] = formattedDate;
+
+    formatted['status'] = 'Null';
+
+    mariners.push(formatted);
+  }
+
     // Send all records over to the page to be rendered
-
-    res.render("search", {
-      title: "Search",
+    res.render('search', {
+      title: 'Search',
       allMariners: mariners
     });
   });
-});
 
 // Request for '/add' URL
 app.get("/add", async (req, res) => {
@@ -416,9 +441,7 @@ app.post("/authenticate", async (req, res) => {
       if (await bcrypt.compare(password, hashedPassword)) {
         console.log("Success!");
         // res.send(`${user}` + " has successfully logged in!");
-        res.render('search', {
-          title: "Search"
-        });
+        res.redirect('/search');
       }
       else {
         console.log("Password Incorrect!");
@@ -480,7 +503,7 @@ app.get("/form", async (req, res) => {
     console.log(lastAppID);
     nextAppID = parseInt(lastAppID) + 1;
   })
-  // Gets the country list from the databse
+  // Gets the country list from the database
   db.query(country_query).then(countryResult => {
     let countriesArray = [];
     let countries = countryResult[0];
@@ -566,6 +589,7 @@ app.post("/add", async (req, res) => {
     console.log("New Mariner Added!");
     console.log(result);
     console.log(result.insertId);
+
     // Render the Search page after insertion
     res.render("search", {
       title: "Search"
