@@ -81,11 +81,17 @@ block content
 
     // Show the label
     $('#search-label').show();
-
+    $('#search-button').show();
+    $('#search-input').show();
     // Clear searchInput if it has any children
     if (searchInput.children().length > 0) searchInput.empty();
 
     switch (selectedValue) {
+      case '':
+        $('#search-input').hide();
+        $('#search-button').hide();
+        $('#search-label').hide();
+        break;
       case 'Mariner ID':
         // Create an number input element
         element = document.createElement('input');

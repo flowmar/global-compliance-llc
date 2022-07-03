@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 23:03:55
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-03 00:26:31
+ * @Last Modified time: 2022-07-03 00:45:34
  */
 
 // Uses the selected category and search text to send a request to the backend
@@ -34,6 +34,7 @@ function search() {
 
 // Hide the label
 $('#search-label').hide();
+$('#search-button').hide();
 
 $(document).ready(function () {
     // Make table rows selectable
@@ -65,20 +66,29 @@ $(document).ready(function () {
         // Create a new URL Based on the selected Row
         let newViewURL = '/view/' + selectedMarinerID;
         // Change the href attribute of the Button to the new URL
-        viewMarinerButton.attr('href', newViewURL);
+        viewMarinerButton.attr({
+            href: newViewURL,
+            target: '_blank',
+        });
 
         // Get the Edit Button
         let editMarinerButton = $('#edit-mariner-button');
         // Create a new URL Based on the selected Row
         let newEditURL = '/edit/' + selectedMarinerID;
         // Change the href attribute of the Button to the new URL
-        editMarinerButton.attr('href', newEditURL);
+        editMarinerButton.attr({
+            href: newEditURL,
+            target: '_blank',
+        });
 
         // Get the Delete Button
         let deleteMarinerButton = $('#delete-mariner-button');
         // Create a new URL Based on the selected Row
         let newDeleteURL = '/delete/' + selectedMarinerID;
         // Change the href attribute of the Button to the new URL
-        deleteMarinerButton.attr('href', newDeleteURL);
+        deleteMarinerButton.attr({
+            href: newDeleteURL,
+            target: '_blank',
+        });
     });
 });
