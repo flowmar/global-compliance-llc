@@ -1,13 +1,7 @@
 /* Add Mariner Validation */
 
 const applicationModal = document.getElementById('applicationModal');
-// const firstNameInput = document.getElementById('first-name');
-// const lastNameInput = document.getElementById('last-name');
-// const birthDateInput = document.getElementById('birth-date');
-const marinerIDNumb = document.getElementById('marinerIDHidden');
-console.log(marinerIDNumb);
 let marinerIDNumber = $('#marinerIDHidden').val();
-console.log(marinerIDNumber);
 const applicationButton = document.getElementById('appModalButton');
 const licensesButton = document.getElementById('licenses-button');
 const appArea = document.getElementById('appArea');
