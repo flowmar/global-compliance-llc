@@ -1,3 +1,10 @@
+//-
+  @Author: flowmar
+  @Date: 2022-07-02 23:09:46
+  @Last Modified by:   flowmar
+  @Last Modified time: 2022-07-02 23:09:46
+
+
 extends layout.pug
 
 block content
@@ -10,56 +17,56 @@ block content
     }
 
   .container-fluid
-        .row.mt-5
-          .col-1
-          .col-4.display-5.page-title Search
-          .col-7
-        .row.bg-dark.m-3.p-1.py-3
-          .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.m-2.mb-0
-            form.container-fluid(action="/search" method="POST" name="searchDatabase" data-parsley-validate)
-              .row.d-flex.align-items-end
-                .col-3.mx-1
-                  label.form-label(for="search-by") Search By:
-                  select.form-select.bg-white(id="search-by" aria-label="Select a search category" name="searchBy")
-                    option()
-                    option(value="Mariner ID") Mariner ID
-                    option(value="First Name") First Name
-                    option(value="Last Name") Last Name
-                    option(value="Birth Date") Birth Date
-                    option(value="Employer") Employer
-                    option(value="Processing Agent") Processing Agent
-                .col-1
-                .col
-                  label.form-label(for="search-input" id="search-label") Search:
-                  div#search-input
-                  //- input.form-control.bg-white(type="text" id="search-input" name="searchText")
-                .col-2.p-0
-                  button.btn.text-white(style="background-color: var(--purple-color);" id="search-button" onclick="search()")
-                    span
-                      i.bi.bi-search(style="font-size: .88rem;")
-                      span(style="font-size: .85rem;") &nbsp;&nbsp;Search
-              if searched == true
-                .row.mt-4
-                  .col-4.border#search-text-display
-                      span.h4 Your Search:
-                      p.text-info Category:&nbsp;
-                        i #{searchCategory}
-                      p.text-warning Search Term:&nbsp; "<i>#{searchText}</i>"
-              .row
-                .col
-                  include includes/tableHead
-              .row
-                .col-7
-                .col-5.d-flex.justify-content-end
-                  button.btn.btn-lg.mx-2.text-white(style="background-color: var(--seafoam-color)" type="button" id="view-mariner-button")
-                    i.bi.bi-eye-fill(style="font-size: 1rem;")
-                    span(style="font-size: 1.05rem;")   &nbsp;View
-                  button.btn.btn-lg.btn-info.mx-2(type="button" id="edit-mariner-button")
-                    i.bi.bi-pencil-square(style="font-size: 1rem;")
-                    span(style="font-size: 1.05rem;")   &nbsp;Edit
-                  button.btn.btn-lg.btn-danger.mx-2(type="button" id="delete-mariner-button")
-                    i.bi.bi-x-circle-fill(style="font-size: 1rem;")
-                    span(style="font-size: 1.05rem;")   &nbsp;Delete
+    .row.mt-5
+      .col-1
+      .col-4.display-5.page-title Search
+      .col-7
+    .row.bg-dark.m-3.p-1.py-3
+      .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.m-2.mb-0
+        form.container-fluid(action="/search" method="POST" name="searchDatabase" data-parsley-validate)
+          .row.d-flex.align-items-end
+            .col-3.mx-1
+              label.form-label(for="search-by") Search By:
+              select.form-select.bg-white(id="search-by" aria-label="Select a search category" name="searchBy")
+                option()
+                option(value="Mariner ID") Mariner ID
+                option(value="First Name") First Name
+                option(value="Last Name") Last Name
+                option(value="Birth Date") Birth Date
+                option(value="Employer") Employer
+                option(value="Processing Agent") Processing Agent
+            .col-1
+            .col
+              label.form-label(for="search-input" id="search-label") Search:
+              #search-input
+              //- input.form-control.bg-white(type="text" id="search-input" name="searchText")
+            .col-2.p-0
+              button.btn.text-white(style="background-color: var(--purple-color);" id="search-button" onclick="search()")
+                span
+                  i.bi.bi-search(style="font-size: .88rem;")
+                  span(style="font-size: .85rem;") &nbsp;&nbsp;Search
+          if searched == true
+            .row.mt-4
+              .col-4.border#search-text-display
+                span.h4 Your Search:
+                p.text-info Category:&nbsp;
+                  i #{searchCategory}
+                p.text-warning Search Term:&nbsp; "<i>#{searchText}</i>"
+          .row
+            .col
+              include includes/tableHead
+          .row
+            .col-6
+            .col-6.d-flex.justify-content-end.p-0
+              a.btn.text-white.mx-2(style="background-color: var(--seafoam-color)" type="button" id="view-mariner-button" href="#")
+                i.bi.bi-eye-fill(style="font-size: .88rem;")
+                span(style="font-size: .85rem;")   &nbsp;View
+              a.btn.btn-info.mx-2(type="button" id="edit-mariner-button" href="#")
+                i.bi.bi-pencil-square(style="font-size: .88rem;")
+                span(style="font-size: .85rem;")   &nbsp;Edit
+              a.btn.btn-danger.mx-2(type="button" id="delete-mariner-button" href="#")
+                i.bi.bi-x-circle-fill(style="font-size: .88rem;")
+                span(style="font-size: .85rem;")   &nbsp;Delete
   script(src="/js/search.js")
   script.
 
@@ -172,6 +179,6 @@ block content
       let tableBody = $('tbody');
       for (let mariner of marinerResultArray)
       {
-      tableBody.append("<tr style='text-align: center;'> <td>" + mariner.marinerID + "</td><td>" + mariner.fullName + "</td><td>" + mariner.birthDate + "</td><td>" + mariner.employer + "</td><td>" + mariner.processingAgent + "</td><td>" + mariner.status);
+      tableBody.append("<tr style='text-align: center;'> <td id=" + mariner.marinerID  + ">" + mariner.marinerID + "</td><td>" + mariner.fullName + "</td><td>" + mariner.birthDate + "</td><td>" + mariner.employer + "</td><td>" + mariner.processingAgent + "</td><td>" + mariner.status);
       }
       });

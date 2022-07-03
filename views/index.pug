@@ -1,39 +1,46 @@
+//-
+  @Author: flowmar
+  @Date: 2022-07-02 23:10:44
+  @Last Modified by:   flowmar
+  @Last Modified time: 2022-07-02 23:10:44
+
+
 extends layout.pug
 
 block content
-    .container-fluid
-      .row.mt-5
-        .col-1
-        .col-4.display-5.page-title Login
-        .col-7
-      .row.bg-dark.m-3.p-4
-        .col-2
-        .col-8.shadow-4-strong.bg-light.bg-opacity-25
-          form(action="/authenticate" method="post" name="loginForm").container
-            br
-            .row
-              .col
-                div.text-center Please enter your credentials.
-                br
-                br
-            .row
-              .col
-                .form-outline
-                  input.form-control.bg-white.text-dark#inputUsername(type="text" name="inputUsername" required)
-                  label.form-label.text-dark(for="inputUsername") Username
-                br
-            .row
-              .col
-                .form-outline
-                  input.form-control.bg-white.text-dark#inputPassword(type="password" name="inputPassword" required)
-                  label.form-label.text-dark(for="inputPassword") Password
-                br
-            .row
-              .col-9
-              .col-3
-                input#loginButton.btn.btn-lg.btn-success(type="submit" name="submit" value="Login")
-                br
-                br
-        .col-2
+  .container-fluid
+    .row.mt-5
+      .col-1
+      .col-4.display-5.page-title Login
+      .col-7
+    .row.bg-dark.m-3.p-4
+      .col-2
+      .col-8.shadow-4-strong.bg-light.bg-opacity-25
+        form(action="/authenticate" method="post" name="loginForm").container
+          br
+          .row
+            .col
+              .text-center Please enter your credentials.
+              br
+              br
+          .row
+            .col
+              .form-outline
+                input.form-control.bg-white.text-dark#inputUsername(type="text" name="inputUsername" required)
+                label.form-label.text-dark(for="inputUsername") Username
+              br
+          .row
+            .col
+              .form-outline
+                input.form-control.bg-white.text-dark#inputPassword(type="password" name="inputPassword" required)
+                label.form-label.text-dark(for="inputPassword") Password
+              br
+          .row
+            .col-9
+            .col-3
+              input#loginButton.btn.btn-lg.btn-success(type="submit" name="submit" value="Login")
+              br
+              br
+      .col-2
 
-        //- include includes/createUser.pug
+      //- include includes/createUser.pug

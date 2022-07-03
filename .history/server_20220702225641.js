@@ -1,8 +1,8 @@
 /*
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
- * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-02 23:19:04
+ * @Last Modified by:  
+ * @Last Modified time: 2022-07-02 22:56:29
  */
 
 "use strict";
@@ -50,10 +50,10 @@ app.use(cors());
 
 // Handle storage using Multer
 let storage = multer.diskStorage({
-  destination: function (_req, _file, cb) {
+  destination: function (req, file, cb) {
     cb(null, 'public/uploads');
   },
-  filename: function (_req, file, cb) {
+  filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     const name = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname);
     cb(null, name);
@@ -152,7 +152,7 @@ app.post('/appUpload', upload.single('application'), async (req, res) => {
   let application_query = mysql.format(applicationSql, [file_buffer, file.filename, marinerID]);
 
   // Upload application to database
-  db.pool.query(application_query, async (err, _result) => {
+  db.pool.query(application_query, async (err, result) => {
     if (err) throw err;
     // Delete the uploaded file from memory after insertion into the db
     let uploadedFile = "public/uploads/" + file.filename;
@@ -212,12 +212,12 @@ app.post("/deleteApp", async (req, res) => {
   let delete_query = mysql.format(deleteSQL, [marinerID]);
 
   // Delete the Application Document
-  db.pool.query(delete_query, async (err, _res) => {
+  db.pool.query(delete_query, async (err, res) => {
     if (err) throw err;
     console.log("Application Deleted for MarinerID: " + marinerID);
   });
 
-  res.render("form");
+  // res.render("form");
 });
 
 /**
@@ -836,14 +836,14 @@ app.use(async (_req, res) => {
 // Test MySQL DB Connection
 if (process.env.MACHINE == 'local') {
   // Database connection
-  db.getConnection(function (err, _connection) {
+  db.getConnection(function (err, connection) {
     if (err) {
       console.log("Error: Something went wrong! " + err.stack);
     }
     else {
       // Select and print from the Agents table
-      db.query('SELECT * FROM global_compliance.Agents', function (error, results) {
-        if (error) throw error;
+      db.query('SELECT * FROM global_compliance.Agents', function (err, results) {
+        if (err) throw err;
         console.log(results);
       });
     }

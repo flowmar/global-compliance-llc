@@ -1,3 +1,10 @@
+//-
+  @Author: flowmar
+  @Date: 2022-07-02 23:10:24
+  @Last Modified by:   flowmar
+  @Last Modified time: 2022-07-02 23:10:24
+
+
 extends layout
 
 block content
@@ -8,18 +15,18 @@ block content
 
 
 
-    script.
-      let file = !{pdf};
-      let downloadFile = (file, fileName) => {
-      
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(file);
-      link.download = fileName;
+  script.
+    let file = !{pdf};
+    let downloadFile = (file, fileName) => {
 
-      document.body.append(link);
-      link.click();
-      link.remove();
-      setTimeout(() => URL.revokeObjectURL(link.href), 10000);
-      }
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(file);
+    link.download = fileName;
 
-      downloadFile(new Blob (file, "application.pdf"));
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(link.href), 10000);
+    }
+
+    downloadFile(new Blob (file, "application.pdf"));

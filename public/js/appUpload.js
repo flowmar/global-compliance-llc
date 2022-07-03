@@ -1,4 +1,11 @@
-const newApplicationModal = document.getElementById('newApplicationModal');
+/*
+ * @Author: flowmar
+ * @Date: 2022-07-02 23:12:33
+ * @Last Modified by:   flowmar
+ * @Last Modified time: 2022-07-02 23:12:33
+ */
+
+const newApplicationModal = document.getElementById( 'newApplicationModal' );
 // const newModalClose = document.getElementById('newModalClose');
 
 // Uploads the application document to the database
