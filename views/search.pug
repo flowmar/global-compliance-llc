@@ -41,6 +41,7 @@ block content
                 option(value="Birth Date") Birth Date
                 option(value="Employer") Employer
                 option(value="Processing Agent") Processing Agent
+                option(value="Status") Status
             .col-1
             .col
               label.form-label(for="search-input" id="search-label") Search:
@@ -63,14 +64,14 @@ block content
               include includes/tableHead
           .row
             .col-6
-            .col-6.d-flex.justify-content-end.p-0
-              a.btn.text-white.mx-2(style="background-color: var(--seafoam-color)" type="button" id="view-mariner-button" href="#")
+            .col-6.d-flex.justify-content-end.p-0#buttons
+              a.btn.text-white.mx-2.buttons(style="background-color: var(--seafoam-color)" type="button" id="view-mariner-button" href="#")
                 i.bi.bi-eye-fill(style="font-size: .88rem;")
                 span(style="font-size: .85rem;")   &nbsp;View
-              a.btn.btn-info.mx-2(type="button" id="edit-mariner-button" href="#")
+              a.btn.btn-info.mx-2.buttons(type="button" id="edit-mariner-button" href="#")
                 i.bi.bi-pencil-square(style="font-size: .88rem;")
                 span(style="font-size: .85rem;")   &nbsp;Edit
-              button.btn.btn-danger.mx-2(type="button" id="delete-mariner-button" href="#" onclick="confirmDelete()")
+              button.btn.btn-danger.mx-2.buttons(type="button" id="delete-mariner-button" href="#" onclick="confirmDelete()")
                 i.bi.bi-x-circle-fill(style="font-size: .88rem;")
                 span(style="font-size: .85rem;")   &nbsp;Delete
 
@@ -175,6 +176,23 @@ block content
           option.text = employersArray[y]['EmployerName'];
           let employerSelect = $('#employerSelect');
           employerSelect.append(option);
+        }
+        break;
+
+        case 'Status':
+        // Create a select element
+        element = document.createElement('select');
+        element.classList = 'form-select bg-white'
+        element.id = 'statusSelect';
+        element.name = 'searchText';
+        searchInput.append(element);
+        // Place statuses into UI
+        for (let x = 0; x < 3; x++) {
+        let option = document.createElement('option');
+        option.value = parseInt(x) + 1;
+        option.text = parseInt(x) + 1;
+        let statusSelect = $('#statusSelect');
+        statusSelect.append(option);
         }
         break;
 

@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 23:03:55
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-05 14:47:49
+ * @Last Modified time: 2022-07-05 15:09:29
  */
 
 // Uses the selected category and search text to send a request to the backend
@@ -61,13 +61,17 @@ $('#search-label').hide();
 $('#search-button').hide();
 
 $(document).ready(function () {
+    // Variables for the items we need to create the View URL
+    let selectedRow;
+    let marinerIDCell;
+    let selectedMarinerID;
+    if (!selectedRow) {
+        $('.buttons').hide();
+    }
+
     // Make table rows selectable
     $('tbody tr').click(function () {
-        // Variables for the items we need to create the View URL
-        let selectedRow;
-        let marinerIDCell;
-        let selectedMarinerID;
-
+        $('.buttons').show();
         // Remove the active class from anything previously selected
         $('.table-active').removeClass('table-active');
 

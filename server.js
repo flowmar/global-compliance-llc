@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-05 14:47:09
+ * @Last Modified time: 2022-07-05 15:01:04
  */
 
 'use strict';
@@ -165,7 +165,7 @@ app.get('/search', async (_req, res) => {
             splitDate[3];
         formatted['birthDate'] = formattedDate;
 
-        formatted['status'] = ' ';
+        formatted['status'] = mariner['Status'];
 
         mariners.push(formatted);
     }
