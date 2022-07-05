@@ -2,10 +2,10 @@
  * @Author: flowmar
  * @Date: 2022-07-03 07:45:53
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-05 01:42:50
+ * @Last Modified time: 2022-07-05 14:25:26
  */
 
-const marinerID = document.getElementById('marinerIDHidden').value;
+const marinerID = document.getElementById('marinerIDHidden').value || next;
 const appModal = new mdb.Modal(applicationModal);
 
 $(document).ready(() => {
@@ -216,3 +216,12 @@ function checkAppModal() {
 $('#appModalButton').click(function () {
     checkAppModal();
 });
+
+// Confirmation/request for saving edited Mariner
+function confirmAndSaveMariner() {
+    let confirmed = confirm('Save edited Mariner information?');
+    if (confirmed) document.getElementById('editMarinerForm').submit();
+    else {
+        console.log('canceled!');
+    }
+}

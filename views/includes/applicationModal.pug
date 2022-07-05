@@ -5,7 +5,7 @@
         h5.modal-title#licensesModalLabel Mariner Application
         button.btn-close(type="button" data-mdb-dismiss="modal" aria-label="Close")
       .modal-body.text-center
-        form.form-horizontal.d-inline(method="POST" action="/appUpload" enctype="multipart/form-data" id="target")
+        form.form-horizontal.d-inline(method="POST" action="/appUpload" enctype="multipart/form-data" id="target").container
           input(type="text" hidden id="marinerIDNumber" name="marinerIDNumber" value="marinerID")
           label(for="file-input-group") Application File:
             .input-group.mt-2#file-input-group

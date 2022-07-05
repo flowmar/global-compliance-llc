@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-05 02:37:18
+ * @Last Modified time: 2022-07-05 14:47:09
  */
 
 'use strict';
@@ -463,6 +463,7 @@ app.get('/form', async (_req, res) => {
         lastAppID = result[0][0]['MAX(ApplicationID)'];
         console.log(lastAppID);
         nextAppID = parseInt(lastAppID) + 1;
+        console.log(nextAppID);
     });
     // Gets the country list from the database
     db.query(country_query).then((countryResult) => {
@@ -551,9 +552,7 @@ app.post('/add', async (req, res) => {
         console.log(result.insertId);
 
         // Render the Search page after insertion
-        res.render('search', {
-            title: 'Search',
-        });
+        res.redirect('search');
     });
 });
 
@@ -617,9 +616,7 @@ app.post('/edit', async (req, res) => {
     // Update the database
     await db.query(update_query);
 
-    res.render('search', {
-        title: 'Search',
-    });
+    res.redirect('/search');
 });
 
 /**
@@ -1034,6 +1031,20 @@ app.post('/search', async (_req, res) => {
         searchText: searchText,
         searchCategory: category,
     });
+});
+
+app.post('/delete/:id', async (req, res) => {
+    let marinerID = req.params.id;
+
+    let deleteSQL = 'DELETE FROM Mariners WHERE MarinerID = ?';
+    let delete_query = mysql.format(deleteSQL, [marinerID]);
+
+    let deleteRows = await db.query(delete_query);
+    let deleteJSON = JSON.parse(JSON.stringify(deleteRows));
+
+    console.log(deleteJSON);
+
+    res.send('Mariner Deleted!');
 });
 
 // Error Handling

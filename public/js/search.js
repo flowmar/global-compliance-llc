@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 23:03:55
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-03 00:45:34
+ * @Last Modified time: 2022-07-05 14:47:49
  */
 
 // Uses the selected category and search text to send a request to the backend
@@ -30,6 +30,30 @@ function search() {
             },
         });
     });
+}
+
+// Confirm and delete Mariner
+function confirmDelete() {
+    let confirmed = confirm(
+        'Are you sure you want to delete this Mariner? This cannot be undone!'
+    );
+    if (confirmed) {
+        let selectedMarinerButton = $('#delete-mariner-button');
+        let selectedMarinerID = selectedMarinerButton.val();
+        console.log(selectedMarinerID);
+        let url = '/delete/' + selectedMarinerID;
+        axios
+            .post(url, {
+                id: selectedMarinerID,
+            })
+            .then(function (response) {
+                console.log(response);
+                location.reload();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
 }
 
 // Hide the label
@@ -89,6 +113,7 @@ $(document).ready(function () {
         deleteMarinerButton.attr({
             href: newDeleteURL,
             target: '_blank',
+            value: selectedMarinerID,
         });
     });
 });

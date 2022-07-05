@@ -70,9 +70,10 @@ block content
               a.btn.btn-info.mx-2(type="button" id="edit-mariner-button" href="#")
                 i.bi.bi-pencil-square(style="font-size: .88rem;")
                 span(style="font-size: .85rem;")   &nbsp;Edit
-              a.btn.btn-danger.mx-2(type="button" id="delete-mariner-button" href="#")
+              button.btn.btn-danger.mx-2(type="button" id="delete-mariner-button" href="#" onclick="confirmDelete()")
                 i.bi.bi-x-circle-fill(style="font-size: .88rem;")
                 span(style="font-size: .85rem;")   &nbsp;Delete
+
   script(src="/js/search.js")
   script.
 

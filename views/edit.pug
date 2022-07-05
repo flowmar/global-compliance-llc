@@ -21,7 +21,16 @@ block content
       .col-7
     .row.bg-dark.m-3.p-1.py-3
       .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.m-2.mb-0
-        form(action="/edit" method="post" name="addMarinerForm" data-parsley-validate).container
+        form(action="/edit" method="post" name="editMarinerForm" id="editMarinerForm" data-parsley-validate).container
+          .row.my-4
+            .col-6
+            .col-6.d-flex.justify-content-end.p-0
+              button.btn.mx-2#appModalButton(style="background-color: var(--yellow-color);" type="button" value="Application" data-mdb-target="#applicationModal")
+                i.bi.bi-file-medical(style="font-size: 1rem;")
+                span   &nbsp;Application
+              a.btn.mx-1(style="background-color: var(--yellow-color);" type="button" id="licenses-button" value="Licenses" data-mdb-target="#licensesModal" href='/licenses' target="_blank")
+                i.bi.bi-credit-card(style="font-size: 1rem;")
+                span   &nbsp;Licenses
           .row.my-4
             .col-3
               label.form-label(for="mariner-id") Mariner ID:
@@ -100,17 +109,20 @@ block content
           .row.my-4
             .col
             .col.d-flex.justify-content-end
-              button.btn.btn-lg.m-2.text-dark(style="background-color: var(--green-color); color:#4f4f4f" type="submit" id="save-mariner" value="Save")
-                i.bi.bi-save(style="font-size=.9rem")
+              a.btn.m-2.text-dark(style="background-color: var(--red-color); color:#4f4f4f;" id="cancel-edit-mariner-button" value="Cancel" href="/search")
+                i.bi.bi-x-square(style="font-size=1rem")
+                span    &nbsp;Cancel
+              button.btn.m-2.text-dark(style="background-color: var(--green-color); color:#4f4f4f;" id="save-mariner" value="Save" onclick="confirmAndSaveMariner()")
+                i.bi.bi-save(style="font-size=1rem")
                 span    &nbsp;Save
-          .row.my-4
-            .col
-              button.btn.btn-lg.mx-2#appModalButton(style="background-color: var(--yellow-color);" type="button" value="Application" data-mdb-target="#applicationModal")
-                i.bi.bi-file-medical(style="font-size: 1rem;")
-                span   &nbsp;Application
-              a.btn.btn-lg.mx-1(style="background-color: var(--yellow-color);" type="button" id="licenses-button" value="Licenses" data-mdb-target="#licensesModal" href='/licenses' target="_blank")
-                i.bi.bi-credit-card(style="font-size: 1rem;")
-                span   &nbsp;Licenses
+          //- .row.my-4
+          //-   .col
+          //-     button.btn.btn-lg.mx-2#appModalButton(style="background-color: var(--yellow-color);" type="button" value="Application" data-mdb-target="#applicationModal")
+          //-       i.bi.bi-file-medical(style="font-size: 1rem;")
+          //-       span   &nbsp;Application
+          //-     a.btn.btn-lg.mx-1(style="background-color: var(--yellow-color);" type="button" id="licenses-button" value="Licenses" data-mdb-target="#licensesModal" href='/licenses' target="_blank")
+          //-       i.bi.bi-credit-card(style="font-size: 1rem;")
+          //-       span   &nbsp;Licenses
 
   include includes/applicationModal
 
@@ -127,19 +139,13 @@ block content
     let agentsArray = !{JSON.stringify(agents)};
     let employersArray = !{JSON.stringify(employers)};
     let marinerHidden = $('#marinerIDHidden');
-    console.log(marinerHidden);
+    //- console.log(marinerHidden);
     marinerHidden.attr("value", viewMarinerID);
 
     let applicationIDHidden = $('#applicationIDHidden');
     if (viewApplicationID)
     {
-      console.log("haaa" + viewApplicationID);
       applicationIDHidden.attr('value', viewApplicationID);
-    }
-    else
-    {
-      console.log("haa" + viewApplicationID);
-      applicationIDHidden.attr('value', null);
     }
 
     //- Wait until DOM is loaded
@@ -181,8 +187,7 @@ block content
     // Place the values from the mariner object into the UI
     let marinerIDArea = $('#mariner-id');
     marinerIDArea.val(viewMarinerID);
-    let marinerIDHidden = $('#marinerIDHidden');
-    marinerIDHidden.val(viewMarinerID);
+
     $('#application-id').val(marinerObject['ApplicationID']);
     $('#first-name').val(marinerObject['FirstName']);
     $('#last-name').val(marinerObject['LastName']);

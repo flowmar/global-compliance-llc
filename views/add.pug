@@ -25,10 +25,12 @@ block content
             .col-3
               label.form-label(for="mariner-id") Mariner ID:
               input.form-control(style="background-color: var(--highlight-bg-color);" type="text" id="mariner-id" name="marinerID" value=`${next}` disabled required)
+              input.form-control(hidden id="marinerIDHidden" name="marinerIDNumber")
             .col-6
             .col-3
-              label.form-label(for="application-id") Application ID:
-              input.form-control(style="background-color: var(--highlight-bg-color);" type="text" id="application-id" name="applicationID" value=`${nextAppID}` disabled required)
+              //- label.form-label(for="application-id") Application ID:
+              //- input.form-control(style="background-color: var(--highlight-bg-color);" type="text" id="application-id" name="applicationID" value=`${nextAppID}` disabled required)
+              //- input.form-control(hidden id="applicationIDHidden" name="applicationIDNumber")
           .row.my-4
             .col-4
               label.form-label(for="first-name") First Name:
@@ -97,43 +99,47 @@ block content
           .row.my-4
             .col
             .col.d-flex.justify-content-end
+              a.btn.btn-lg.m-2.text-dark(style="background-color: var(--red-color); color:#4f4f4f" id="cancel-edit-mariner-button" value="Cancel" href="/search")
+                i.bi.bi-x-square(style="font-size=.9rem")
+                span    &nbsp;Cancel
               button.btn.btn-lg.m-2.text-dark(style="background-color: var(--green-color); color:#4f4f4f" type="submit" id="save-mariner" value="Save")
                 i.bi.bi-save(style="font-size=.9rem")
                 span    &nbsp;Save
           .row.my-4
             .col
-              button.btn.btn-lg.mx-2#appModalButton(style="background-color: var(--yellow-color);" type="button" value="Application" data-mdb-target="#applicationModal")
-                i.bi.bi-file-medical(style="font-size: 1rem;")
-                span   &nbsp;Application
-              a.btn.btn-lg.mx-1(style="background-color: var(--yellow-color);" type="button" id="licenses-button" value="Licenses" data-mdb-target="#licensesModal" href='/licenses' target="_blank")
-                i.bi.bi-credit-card(style="font-size: 1rem;")
-                span   &nbsp;Licenses
+              //- button.btn.btn-lg.mx-2#appModalButton(style="background-color: var(--yellow-color);" type="button" value="Application" data-mdb-target="#applicationModal")
+              //-   i.bi.bi-file-medical(style="font-size: 1rem;")
+              //-   span   &nbsp;Application
+              //- a.btn.btn-lg.mx-1(style="background-color: var(--yellow-color);" type="button" id="licenses-button" value="Licenses" data-mdb-target="#licensesModal" href='/licenses' target="_blank")
+              //-   i.bi.bi-credit-card(style="font-size: 1rem;")
+              //-   span   &nbsp;Licenses
 
   include includes/applicationModal
 
-  script(src="/js/validation.js")
   script.
+    //- Get the variables from the backend
     let countriesArray = !{JSON.stringify(countries)};
     let employersArray = !{JSON.stringify(employers)};
     let agentsArray = !{JSON.stringify(agents)};
+    // Select the Inputs from the form
     let citizenshipInput = document.getElementById('citizenship');
     let birthCountryInput = document.getElementById('birth-country');
     let employerInput = document.getElementById('employer');
     let agentInput = document.getElementById('processing-agent');
+    let next = !{next};
 
     //- Create option elements for Countries
     for(i = 0; i < countriesArray.length; i++) {
 
       let element = document.createElement('option');
-      element.value = i;
+      element.value = i + 1;
       element.text = countriesArray[i];
       citizenshipInput.appendChild(element);
-      birthCountryInput.appendChild(element);
 
-      //- let element2 = document.createElement('option');
-      //- element2.value = i;
-      //- element2.text = countriesArray[i];
-      //- birthCountryInput.appendChild(element2);
+      let element2 = document.createElement('option');
+      element2.value = i + 1;
+      element2.text = countriesArray[i];
+      birthCountryInput.appendChild(element2);
     }
 
     //- Create option elements for Employers
@@ -151,3 +157,4 @@ block content
       element4.text = agentsArray[l]["AgentName"];
       agentInput.appendChild(element4);
     }
+  script(src="/js/validation.js")

@@ -7,3 +7,20 @@ TODO: When Application is uploaded from Edit screen, update the applicationID bo
 
 TODO: When Application is uploaded from Add Mariner Screen, update the applicationID box in the add form
 
+ //- if title == 'Add'
+        //-   .row
+        //-     .col-4
+        //-       label.form-label.text-dark(for="first-name") First Name:
+        //-       input.form-control.bg-white(type="text" id="first-name" name="firstName" data-parsley-required="true")
+        //-     .col-4
+        //-       label.form-label.text-dark(for="middle-name") Middle Name:
+        //-       input.form-control.bg-white(type="text" id="middle-name" name="middleName")
+        //-     .col-4
+        //-       label.form-label.text-dark(for="last-name") Last Name:
+        //-       input.form-control.bg-white(type="text" id="last-name" name="lastName" data-parsley-required="true")
+        //-   .row.my-2
+        //-     .col-4
+        //-     .col-4
+        //-       label.form-label.text-dark(for="first-name") Birth Date:
+        //-       input.form-control.bg-white(type="date" id="first-name" name="firstName" data-parsley-required="true")
+        //-     .col-4
