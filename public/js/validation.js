@@ -2,25 +2,29 @@
  * @Author: flowmar
  * @Date: 2022-07-03 07:45:53
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-04 19:37:55
+ * @Last Modified time: 2022-07-05 01:35:12
  */
 
-/* Add Mariner Validation */
-const applicationModal = document.getElementById('applicationModal');
-const firstNameInput = document.getElementById('first-name');
-const lastNameInput = document.getElementById('last-name');
-const birthDateInput = document.getElementById('birth-date');
-const marinerID = document.getElementById('mariner-id').value;
-const applicationButton = document.getElementById('appModalButton');
-const licensesButton = document.getElementById('licenses-button');
-const appArea = document.getElementById('appArea');
-const downloadAppButton = document.getElementById('download-app-button');
-const deleteAppButton = document.getElementById('delete-app-button');
+const marinerID = document.getElementById('marinerIDHidden').value;
+
 const appModal = new mdb.Modal(applicationModal);
 
-// Places the Mariner ID into the Licenses Button URL
-licensesButton.href = `/licenses/${marinerID}`;
-
+$(document).ready(() => {
+    /* Add Mariner Validation */
+    const applicationModal = document.getElementById('applicationModal');
+    const firstNameInput = document.getElementById('first-name');
+    const lastNameInput = document.getElementById('last-name');
+    const birthDateInput = document.getElementById('birth-date');
+    const applicationButton = document.getElementById('appModalButton');
+    let licensesButton = $('#licenses-button');
+    const newLicenseURL = '/licenses/' + marinerID;
+    licensesButton.attr('href', '/licenses/' + marinerID);
+    console.log(licensesButton);
+    const appArea = document.getElementById('appArea');
+    const downloadAppButton = document.getElementById('download-app-button');
+    const deleteAppButton = document.getElementById('delete-app-button');
+    // Places the Mariner ID into the Licenses Button URL
+});
 // Formats Phone Number
 /**
  * If the input is falsy, return the value. If the input is less than 4 characters,
@@ -95,13 +99,33 @@ function uploadApp() {
             processData: false,
             contentType: false,
             success: function (r) {
-                console.log('Result: ' + r);
+                console.log('Result: ' + JSON.parse(JSON.stringify(r)));
                 $('#closeApplicationModal').trigger('click');
+                location.reload();
             },
             error: function (err) {
-                console.log('Error: ' + err[0]);
+                console.log('Error: ' + err.message);
             },
         });
+    });
+}
+
+function refreshAppId(marinerIDNumber) {
+    $.ajax({
+        type: 'GET',
+        url: '/getApp',
+        data: { marinerID: marinerID },
+        success: function (result) {
+            let resultJSON = JSON.parse(JSON.stringify(result));
+            console.log(resultJSON);
+            if (resultJSON['appExists']) {
+                $('application-id').attr('value', resultJSON['appId']);
+                console.log('Success');
+            }
+        },
+        error: function (err) {
+            console.log('error:' + err.message);
+        },
     });
 }
 
@@ -127,6 +151,8 @@ function deleteAppConfirm(id) {
             success: function (result) {
                 console.log(result);
                 $('#closeApplicationModal').trigger('click');
+                $('#application-id').attr('value', '');
+                $('#application-id').val('');
             },
             error: function (error) {
                 console.log('Error: ' + error);
@@ -148,9 +174,13 @@ function checkIfAppExists() {
         url: '/getApp',
         data: { marinerID: marinerID },
         success: function (result) {
-            console.log('result:' + JSON.stringify(result));
             let resultJSON = JSON.parse(JSON.stringify(result));
+            console.log(resultJSON);
+            // If an application exists...
             if (resultJSON['appExists']) {
+                // Hide the Upload Form
+                $('#target').remove();
+                // Show the Download/Delete Area
                 appArea.innerHTML =
                     '<span>' +
                     resultJSON['appFilename'] +
@@ -160,6 +190,7 @@ function checkIfAppExists() {
                     marinerID +
                     ")'><i class='bi bi-trash'></i>&nbsp;Delete</button></div>";
             } else {
+                // Otherwise display a message
                 appArea.innerHTML =
                     '<strong><em>No application has been uploaded</em></strong>';
             }

@@ -77,7 +77,7 @@ function uploadApp() {
             processData: false,
             contentType: false,
             success: function (r) {
-                console.log('Result: ' + r);
+                console.log('Result: ' + JSON.parse(JSON.stringify(r)));
                 $('#closeApplicationModal').trigger('click');
             },
             error: function (err) {
@@ -148,13 +148,7 @@ function checkIfAppExists() {
     });
 }
 
-/**
- * @function checkAppModal
- * @return {description}
- */
 function checkAppModal() {
-    // if (firstNameInput.value != '' && lastNameInput != '' && birthDateInput.value != '') {
-    console.log(applicationModal);
     applicationModal.addEventListener('show.mdb.modal', () => {
         checkIfAppExists();
     });

@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-04 23:34:52
+ * @Last Modified time: 2022-07-05 01:33:59
  */
 
 'use strict';
@@ -152,6 +152,7 @@ app.post('/appUpload', upload.single('application'), async (req, res) => {
         return res.status(400).send({ message: 'Please upload a file.' });
     }
 
+    let applicationID;
     // Get the file from the request
     let file = req.file;
 
@@ -176,18 +177,31 @@ app.post('/appUpload', upload.single('application'), async (req, res) => {
     ]);
 
     // Upload application to database
-    db.pool.query(application_query, async (err, _result) => {
-        if (err) throw err;
-        // Delete the uploaded file from memory after insertion into the db
-        let uploadedFile = 'public/uploads/' + file.filename;
-        fs.unlinkSync(uploadedFile);
-        console.log('File Uploaded!');
-        // console.log("RESULT: " + JSON.stringify(result));
-    });
+    let appQueryRows = await db.query(application_query);
+    // Delete the uploaded file from memory after insertion into the db
+    let uploadedFile = 'public/uploads/' + file.filename;
+    fs.unlinkSync(uploadedFile);
+    console.log('File Uploaded!');
+
+    console.log(appQueryRows);
+    let appQueryJSON = JSON.parse(JSON.stringify(appQueryRows));
+    console.log(appQueryJSON);
+    applicationID = appQueryJSON[0]['insertId'];
+    console.log('Application ID: ' + applicationID);
+
+    // Update the Mariner with the ApplicationID
+    let updateMarinerSQL =
+        'UPDATE Mariners SET ApplicationID = ? WHERE MarinerID = ?';
+    let update_query = mysql.format(updateMarinerSQL, [
+        applicationID,
+        marinerID,
+    ]);
+    await db.query(update_query);
 
     res.send({
         appUploaded: true,
         appFilename: file.filename,
+        appID: applicationID,
     });
 });
 
@@ -251,7 +265,6 @@ app.get('/appDownload', async (req, res) => {
 
 // Route for Deleting an Application Document from the database
 app.post('/deleteApp', async (req, res) => {
-    console.log(req);
     // Get ID from request parameters
     let marinerID = req.body.marinerID;
     // SQL Statement to Delete Application
@@ -264,7 +277,13 @@ app.post('/deleteApp', async (req, res) => {
         console.log('Application Deleted for MarinerID: ' + marinerID);
     });
 
-    res.render('form');
+    // Update the Mariner to reflect the deletion
+    let updateMarinerSQL =
+        'UPDATE Mariners SET ApplicationID = null WHERE MarinerID = ?';
+    let update_query = mysql.format(updateMarinerSQL, [marinerID]);
+    await db.query(update_query);
+
+    res.send('Application successfully deleted');
 });
 
 /**
@@ -763,7 +782,7 @@ app.get('/getApp', async (req, res) => {
 
     // Check database to see if an application for the mariner exists
     let appSQL =
-        'SELECT ApplicationFileName FROM Applications WHERE marinerID = ?';
+        'SELECT ApplicationID,ApplicationFileName FROM Applications WHERE marinerID = ?';
     let app_query = mysql.format(appSQL, [marinerID]);
 
     // Check the database for an application with the matching MarinerID
@@ -773,10 +792,12 @@ app.get('/getApp', async (req, res) => {
         let resultJSON = JSON.parse(JSON.stringify(result));
         if (resultJSON[0]) {
             console.log(resultJSON[0]['ApplicationFileName']);
+            console.log(resultJSON[0]['ApplicationID']);
             // Send result back to frontend
             res.send({
                 appExists: true,
                 appFilename: resultJSON[0]['ApplicationFileName'],
+                appID: resultJSON[0]['ApplicationID'],
             });
         } else {
             res.send({

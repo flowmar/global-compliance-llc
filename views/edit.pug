@@ -17,12 +17,11 @@ block style
 block content
   .container-fluid
     .row.mt-5
-      .col-1
-      .col-4.display-5.page-title Edit Mariner
+      .col-4.display-5.mx-5.page-title Edit Mariner
       .col-7
     .row.bg-dark.m-3.p-1.py-3
       .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.m-2.mb-0
-        .container
+        form(action="/edit" method="post" name="addMarinerForm" data-parsley-validate).container
           .row.my-4
             .col-3
               label.form-label(for="mariner-id") Mariner ID:
@@ -112,7 +111,7 @@ block content
                 i.bi.bi-credit-card(style="font-size: 1rem;")
                 span   &nbsp;Licenses
 
-  include includes/viewApplicationModal
+  include includes/applicationModal
 
   script.
     let marinerObject = !{JSON.stringify(viewMariner)};
@@ -191,4 +190,4 @@ block content
     $('#status').val(marinerObject['Status']);
 
     });
-  script(src="/js/view.js")
+  script(src="/js/validation.js")
