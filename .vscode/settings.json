@@ -11,5 +11,6 @@
     "JAWSDB",
     "reja",
     "seafoam"
-  ]
+  ],
+  "docwriter.style": "Auto-detect"
 }

@@ -3,3 +3,6 @@ node_modules
 package-lock.json
 globalcompliance.png
 .env
+.history
+.parcel-cache
+.vscode

@@ -1,8 +1,8 @@
 /*
  * @Author: flowmar
  * @Date: 2022-07-03 07:45:53
- * @Last Modified by:   flowmar
- * @Last Modified time: 2022-07-03 07:45:53
+ * @Last Modified by: flowmar
+ * @Last Modified time: 2022-07-04 19:37:55
  */
 
 /* Add Mariner Validation */
@@ -22,6 +22,14 @@ const appModal = new mdb.Modal(applicationModal);
 licensesButton.href = `/licenses/${marinerID}`;
 
 // Formats Phone Number
+/**
+ * If the input is falsy, return the value. If the input is less than 4 characters,
+ * return the value. If the input is less than 7 characters, return the value with
+ * formatting. If the input is greater than 7 characters, return the value with
+ * formatting
+ * @param value - The value of the input
+ * @returns A formatted phone number
+ */
 function formatPhoneNumber(value) {
     // If input is falsy, return the value
     if (!value) return value;
@@ -47,6 +55,10 @@ function formatPhoneNumber(value) {
     )}-${phoneNumber.slice(6, 9)}`;
 }
 
+/**
+ * It gets the input field, formats the input, and sets the value to the formatted
+ * input
+ */
 // Phone number formatter
 function phoneNumberFormatter() {
     // Get input field
@@ -58,12 +70,9 @@ function phoneNumberFormatter() {
 }
 
 /**
- * Checks to see if
- * First Name, Last Name and Date of Birth
- * are filled out before allowing the App Modal to open
+ * When the user clicks the 'Upload' button, the file is sent to the server and the
+ * modal is closed
  */
-
-// Uploads the application document to the database
 function uploadApp() {
     let processingAgent = document.getElementById('processing-agent').value;
     console.log(marinerID + '\n' + processingAgent);
@@ -128,7 +137,11 @@ function deleteAppConfirm(id) {
     }
 }
 
-// Checks to see if an application for the specified MarinerID exists,
+/**
+ * It checks if the mariner has an application uploaded. If he does, it displays
+ * the filename and two buttons: Download and Delete. If he doesn't, it displays a
+ * message saying that no application has been uploaded
+ */
 function checkIfAppExists() {
     $.ajax({
         type: 'GET',
@@ -137,7 +150,7 @@ function checkIfAppExists() {
         success: function (result) {
             console.log('result:' + JSON.stringify(result));
             let resultJSON = JSON.parse(JSON.stringify(result));
-            if (resultJSON['appExists'] == true) {
+            if (resultJSON['appExists']) {
                 appArea.innerHTML =
                     '<span>' +
                     resultJSON['appFilename'] +
@@ -158,8 +171,8 @@ function checkIfAppExists() {
 }
 
 /**
- * @function checkAppModal
- * @return {description}
+ * The function checks if the application modal is open, and if it is, it checks if
+ * the application exists
  */
 function checkAppModal() {
     console.log(applicationModal);
