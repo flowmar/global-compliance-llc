@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-04 18:05:39
+ * @Last Modified time: 2022-07-04 23:34:52
  */
 
 'use strict';
@@ -209,6 +209,7 @@ app.get('/appDownload', async (req, res) => {
         if (error) throw error;
         console.log(response[0]);
         console.log(response[0]['ApplicationID']);
+        let applicationID = response[0]['ApplicationID'];
 
         // Create a Buffer from the BLOB object
         let buff = await new Buffer.from(response[0]['ApplicationDocument'], {
@@ -216,15 +217,35 @@ app.get('/appDownload', async (req, res) => {
         });
         console.log(buff);
 
-        const appFileName = 'application_for_mariner_' + marinerID + '.pdf';
+        const tempFilePath =
+            'public/downloads/' +
+            'application_' +
+            applicationID +
+            '_for_mariner_' +
+            marinerID +
+            '.pdf';
+        const fileName =
+            'application_' +
+            applicationID +
+            '_for_mariner_' +
+            marinerID +
+            '.pdf';
+
         // Write the binary buffer data to a file
         let pdf = await fs.writeFileSync(
-            appFileName,
+            tempFilePath,
             response[0]['ApplicationDocument']
         );
 
         // Send the document to the browser for download
-        res.download(appFileName);
+        res.download(tempFilePath, fileName, (err) => {
+            // Throw an error is there is an error
+            if (err) throw err;
+            // If the download completes, display a success message
+            console.log('Download Complete!');
+            // Delete the temporary file from the server
+            fs.unlink(tempFilePath);
+        });
     });
 });
 
@@ -358,6 +379,44 @@ app.get('/search', async (_req, res) => {
 
 // Request for '/view' URL
 app.get('/view/:id', async (req, res) => {
+    // Get MarinerID from request
+    let marinerID = req.params.id;
+    // Get Mariner information from the database
+    const viewSQL = 'SELECT * FROM Mariners WHERE MarinerID = ?';
+    const view_query = mysql.format(viewSQL, [marinerID]);
+    const viewRows = await db.query(view_query);
+    const viewJSON = viewRows[0][0];
+    console.log(viewJSON);
+
+    // Get employers from database
+    const all_employers_query = mysql.format('SELECT * FROM Employers');
+    const allEmployerRows = await db.query(all_employers_query);
+    const allEmployersJSON = allEmployerRows[0];
+    // console.log(allEmployersJSON);
+
+    // Get agents from database
+    const agents_query = mysql.format('SELECT * FROM Agents');
+    const agentsRows = await db.query(agents_query);
+    const agentsJSON = agentsRows[0];
+    // console.log(agentsJSON);
+
+    // Get countries from database
+    const countries_query = mysql.format('SELECT * FROM Countries');
+    const countriesRows = await db.query(countries_query);
+    const countriesJSON = countriesRows[0];
+    // console.log(countriesJSON);
+
+    res.render('view', {
+        title: 'View',
+        viewMariner: viewJSON,
+        employers: allEmployersJSON,
+        agents: agentsJSON,
+        countries: countriesJSON,
+    });
+});
+
+// Request for '/edit' URL
+app.get('/edit/:id', async (req, res) => {
     let marinerID = req.params.id;
 
     const viewSQL = 'SELECT * FROM Mariners WHERE MarinerID = ?';
@@ -381,8 +440,8 @@ app.get('/view/:id', async (req, res) => {
     const countriesJSON = countriesRows[0];
     // console.log(countriesJSON);
 
-    res.render('view', {
-        title: 'View',
+    res.render('edit', {
+        title: 'Edit',
         viewMariner: viewJSON,
         employers: allEmployersJSON,
         agents: agentsJSON,
