@@ -2,11 +2,10 @@
  * @Author: flowmar
  * @Date: 2022-07-03 07:45:53
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-05 01:35:12
+ * @Last Modified time: 2022-07-05 01:42:50
  */
 
 const marinerID = document.getElementById('marinerIDHidden').value;
-
 const appModal = new mdb.Modal(applicationModal);
 
 $(document).ready(() => {
@@ -153,6 +152,7 @@ function deleteAppConfirm(id) {
                 $('#closeApplicationModal').trigger('click');
                 $('#application-id').attr('value', '');
                 $('#application-id').val('');
+                location.reload();
             },
             error: function (error) {
                 console.log('Error: ' + error);

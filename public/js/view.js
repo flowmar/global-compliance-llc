@@ -1,3 +1,10 @@
+/*
+ * @Author: flowmar
+ * @Date: 2022-07-05 01:43:12
+ * @Last Modified by:   flowmar
+ * @Last Modified time: 2022-07-05 01:43:12
+ */
+
 /* Add Mariner Validation */
 
 const applicationModal = document.getElementById('applicationModal');
