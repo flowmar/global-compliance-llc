@@ -26,11 +26,12 @@ block content
             .col-3
               label.form-label(for="mariner-id") Mariner ID:
               input.form-control(style="background-color: var(--highlight-bg-color);" type="text" id="mariner-id" name="marinerID" value="" disabled)
-              input.form-control(hidden id="marinerIDHidden")
+              input.form-control(hidden id="marinerIDHidden" name="marinerIDNumber")
             .col-6
             .col-3
               label.form-label(for="application-id") Application ID:
               input.form-control(style="background-color: var(--highlight-bg-color);" type="text" id="application-id" name="applicationID" value="" disabled)
+              input.form-control(hidden id="applicationIDHidden" name="applicationIDNumber")
           .row.my-4
             .col-4
               label.form-label(for="first-name") First Name:
@@ -119,6 +120,8 @@ block content
     console.log(marinerObject['MarinerID']);
     let viewMarinerID = marinerObject['MarinerID'];
     console.log(viewMarinerID);
+    let viewApplicationID = marinerObject['ApplicationID'];
+    console.log(viewApplicationID);
 
     let countriesArray = !{JSON.stringify(countries)};
     let agentsArray = !{JSON.stringify(agents)};
@@ -126,6 +129,18 @@ block content
     let marinerHidden = $('#marinerIDHidden');
     console.log(marinerHidden);
     marinerHidden.attr("value", viewMarinerID);
+
+    let applicationIDHidden = $('#applicationIDHidden');
+    if (viewApplicationID)
+    {
+      console.log("haaa" + viewApplicationID);
+      applicationIDHidden.attr('value', viewApplicationID);
+    }
+    else
+    {
+      console.log("haa" + viewApplicationID);
+      applicationIDHidden.attr('value', null);
+    }
 
     //- Wait until DOM is loaded
     window.addEventListener('DOMContentLoaded', (event) => {
@@ -166,6 +181,8 @@ block content
     // Place the values from the mariner object into the UI
     let marinerIDArea = $('#mariner-id');
     marinerIDArea.val(viewMarinerID);
+    let marinerIDHidden = $('#marinerIDHidden');
+    marinerIDHidden.val(viewMarinerID);
     $('#application-id').val(marinerObject['ApplicationID']);
     $('#first-name').val(marinerObject['FirstName']);
     $('#last-name').val(marinerObject['LastName']);

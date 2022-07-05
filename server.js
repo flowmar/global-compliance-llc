@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-05 01:56:22
+ * @Last Modified time: 2022-07-05 02:37:18
  */
 
 'use strict';
@@ -516,8 +516,6 @@ app.post('/add', async (req, res) => {
     let processingAgent = req.body.processingAgent;
     let marinerStatus = req.body.status;
     let applicationID = req.body.applicationID;
-    let application = req.body.application;
-    console.log(application);
     let notes = req.body.notes;
 
     let sqlInsert =
@@ -556,6 +554,71 @@ app.post('/add', async (req, res) => {
         res.render('search', {
             title: 'Search',
         });
+    });
+});
+
+app.post('/edit', async (req, res) => {
+    console.log(req.body);
+    // Get Mariner Information from request body
+    let marinerId = req.body.marinerIDNumber;
+    let firstName = req.body.firstName;
+    let middleName = req.body.middleName;
+    let lastName = req.body.lastName;
+    let address = req.body.address;
+    let phone = req.body.phone;
+    let email = req.body.email;
+    let employer = req.body.employer;
+    let vessel = req.body.vessel;
+    let marinerRefNum = req.body.marinerRefNum;
+    let passportNumber = req.body.passportNumber;
+    let citizenship = req.body.citizenship;
+    let birthCity = req.body.birthCity;
+    let birthState = req.body.birthState;
+    let birthCountry = req.body.birthCountry;
+    let birthDate = req.body.birthDate;
+    let processingAgent = req.body.processingAgent;
+    let marinerStatus = req.body.status;
+    let applicationID = req.body.applicationIDNumber;
+    let notes = req.body.notes;
+
+    if (applicationID == '') {
+        applicationID = null;
+    }
+    if (notes == '') {
+        notes = null;
+    }
+
+    // Create SQL Statement
+    let updateMarinerSQL =
+        'UPDATE Mariners SET FirstName = ?, LastName = ?, MiddleName = ?, StreetAddress = ?, PhoneNumber = ?, Email = ?, EmployerID = ?, VesselName = ?, MarinerReferenceNumber = ?, PassportNumber = ?, Citizenship = ?, BirthCity = ?, BirthState = ?, BirthCountry = ?, BirthDate = ?, ProcessingAgent = ?, Note = ?, ApplicationID = ?, Status = ? WHERE MarinerID = ?';
+    let update_query = mysql.format(updateMarinerSQL, [
+        firstName,
+        lastName,
+        middleName,
+        address,
+        phone,
+        email,
+        employer,
+        vessel,
+        marinerRefNum,
+        passportNumber,
+        citizenship,
+        birthCity,
+        birthState,
+        birthCountry,
+        birthDate,
+        processingAgent,
+        notes,
+        applicationID,
+        marinerStatus,
+        marinerId,
+    ]);
+
+    // Update the database
+    await db.query(update_query);
+
+    res.render('search', {
+        title: 'Search',
     });
 });
 
