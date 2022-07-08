@@ -37,7 +37,7 @@ block content
             .row
               .col
                 .display-5.fw-bold Mariner Information
-            hr
+            hr.mt-1
             .row.my-4
               .col-3
                 label.form-label(for="mariner-id") Mariner ID:
@@ -106,6 +106,7 @@ block content
               .col-4
                 label.form-label(for="status") Status:
                 select.form-select.bg-white.text-dark(id="status" name="status" )
+                  option(value="0")
                   option(value="1") Pending
                   option(value="2") Submitted
                   option(value="3") Completed
@@ -123,8 +124,8 @@ block content
             .row
               .col
                 .display-5.fw-bold Mariner Notes
-            hr
-            .row.mt-3.position-relative
+            hr.mt-1
+            .row.mt-4.position-relative
               .col
                 table.table.table-bordered.table-sm#activityTable
                   thead.table-dark
@@ -144,7 +145,7 @@ block content
           form(action="/activity" method="POST" id="activityForm")
             .row.my-4
               .col
-                label.form-label(for="notes") Mariner Notes:
+                label.form-label(for="notes") New Note:
                 textarea.form-control.bg-white.text-dark(type="text" id="notes" name="activity" data-parsley-maxlength="255" form="activityForm")
                 input.form-control(hidden id="activityProcessingAgent" name='activityProcessingAgent')
                 input.form-control(hidden id="marinerActivityID" name="marinerIDActivity")
@@ -154,6 +155,35 @@ block content
                 button.form-control.btn.m-2.text-dark(style="background-color: var(--green-color); color:#4f4f4f;" id="save-mariner-activity-button" type='submit' value="Save" onclick="saveMarinerActivity()")
                   i.bi.bi-save(style="font-size=1rem")
                   span    &nbsp;Save
+          br
+          .container-fluid.p-0
+            .row
+              .col
+                .display-5.fw-bold Mariner Attachments
+            hr.mt-1
+            .row.mt-4.position-relative
+              .col
+                table.table.table-bordered.table-sm#attachmentsTable
+                  thead.table-dark
+                    tr.text-center
+                      th(scope="col") Date
+                      th(scope="col") Activity
+                      th(scope="col") Agent
+                  tbody.bg-white.text-dark.table-group-divider.table-divider-color(style="font-size: 1rem; font-weight: bold;")#attachmentsTableBody
+            .row
+              .col.d-flex.justify-content-end
+                button.btn.btn-info.m-2.buttons(id="edit-mariner-activity-button" data-mdb-target="#editActivityModal")
+                  i.bi.bi-pencil-square.text-dark
+                  span.text-dark   &nbsp;Edit
+                button.btn.btn-danger.m-2.buttons(type="button" id="delete-mariner-activity-button" onclick="confirmAndDeleteActivity()")
+                  i.bi.bi-x-circle-fill.text-dark
+                  span.text-dark   &nbsp;Delete
+            .row.my-4
+              .col-6
+                label(for="attachment-input-group") New Attachment:
+                .input-group.mt-2#attachment-input-group
+                  input.form-control.form-control-file.text-dark(type="file" id="attachment-file" name="attachment")
+                  button.input-group-text.btn(style="background-color: var(--yellow-color); font-weight: bold;" onclick="uploadAttachment()" id="attachment-upload-button" value="Upload") Upload
             //- .row.my-4
             //-   .col
             //-     button.btn.btn-lg.mx-2#appModalButton(style="background-color: var(--yellow-color);" type="button" value="Application" data-mdb-target="#applicationModal")
@@ -173,23 +203,30 @@ block content
     console.log(marinerObject);
     console.log(marinerObject['MarinerID']);
     let viewMarinerID = marinerObject['MarinerID'];
-    console.log(viewMarinerID);
+    //- console.log(viewMarinerID);
     let viewApplicationID = marinerObject['ApplicationID'];
-    console.log(viewApplicationID);
+    //- console.log(viewApplicationID);
 
-    // Get the current User and place into the UI
-    let storedUser = window.localStorage.getItem("currentUser");
-    if (storedUser == "admin") {storedUser = 4};
-    console.log("user:" + storedUser);
-    let activityProcessingHidden = $('#activityProcessingAgent');
-    console.log("element: " + activityProcessingHidden)
-    activityProcessingHidden.attr('value', storedUser);
-
-    // Stringify the countries, agents an employers
+      // Stringify the countries, agents an employers
     let countriesArray = !{JSON.stringify(countries)};
     let agentsArray = !{JSON.stringify(agents)};
     let employersArray = !{JSON.stringify(employers)};
     let activitiesArray = !{JSON.stringify(activities)};
+
+    // Get the current User and place into the UI
+    let storedUser = window.localStorage.getItem("currentUser");
+    //- console.log(agentsArray);
+    let agentNames = [];
+    for(let agent of agentsArray) {
+      agentNames.push(agent['AgentName']);
+    }
+    //- console.log(agentNames);
+    let currentProcessingAgentID = agentNames.indexOf(storedUser) + 1;
+    //- console.log(currentProcessingAgentID);
+    //- console.log("user:" + storedUser);
+    let activityProcessingHidden = $('#activityProcessingAgent');
+    //- console.log("element: " + activityProcessingHidden)
+    activityProcessingHidden.attr('value', currentProcessingAgentID);
 
     // Place the MarinerID into the UI
     let marinerHidden = $('#marinerIDHidden');
@@ -264,8 +301,8 @@ block content
 
     // Convert the birth date to a format that fits in the UI
     let dateString = marinerObject['BirthDate'].toString();
-    console.log(dateString);
-    console.log(dateString.slice(0, 10));
+    //- console.log(dateString);
+    //- console.log(dateString.slice(0, 10));
     let birthDate = dateString.slice(0, 10);
     $('#birth-date').val(birthDate);
     $('#processing-agent').val(marinerObject['ProcessingAgent']);
@@ -278,9 +315,18 @@ block content
 
     // Format the Date
     let formattedDate = new Date(activity['ActivityDate']).toString();
+    let formattedTime = new Date(activity['ActivityDate']).toLocaleTimeString();
+    //- console.log(formattedTime);
+    //- console.log(formattedDate);
     formattedDateArray = formattedDate.split(' ');
-    formattedDate = formattedDateArray[1] + ' ' + formattedDateArray[2] + ' ' + formattedDate[3] + ' ' + formattedDateArray[4];
+    //- console.log(formattedDateArray);
+    formattedDate = formattedDateArray[0] + ' ' + formattedDateArray[1] + ' ' + formattedDateArray[2] + ' ' + formattedDateArray[3] + ' ' + formattedTime;
 
+    // Format Processing Agent
+    let processingAgentID = parseInt(activity['ProcessingAgent']);
+    let index = processingAgentID - 1;
+    let processingAgentName = agentsArray[index]['AgentName'];
+    //- console.log(processingAgentName);
     // Create the table row
     let tableRow = document.createElement('tr');
     tableRow.dataset.activityid = activity['ActivityID'];
@@ -290,7 +336,7 @@ block content
     tableRow.style = "text-align: center;";
 
     // Add the cells
-    tableRow.innerHTML = "<td id='" + activity['ActivityID']  + "' data-mariner-id='" + activity['MarinerID'] + "'>" + formattedDate + "</td><td>" + activity['ActivityNote'] + "</td><td>" + activity['ProcessingAgent'] + "</td>";
+    tableRow.innerHTML = "<td id='" + activity['ActivityID']  + "' data-mariner-id='" + activity['MarinerID'] + "'>" + formattedDate + "</td><td>" + activity['ActivityNote'] + "</td><td>" + processingAgentName + "</td>";
     // Append to the table
     activityTableBody.append(tableRow);
 

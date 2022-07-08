@@ -2,8 +2,6 @@ this is an example
 
 how cool!
 
-TODO: Add Activity Feed to the View Mariner Screen
-
 TODO: Add Mariner Attachment form
 
 TODO: Upload Mariner Attachment to MarinerAttachments Table

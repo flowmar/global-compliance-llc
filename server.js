@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 07:47:45
+ * @Last Modified time: 2022-07-08 08:55:47
  */
 
 'use strict';
@@ -529,6 +529,7 @@ app.get('/form', async (_req, res) => {
 // Route for adding a Mariner
 app.post('/add', async (req, res) => {
     console.log(req.body);
+    // Get submitted form data
     let marinerId = req.body.marinerId;
     let firstName = req.body.firstName;
     let middleName = req.body.middleName;
@@ -550,6 +551,7 @@ app.post('/add', async (req, res) => {
     let applicationID = req.body.applicationID;
     let notes = req.body.notes;
 
+    // Insert SQL statement
     let sqlInsert =
         'INSERT INTO `mariners` VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
     let insert_query = mysql.format(sqlInsert, [
@@ -1066,7 +1068,7 @@ app.post('/search', async (_req, res) => {
             const employerRows = await db.query(employer_query);
             // Parse the result and place the employerName into the object
             let employerJSON = JSON.parse(JSON.stringify(employerRows[0]));
-            console.log(employerJSON);
+            // console.log(employerJSON);
             if (employerJSON[0]) {
                 employerName = employerJSON[0]['EmployerName'];
                 formatted['employer'] = employerName;
@@ -1087,7 +1089,7 @@ app.post('/search', async (_req, res) => {
         const agentRows = await db.query(agent_query);
         // Parse the result and place the AgentName into the Object
         let agentJSON = JSON.parse(JSON.stringify(agentRows[0]));
-        console.log(agentJSON);
+        // console.log(agentJSON);
         agentName = agentJSON[0]['AgentName'];
         if (agentName) {
             formatted['processingAgent'] = agentName;
@@ -1127,6 +1129,7 @@ app.post('/search', async (_req, res) => {
     });
 });
 
+// Route for deleteing a Mariner
 app.post('/delete/:id', async (req, res) => {
     let marinerID = req.params.id;
 

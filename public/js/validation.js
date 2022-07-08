@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-03 07:45:53
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 07:05:29
+ * @Last Modified time: 2022-07-08 08:32:01
  */
 
 const marinerID = document.getElementById('marinerIDHidden').value || next;
@@ -210,19 +210,24 @@ function confirmAndSaveMariner() {
  * It takes the values of the input fields and sends them to the server
  */
 function saveMarinerActivity() {
-    axios
-        .post('/activity', {
-            marinerIDActivity: $('#marinerActivityID').val(),
-            activityProcessingAgent: $('#activityProcessingAgent').val(),
-            activity: $('#notes').val(),
-        })
-        .then((response) => {
-            console.log(response);
-            location.reload();
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+    let noteLength = $('#notes').val().length;
+    if (noteLength == 0 || noteLength > 255) {
+        alert('A Note must be less than 255 characters long.');
+    } else {
+        axios
+            .post('/activity', {
+                marinerIDActivity: $('#marinerActivityID').val(),
+                activityProcessingAgent: $('#activityProcessingAgent').val(),
+                activity: $('#notes').val(),
+            })
+            .then((response) => {
+                console.log(response);
+                location.reload();
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
 }
 
 $(document).ready(() => {

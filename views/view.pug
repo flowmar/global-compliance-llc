@@ -103,13 +103,10 @@ block content
             .col-4
               label.form-label(for="status") Status:
               select.form-select.bg-white.text-dark(id="status" name="status" disabled)
+                option(value="0")
                 option(value="1") Pending
                 option(value="2") Submitted
                 option(value="3") Completed
-          .row.my-4
-            .col-12
-              label.form-label(for="notes") Mariner Notes:
-              textarea.form-control.bg-white.text-dark(type="text" id="notes" name="notes" disabled)
           br
           .container-fluid.p-0
             .row

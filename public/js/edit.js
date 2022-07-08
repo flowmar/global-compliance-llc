@@ -1,8 +1,8 @@
 /*
  * @Author: flowmar
  * @Date: 2022-07-08 07:05:56
- * @Last Modified by:   flowmar
- * @Last Modified time: 2022-07-08 07:05:56
+ * @Last Modified by: flowmar
+ * @Last Modified time: 2022-07-08 08:28:26
  */
 
 /**
@@ -71,9 +71,13 @@ function confirmAndDeleteActivity() {
 
 $(document).ready(() => {
     let selectedRow;
+    if (!selectedRow) {
+        $('.buttons').hide();
+    }
 
     // Make table rows selectable
     $('tbody tr').on('click', function () {
+        $('.buttons').show();
         // Remove active class from anything previously selected
         $('.table-active').removeClass('table-active');
 
