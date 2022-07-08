@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-03 07:45:53
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 09:13:05
+ * @Last Modified time: 2022-07-08 14:49:08
  */
 
 const marinerID = document.getElementById('marinerIDHidden').value || next;
@@ -125,8 +125,8 @@ function deleteAppConfirm(id) {
     );
     if (deleteConfirm) {
         $.ajax({
-            type: 'POST',
-            url: '/deleteApp',
+            type: 'DELETE',
+            url: '/application',
             data: { marinerID: id },
             success: function (result) {
                 console.log(result);

@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-08 07:05:56
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 14:20:20
+ * @Last Modified time: 2022-07-08 14:54:17
  */
 
 /**
@@ -60,7 +60,7 @@ function confirmAndDeleteActivity() {
         console.log(selectedActivityID);
         // Make a post request to the server to delete the activity from the database
         axios
-            .post('/activity/delete?activityid=' + selectedActivityID)
+            .delete('/activity?activityid=' + selectedActivityID)
             .then((response) => {
                 console.log(response);
                 location.reload();
@@ -104,7 +104,15 @@ function downloadMarinerAttachment(marinerID, attachmentID) {
     );
 }
 
-function confirmAndDeleteAttachment() {}
+function confirmAndDeleteAttachment(attachmentID) {
+    axios
+        .delete('/attachment?attachmentID=' + attachmentID)
+        .then((response) => {
+            console.log(response);
+            location.reload();
+        })
+        .catch((error) => console.log(error));
+}
 
 $(document).ready(() => {
     // Create a FormData object for uploading the attachment
@@ -165,6 +173,7 @@ $(document).ready(() => {
 
         console.log(selectedAttachmentID);
 
+        // Change the onlick event for the download button
         $('#download-mariner-attachment-button').attr(
             'onclick',
             'downloadMarinerAttachment(' +
@@ -172,6 +181,11 @@ $(document).ready(() => {
                 ', ' +
                 selectedAttachmentID +
                 ')'
+        );
+        // Change the onclick event for the delete button
+        $('#delete-mariner-attachment-button').attr(
+            'onclick',
+            'confirmAndDeleteAttachment(' + selectedAttachmentID + ')'
         );
     });
 });

@@ -365,13 +365,21 @@ block content
     console.log(formattedDateArray);
     formattedDate = formattedDateArray[0] + ' ' + formattedDateArray[1] + ' ' + formattedDateArray[2] + ' ' + formattedDateArray[3] + ' ' + formattedTime;
 
+    // Format Processing Agent
+    let processingAgentID = parseInt(processingAgent);
+    let index = processingAgentID - 1;
+    let processingAgentName = agentsArray[index]['AgentName'];
+
+      // Create table row
       let tableRow = document.createElement("tr");
       tableRow.dataset.attachmentId = attachmentID;
       tableRow.dataset.attachmentName = attachmentName;
       tableRow.dataset.attachmentAgent = processingAgent;
       tableRow.style = 'text-align:center;'
+      // Create table row cells
+      tableRow.innerHTML = `<td>${formattedDate}</td> <td>${attachmentName}</td> <td>${processingAgentName}</td>`;
 
-      tableRow.innerHTML = `<td>${formattedDate}</td> <td>${attachmentName}</td> <td>${processingAgent}</td>`;
+      // Append to the attachment table body
       attachmentTableBody.appendChild(tableRow);
 
     }

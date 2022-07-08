@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 23:03:55
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 02:38:25
+ * @Last Modified time: 2022-07-08 14:51:59
  */
 
 /**
@@ -52,7 +52,7 @@ function confirmDelete() {
         console.log(selectedMarinerID);
         let url = '/delete/' + selectedMarinerID;
         axios
-            .post(url, {
+            .delete(url, {
                 id: selectedMarinerID,
             })
             .then(function (response) {

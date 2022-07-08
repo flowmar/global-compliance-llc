@@ -2,7 +2,8 @@ this is an example
 
 how cool!
 
-TODO: Add buttons to download/delete Mariner attachments
+TODO: Delete attachments
+TODO: Allow User to edit the name of the uploaded attachment
 
 TODO: Create Licenses screen w/tabs
 

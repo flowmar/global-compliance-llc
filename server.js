@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 14:28:26
+ * @Last Modified time: 2022-07-08 14:51:55
  */
 
 'use strict';
@@ -681,7 +681,8 @@ app.post('/activity', async (req, res) => {
     });
 });
 
-app.post('/activity/delete', async (req, res) => {
+// Route to handle DELETE requests for an activity
+app.delete('/activity', async (req, res) => {
     // Get the activity id
     let activityID = req.query.activityid;
 
@@ -954,7 +955,7 @@ app.get('/appDownload', async (req, res) => {
 });
 
 // Route for Deleting an application Document from the database
-app.post('/deleteApp', async (req, res) => {
+app.delete('/application', async (req, res) => {
     // Get ID from request parameters
     let marinerID = req.body.marinerID;
     // SQL Statement to Delete application
@@ -1039,6 +1040,7 @@ app.post('/attachment', upload.single('attachment'), async (req, res) => {
     });
 });
 
+// Route for downloading a specified attachment
 app.get('/attachment/download', async (req, res) => {
     // Get the MarinerID from the request body
     let marinerID = req.query.marinerID;
@@ -1092,6 +1094,20 @@ app.get('/attachment/download', async (req, res) => {
     });
 });
 
+app.delete('/attachment', async (req, res) => {
+    let attachmentID = req.query.attachmentID;
+
+    let deleteSQL =
+        'DELETE FROM MarinerAttachments WHERE MarinerAttachmentID = ?';
+    let delete_query = mysql.format(deleteSQL, [attachmentID]);
+
+    let deleteRows = await db.query(delete_query);
+    let deleteJSON = deleteRows[0];
+
+    res.send({
+        deleteJSON: deleteJSON,
+    });
+});
 /**
  * Routes Relating to Search
  */
@@ -1253,7 +1269,7 @@ app.post('/search', async (_req, res) => {
 });
 
 // Route for deleting a Mariner
-app.post('/delete/:id', async (req, res) => {
+app.delete('/delete/:id', async (req, res) => {
     let marinerID = req.params.id;
 
     let deleteSQL = 'DELETE FROM Mariners WHERE MarinerID = ?';
