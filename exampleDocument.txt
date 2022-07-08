@@ -3,11 +3,9 @@ this is an example
 how cool!
 
 
-TODO: Upload notes to MarinerActivities Table
 
-TODO: Retrieve notes from MarinerActivities Table and display as activity feed
-
-TODO: Add buttons to edit/delete notes
+Add route to edit activity
+ Add confirmation to edit and delete
 
 TODO: Add Mariner Attachment form
 

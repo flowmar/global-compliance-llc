@@ -133,29 +133,9 @@ block content
                       th(scope="col") Activity
                       th(scope="col") Agent
                   tbody.bg-white.text-dark.table-group-divider.table-divider-color(style="font-size: 1rem; font-weight: bold;")#activityTableBody
-                    //- tr
-                    //-   td Hihiihih
-                    //-   td asdfasdf
-                    //-   td asdfas
-                    //- tr
-                    //-   td Hihiihih
-                    //-   td asdfasdf
-                    //-   td asdfas
-                    //- tr
-                    //-   td Hihiihih
-                    //-   td asdfasdf
-                    //-   td asdfas
-                    //- tr
-                    //-   td Hihiihih
-                    //-   td asdfasdf
-                    //-   td asdfas
-                    //- tr
-                    //-   td Hihiihih
-                    //-   td asdfasdf
-                    //-   td asdfas
             .row
               .col.d-flex.justify-content-end
-                button.btn.btn-info.m-2.buttons(type="button" id="edit-mariner-activity-button" onclick="editMarinerActivity()")
+                button.btn.btn-info.m-2.buttons(id="edit-mariner-activity-button" data-mdb-target="#editActivityModal")
                   i.bi.bi-pencil-square.text-dark
                   span.text-dark   &nbsp;Edit
                 button.btn.btn-danger.m-2.buttons(type="button" id="delete-mariner-activity-button" onclick="confirmAndDeleteActivity()")
@@ -170,7 +150,7 @@ block content
                 input.form-control(hidden id="marinerActivityID" name="marinerIDActivity")
             .row
               .col
-              .col.d-flex.justify-content-end#saveMarinerActivity
+              .col-3.d-flex.justify-content-end#saveMarinerActivity
                 button.form-control.btn.m-2.text-dark(style="background-color: var(--green-color); color:#4f4f4f;" id="save-mariner-activity-button" type='submit' value="Save" onclick="saveMarinerActivity()")
                   i.bi.bi-save(style="font-size=1rem")
                   span    &nbsp;Save
@@ -184,6 +164,7 @@ block content
             //-       span   &nbsp;Licenses
 
   include includes/applicationModal
+  include includes/editActivityModal
 
   script(src="/js/edit.js")
   script.
@@ -304,12 +285,15 @@ block content
     let tableRow = document.createElement('tr');
     tableRow.dataset.activityid = activity['ActivityID'];
     tableRow.dataset.marinerid = activity['MarinerID'];
+    tableRow.dataset.activity = activity['ActivityNote'];
+    tableRow.dataset.processingAgent = activity['ProcessingAgent'];
     tableRow.style = "text-align: center;";
 
     // Add the cells
     tableRow.innerHTML = "<td id='" + activity['ActivityID']  + "' data-mariner-id='" + activity['MarinerID'] + "'>" + formattedDate + "</td><td>" + activity['ActivityNote'] + "</td><td>" + activity['ProcessingAgent'] + "</td>";
     // Append to the table
     activityTableBody.append(tableRow);
+
     }
 
     });

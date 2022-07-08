@@ -2,11 +2,12 @@
  * @Author: flowmar
  * @Date: 2022-07-03 07:45:53
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 02:48:49
+ * @Last Modified time: 2022-07-08 04:16:58
  */
 
 const marinerID = document.getElementById('marinerIDHidden').value || next;
 const appModal = new mdb.Modal(applicationModal);
+const editModal = new mdb.Modal(editActivityModal);
 
 // Formats Phone Number
 /**
@@ -224,6 +225,7 @@ function saveMarinerActivity() {
 $(document).ready(() => {
     /* Add Mariner Validation */
     const applicationModal = document.getElementById('applicationModal');
+    const editActivityModal = document.getElementById('editActivityModal');
     const firstNameInput = document.getElementById('first-name');
     const lastNameInput = document.getElementById('last-name');
     const birthDateInput = document.getElementById('birth-date');
@@ -251,6 +253,11 @@ $(document).ready(() => {
     $('#save-mariner').on('click', (e) => {
         e.preventDefault();
         confirmAndSaveMariner();
+    });
+
+    // editActivityModal.addEventListener('show.mdb.modal', () => {}
+    $('#edit-mariner-activity-button').on('click', (e) => {
+        editModal.show();
     });
 
     // $(document).on('submit', '#activityForm', () => {

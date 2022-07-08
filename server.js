@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 03:46:56
+ * @Last Modified time: 2022-07-08 04:51:04
  */
 
 'use strict';
@@ -677,6 +677,30 @@ app.post('/activity/delete', async (req, res) => {
 
     res.send({
         deleteJSON: deleteJSON,
+    });
+});
+
+app.post('/activity/edit', async (req, res) => {
+    // Get the activity id
+    let activityID = req.query.activityid;
+    let activity = req.body.activity;
+    let processingAgent = req.body.processingAgent;
+
+    // SQL query for editing activity
+    let editSQL =
+        'UPDATE MarinerActivities SET ActivityNote =?, ActivityDate = CURRENT_TIMESTAMP(), ProcessingAgent = ? WHERE ActivityID =?';
+    let edit_query = mysql.format(editSQL, [
+        activity,
+        processingAgent,
+        activityID,
+    ]);
+
+    let updateRows = await db.query(edit_query);
+
+    let editJSON = JSON.parse(JSON.stringify(updateRows));
+
+    res.send({
+        editJSON: editJSON,
     });
 });
 

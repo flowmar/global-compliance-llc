@@ -1,5 +1,27 @@
 // Open a window to edit the mariner activity
-function editMarinerActivity() {}
+function confirmAndSaveEditedActivity() {
+    // Get the information of the edited activity
+    let selectedRow = $('.table-active');
+    selectedRow = selectedRow[0];
+    let selectedActivityID = selectedRow.dataset.activityid;
+    let marinerHidden = $('#marinerIDHidden');
+    let marinerID = marinerHidden.val();
+    let processingAgent = $('#activityProcessingAgent').val();
+    let editedActivity = $('#editModalTextBox').val();
+
+    axios
+        .post('/activity/edit?activityid=' + selectedActivityID, {
+            marinerID: marinerID,
+            processingAgent: processingAgent,
+            activity: editedActivity,
+        })
+        .then((response) => {
+            console.log(response);
+            $('#closeEditModal').trigger('click');
+            location.reload();
+        })
+        .catch((error) => console.log(error));
+}
 
 // Delete the mariner activity
 function confirmAndDeleteActivity() {
@@ -9,6 +31,7 @@ function confirmAndDeleteActivity() {
     selectedRow = selectedRow[0];
     let selectedActivityID = selectedRow.dataset.activityid;
     console.log(selectedActivityID);
+
     axios
         .post('/activity/delete?activityid=' + selectedActivityID)
         .then((response) => {
@@ -38,6 +61,7 @@ $(document).ready(() => {
         console.log(selectedActivityID);
 
         // Get the Edit Button
-        // Get the Delete Button
+        let editModalTextBox = $('#editModalTextBox');
+        editModalTextBox.val(selectedRow[0].dataset.activity);
     });
 });

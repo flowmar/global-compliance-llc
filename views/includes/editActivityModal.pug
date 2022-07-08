@@ -1,14 +1,18 @@
-.modal.fade#editActivityModal(tabindex="-1" aria-labelledby="editActivityModal" aria-hidden="true")
+.modal.fade#editActivityModal(tabindex="-1" aria-labelledby="licensesModalLabel" aria-hidden="true")
   .modal-dialog.text-dark.modal-lg
     .modal-content
       .modal-header
-        h5.modal-title Mariner Activity
+        h5.modal-title#licensesModalLabel Edit Mariner Activity
         button.btn-close(type="button" data-mdb-dismiss="modal" aria-label="Close")
       .modal-body.text-center
-        input(type="text" hidden id="marinerIDNumber" name="marinerIDNumber" value="marinerID")
-        #appArea.text-center.mt-4
+        .container
+          input(type="text" hidden id="marinerIDNumber" name="marinerIDNumber" value="marinerID")
+          input.form-control(type="text" data-parsley-maxlength="255" id="editModalTextBox")
       .modal-footer
-        button.btn.btn-secondary(type="button" data-mdb-dismiss="modal" id="closeApplicationModal")
+        button.btn.m-2.text-white(style="background-color: var(--green-color); color:#4f4f4f;" id="save-edited-activity-button" value="Save" onclick="confirmAndSaveEditedActivity()")
+          i.bi.bi-save(style="font-size: .9rem;")
+          span   &nbsp;Save
+        button.btn.btn-secondary(type="button" data-mdb-dismiss="modal" id="closeEditModal")
           i.bi.bi-x(style="font-size: .9rem;")
           span Close
         //- button.btn.btn-primary Save
