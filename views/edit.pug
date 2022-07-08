@@ -2,7 +2,7 @@
   @Author: flowmar
   @Date: 2022-07-02 23:10:32
   @Last Modified by: flowmar
-  @Last Modified time: 2022-07-04 23:09:16
+  @Last Modified time: 2022-07-08 07:06:27
 
 
 extends layout.pug
@@ -178,7 +178,7 @@ block content
     console.log(viewApplicationID);
 
     // Get the current User and place into the UI
-    let storedUser = localStorage.getItem("currentUser");
+    let storedUser = window.localStorage.getItem("currentUser");
     if (storedUser == "admin") {storedUser = 4};
     console.log("user:" + storedUser);
     let activityProcessingHidden = $('#activityProcessingAgent');

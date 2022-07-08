@@ -79,9 +79,9 @@ block content
     let loggedInUser = !{JSON.stringify(user)};
     console.log(loggedInUser);
     if (loggedInUser) {
-      localStorage.setItem("loggedIn", true);
-      localStorage.setItem("currentUser", loggedInUser);
-      console.log("User in sessionStorage: " + loggedInUser);
+      window.localStorage.setItem("loggedIn", true);
+      window.localStorage.setItem("currentUser", loggedInUser);
+      console.log("User in localStorage: " + loggedInUser);
     }
     let employersArray = !{JSON.stringify(employers)};
     console.log(employersArray);

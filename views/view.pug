@@ -22,6 +22,21 @@ block content
       .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.m-2.mb-0
         .container
           .row.my-4
+            .col-6
+            .col-6.d-flex.justify-content-end.p-0
+              #buttonDiv
+                button.btn.mx-2#appModalButton(style="background-color: var(--yellow-color);" value="Application" data-mdb-target="#applicationModal")
+                  i.bi.bi-file-medical(style="font-size: 1rem;")
+                  span   &nbsp;Application
+                a.btn.mx-1(style="background-color: var(--yellow-color);" type="button" id="licenses-button" value="Licenses" data-mdb-target="#licensesModal" href='/licenses' target="_blank")
+                  i.bi.bi-credit-card(style="font-size: 1rem;")
+                  span   &nbsp;Licenses
+            br
+          .row
+            .col
+              .display-5.fw-bold Mariner Information
+          hr
+          .row.my-4
             .col-3
               label.form-label(for="mariner-id") Mariner ID:
               input.form-control(style="background-color: var(--highlight-bg-color);" type="text" id="mariner-id" name="marinerID" value="" disabled)
@@ -95,20 +110,27 @@ block content
             .col-12
               label.form-label(for="notes") Mariner Notes:
               textarea.form-control.bg-white.text-dark(type="text" id="notes" name="notes" disabled)
+          br
+          .container-fluid.p-0
+            .row
+              .col
+                .display-5.fw-bold Mariner Notes
+            hr
+            .row.mt-3.position-relative
+              .col
+                table.table.table-bordered.table-sm#activityTable
+                  thead.table-dark
+                    tr.text-center
+                      th(scope="col") Date
+                      th(scope="col") Activity
+                      th(scope="col") Agent
+                  tbody.bg-white.text-dark.table-group-divider.table-divider-color(style="font-size: 1rem; font-weight: bold;")#activityTableBody
           .row.my-4
             .col
             .col.d-flex.justify-content-end
               //- button.btn.btn-lg.m-2.text-dark(style="background-color: var(--green-color); color:#4f4f4f" type="submit" id="save-mariner" value="Save")
               //-   i.bi.bi-save(style="font-size=.9rem")
               //-   span    &nbsp;Save
-          .row.my-4
-            .col
-              button.btn.btn-lg.mx-2#appModalButton(style="background-color: var(--yellow-color);" type="button" value="Application" data-mdb-target="#applicationModal")
-                i.bi.bi-file-medical(style="font-size: 1rem;")
-                span   &nbsp;Application
-              a.btn.btn-lg.mx-1(style="background-color: var(--yellow-color);" type="button" id="licenses-button" value="Licenses" data-mdb-target="#licensesModal" href='/licenses' target="_blank")
-                i.bi.bi-credit-card(style="font-size: 1rem;")
-                span   &nbsp;Licenses
 
   include includes/viewApplicationModal
 
@@ -122,6 +144,8 @@ block content
     let countriesArray = !{JSON.stringify(countries)};
     let agentsArray = !{JSON.stringify(agents)};
     let employersArray = !{JSON.stringify(employers)};
+    let activitiesArray = !{JSON.stringify(activities)};
+
     let marinerHidden = $('#marinerIDHidden');
     console.log(marinerHidden);
     marinerHidden.attr("value", viewMarinerID);
@@ -188,5 +212,29 @@ block content
     $('#processing-agent').val(marinerObject['ProcessingAgent']);
     $('#status').val(marinerObject['Status']);
 
+    // Place the activity information into the UI
+    let activityTableBody = $('#activityTableBody');
+    console.log(activitiesArray);
+    for (let activity of activitiesArray){
+
+    // Format the Date
+    let formattedDate = new Date(activity['ActivityDate']).toString();
+    formattedDateArray = formattedDate.split(' ');
+    formattedDate = formattedDateArray[1] + ' ' + formattedDateArray[2] + ' ' + formattedDate[3] + ' ' + formattedDateArray[4];
+
+    // Create the table row
+    let tableRow = document.createElement('tr');
+    tableRow.dataset.activityid = activity['ActivityID'];
+    tableRow.dataset.marinerid = activity['MarinerID'];
+    tableRow.dataset.activity = activity['ActivityNote'];
+    tableRow.dataset.processingAgent = activity['ProcessingAgent'];
+    tableRow.style = "text-align: center;";
+
+    // Add the cells
+    tableRow.innerHTML = "<td id='" + activity['ActivityID']  + "' data-mariner-id='" + activity['MarinerID'] + "'>" + formattedDate + "</td><td>" + activity['ActivityNote'] + "</td><td>" + activity['ProcessingAgent'] + "</td>";
+    // Append to the table
+    activityTableBody.append(tableRow);
+
+    }
     });
   script(src="/js/view.js")

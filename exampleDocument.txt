@@ -2,10 +2,7 @@ this is an example
 
 how cool!
 
-
-
-Add route to edit activity
- Add confirmation to edit and delete
+TODO: Add Activity Feed to the View Mariner Screen
 
 TODO: Add Mariner Attachment form
 

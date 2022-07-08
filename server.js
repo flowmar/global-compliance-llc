@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 06:53:59
+ * @Last Modified time: 2022-07-08 07:47:45
  */
 
 'use strict';
@@ -77,6 +77,7 @@ let upload = multer({
 app.get('/', async (_req, res) => {
     res.render('index', {
         title: 'Login',
+        removeUser: false,
     });
 });
 
@@ -85,6 +86,9 @@ app.get('/search', async (req, res) => {
     let marinerData = [];
     let mariners = [];
     let user = req.query.user;
+    if (!user) {
+        user = 'admin';
+    }
 
     // Retrieve all records from database
     const searchSQL = 'SELECT * FROM Mariners';
@@ -217,12 +221,19 @@ app.get('/view/:id', async (req, res) => {
     const countriesJSON = countriesRows[0];
     // console.log(countriesJSON);
 
+    // Get all activities for the selected Mariner
+    let activitySQL = 'SELECT * FROM MarinerActivities WHERE MarinerID = ?';
+    let activity_query = mysql.format(activitySQL, [marinerID]);
+    let activityRows = await db.query(activity_query);
+    let activityJSON = activityRows[0];
+
     res.render('view', {
         title: 'View',
         viewMariner: viewJSON,
         employers: allEmployersJSON,
         agents: agentsJSON,
         countries: countriesJSON,
+        activities: activityJSON,
     });
 });
 
@@ -438,10 +449,7 @@ app.post('/authenticate', async (req, res) => {
 
 // Route for logging out
 app.get('/logout', async (_req, res) => {
-    res.render('index', {
-        title: 'Login',
-        removeUser: true,
-    });
+    res.redirect('/');
 });
 
 /**

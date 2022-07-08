@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-03 07:45:53
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 06:56:09
+ * @Last Modified time: 2022-07-08 07:05:29
  */
 
 const marinerID = document.getElementById('marinerIDHidden').value || next;
@@ -206,6 +206,9 @@ function confirmAndSaveMariner() {
     }
 }
 
+/**
+ * It takes the values of the input fields and sends them to the server
+ */
 function saveMarinerActivity() {
     axios
         .post('/activity', {

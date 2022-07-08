@@ -45,9 +45,11 @@ block content
 
       //- include includes/createUser.pug
 
-    script.
-      let removeUser = !{removeUser}
+      script.
+        let removeUser = !{JSON.stringify(removeUser)};
+        console.log(removeUser);
+        if (removeUser) {
+          window.localStorage.removeItem("currentUser");
+          removeUser = false;
+        }
 
-      if (removeUser) {
-        localStorage.removeItem("currentUser");
-      }
