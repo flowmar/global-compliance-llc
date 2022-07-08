@@ -21,112 +21,173 @@ block content
       .col-7
     .row.bg-dark.m-3.p-1.py-3
       .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.m-2.mb-0
-        form(action="/edit" method="post" name="editMarinerForm" id="editMarinerForm" data-parsley-validate).container
-          .row.my-4
-            .col-6
-            .col-6.d-flex.justify-content-end.p-0
-              button.btn.mx-2#appModalButton(style="background-color: var(--yellow-color);" type="button" value="Application" data-mdb-target="#applicationModal")
-                i.bi.bi-file-medical(style="font-size: 1rem;")
-                span   &nbsp;Application
-              a.btn.mx-1(style="background-color: var(--yellow-color);" type="button" id="licenses-button" value="Licenses" data-mdb-target="#licensesModal" href='/licenses' target="_blank")
-                i.bi.bi-credit-card(style="font-size: 1rem;")
-                span   &nbsp;Licenses
-          .row.my-4
-            .col-3
-              label.form-label(for="mariner-id") Mariner ID:
-              input.form-control(style="background-color: var(--highlight-bg-color);" type="text" id="mariner-id" name="marinerID" value="" disabled)
-              input.form-control(hidden id="marinerIDHidden" name="marinerIDNumber")
-            .col-6
-            .col-3
-              label.form-label(for="application-id") Application ID:
-              input.form-control(style="background-color: var(--highlight-bg-color);" type="text" id="application-id" name="applicationID" value="" disabled)
-              input.form-control(hidden id="applicationIDHidden" name="applicationIDNumber")
-          .row.my-4
-            .col-4
-              label.form-label(for="first-name") First Name:
-              input.form-control.bg-white(type="text" id="first-name" name="firstName" data-parsley-required="true" )
-            .col-4
-              label.form-label(for="middle-name") Middle Name:
-              input.form-control.bg-white(type="text" id="middle-name" name="middleName" )
-            .col-4
-              label.form-label(for="last-name") Last Name:
-              input.form-control.bg-white(type="text" id="last-name" name="lastName" data-parsley-required="true" )
-          .row.my-4
-            .col-4
-              label.form-label(for="address") Address:
-              input.form-control.bg-white(type="text" id="address" name="address" )
-            .col-4
-              label.form-label(for="phone-number") Phone Number:
-              input.form-control.bg-white(type="tel" id="phone-number" name="phone" onkeydown="phoneNumberFormatter()" )
-            .col-4
-              label.form-label(for="email") Email:
-              input.form-control.bg-white(type="email" id="email" name="email" data-parsley-required="false" )
-          .row.my-4
-            .col-4
-              label.form-label(for="employer") Employer:
-              select.form-select.bg-white(id="employer" name="employer" )
-            .col-4
-              label.form-label(for="vessel-name") Vessel Name:
-              input.form-control.bg-white(type="text" id="vessel-name" name="vessel" )
-            .col-4
-              label.form-label(for="mariner-reference-number") Mariner Reference Number:
-              input.form-control.bg-white(type="text" id="mariner-reference-number" name="marinerRefNum" data-parsley-type="digits" )
-          .row.my-4
-            .col-4
-              label.form-label(for="passport-number") Passport Number:
-              input.form-control.bg-white(type="text" id="passport-number" name="passportNumber" data-parsley-type="digits" )
-            .col-4
-              label.form-label(for="citizenship") Citizenship:
-              select.form-select.bg-white(id="citizenship" aria-label="Select citizenship" name="citizenship" )
-          .row.my-4
-            .col-3
-              label.form-label(for="birth-city") City of Birth:
-              input.form-control.bg-white(type="text" id="birth-city" name="birthCity" )
-            .col-3
-              label.form-label(for="birth-state") State of Birth:
-              input.form-control.bg-white(type="text" id="birth-state" name="birthState" )
-            .col-3
-              label.form-label(for="birth-country") Country of Birth:
-              select.form-select.bg-white(id="birth-country" aria-label="Select birth country" name="birthCountry" )
-            .col-3
-              label.form-label(for="birth-date") Birth Date:
-              input.form-control.bg-white.text-dark(type="date" id="birth-date" name="birthDate" data-parsley-required="true" )
-          .row.my-4
-            .col-4
-              label.form-label(for="processing-agent") Processing Agent:
-              select.form-select.bg-white.text-dark(id="processing-agent" name="processingAgent" )
-            .col-4
-            .col-4
-              label.form-label(for="status") Status:
-              select.form-select.bg-white.text-dark(id="status" name="status" )
-                option(value="1") Pending
-                option(value="2") Submitted
-                option(value="3") Completed
-          .row.my-4
-            .col-12
-              label.form-label(for="notes") Mariner Notes:
-              textarea.form-control.bg-white.text-dark(type="text" id="notes" name="notes" )
-          .row.my-4
-            .col
-            .col.d-flex.justify-content-end
-              a.btn.m-2.text-dark(style="background-color: var(--red-color); color:#4f4f4f;" id="cancel-edit-mariner-button" value="Cancel" href="/search")
-                i.bi.bi-x-square(style="font-size=1rem")
-                span    &nbsp;Cancel
-              button.btn.m-2.text-dark(style="background-color: var(--green-color); color:#4f4f4f;" id="save-mariner" value="Save" onclick="confirmAndSaveMariner()")
-                i.bi.bi-save(style="font-size=1rem")
-                span    &nbsp;Save
-          //- .row.my-4
-          //-   .col
-          //-     button.btn.btn-lg.mx-2#appModalButton(style="background-color: var(--yellow-color);" type="button" value="Application" data-mdb-target="#applicationModal")
-          //-       i.bi.bi-file-medical(style="font-size: 1rem;")
-          //-       span   &nbsp;Application
-          //-     a.btn.btn-lg.mx-1(style="background-color: var(--yellow-color);" type="button" id="licenses-button" value="Licenses" data-mdb-target="#licensesModal" href='/licenses' target="_blank")
-          //-       i.bi.bi-credit-card(style="font-size: 1rem;")
-          //-       span   &nbsp;Licenses
+        .container
+          form(action="/edit" method="post" name="editMarinerForm" id="editMarinerForm" data-parsley-validate)
+            .row.my-4
+              .col-6
+              .col-6.d-flex.justify-content-end.p-0
+                #buttonDiv
+                  button.btn.mx-2#appModalButton(style="background-color: var(--yellow-color);" value="Application" data-mdb-target="#applicationModal")
+                    i.bi.bi-file-medical(style="font-size: 1rem;")
+                    span   &nbsp;Application
+                a.btn.mx-1(style="background-color: var(--yellow-color);" type="button" id="licenses-button" value="Licenses" data-mdb-target="#licensesModal" href='/licenses' target="_blank")
+                  i.bi.bi-credit-card(style="font-size: 1rem;")
+                  span   &nbsp;Licenses
+            br
+            .row
+              .col
+                .display-5.fw-bold Mariner Information
+            hr
+            .row.my-4
+              .col-3
+                label.form-label(for="mariner-id") Mariner ID:
+                input.form-control(style="background-color: var(--highlight-bg-color);" type="text" id="mariner-id" name="marinerID" value="" disabled)
+                input.form-control(hidden id="marinerIDHidden" name="marinerIDNumber")
+              .col-6
+              .col-3
+                label.form-label(for="application-id") Application ID:
+                input.form-control(style="background-color: var(--highlight-bg-color);" type="text" id="application-id" name="applicationID" value="" disabled)
+                input.form-control(hidden id="applicationIDHidden" name="applicationIDNumber")
+            .row.my-4
+              .col-4
+                label.form-label(for="first-name") First Name:
+                input.form-control.bg-white(type="text" id="first-name" name="firstName" data-parsley-required="true" )
+              .col-4
+                label.form-label(for="middle-name") Middle Name:
+                input.form-control.bg-white(type="text" id="middle-name" name="middleName" )
+              .col-4
+                label.form-label(for="last-name") Last Name:
+                input.form-control.bg-white(type="text" id="last-name" name="lastName" data-parsley-required="true" )
+            .row.my-4
+              .col-4
+                label.form-label(for="address") Address:
+                input.form-control.bg-white(type="text" id="address" name="address" )
+              .col-4
+                label.form-label(for="phone-number") Phone Number:
+                input.form-control.bg-white(type="tel" id="phone-number" name="phone" onkeydown="phoneNumberFormatter()" )
+              .col-4
+                label.form-label(for="email") Email:
+                input.form-control.bg-white(type="email" id="email" name="email" data-parsley-required="false" )
+            .row.my-4
+              .col-4
+                label.form-label(for="employer") Employer:
+                select.form-select.bg-white(id="employer" name="employer" )
+              .col-4
+                label.form-label(for="vessel-name") Vessel Name:
+                input.form-control.bg-white(type="text" id="vessel-name" name="vessel" )
+              .col-4
+                label.form-label(for="mariner-reference-number") Mariner Reference Number:
+                input.form-control.bg-white(type="text" id="mariner-reference-number" name="marinerRefNum" data-parsley-type="digits" )
+            .row.my-4
+              .col-4
+                label.form-label(for="passport-number") Passport Number:
+                input.form-control.bg-white(type="text" id="passport-number" name="passportNumber" data-parsley-type="digits" )
+              .col-4
+                label.form-label(for="citizenship") Citizenship:
+                select.form-select.bg-white(id="citizenship" aria-label="Select citizenship" name="citizenship" )
+            .row.my-4
+              .col-3
+                label.form-label(for="birth-city") City of Birth:
+                input.form-control.bg-white(type="text" id="birth-city" name="birthCity" )
+              .col-3
+                label.form-label(for="birth-state") State of Birth:
+                input.form-control.bg-white(type="text" id="birth-state" name="birthState" )
+              .col-3
+                label.form-label(for="birth-country") Country of Birth:
+                select.form-select.bg-white(id="birth-country" aria-label="Select birth country" name="birthCountry" )
+              .col-3
+                label.form-label(for="birth-date") Birth Date:
+                input.form-control.bg-white.text-dark(type="date" id="birth-date" name="birthDate" data-parsley-required="true" )
+            .row.my-4
+              .col-4
+                label.form-label(for="processing-agent") Processing Agent:
+                select.form-select.bg-white.text-dark(id="processing-agent" name="processingAgent" )
+              .col-4
+              .col-4
+                label.form-label(for="status") Status:
+                select.form-select.bg-white.text-dark(id="status" name="status" )
+                  option(value="1") Pending
+                  option(value="2") Submitted
+                  option(value="3") Completed
+            .row.my-4
+              .col
+              .col.d-flex.justify-content-end
+                a.btn.m-2.text-dark(style="background-color: var(--red-color); color:#4f4f4f;" id="cancel-edit-mariner-button" value="Cancel" href="/search")
+                  i.bi.bi-x-square
+                  span    &nbsp;Cancel
+                button.btn.m-2.text-dark(style="background-color: var(--green-color); color:#4f4f4f;" id="save-mariner" value="Save")
+                  i.bi.bi-save
+                  span    &nbsp;Save
+          br
+          .container-fluid.p-0
+            .row
+              .col
+                .display-5.fw-bold Mariner Notes
+            hr
+            .row.mt-3.position-relative
+              .col
+                table.table.table-bordered.table-sm#activityTable
+                  thead.table-dark
+                    tr.text-center
+                      th(scope="col") Date
+                      th(scope="col") Activity
+                      th(scope="col") Agent
+                  tbody.bg-white.text-dark.table-group-divider.table-divider-color(style="font-size: 1rem; font-weight: bold;")#activityTableBody
+                    //- tr
+                    //-   td Hihiihih
+                    //-   td asdfasdf
+                    //-   td asdfas
+                    //- tr
+                    //-   td Hihiihih
+                    //-   td asdfasdf
+                    //-   td asdfas
+                    //- tr
+                    //-   td Hihiihih
+                    //-   td asdfasdf
+                    //-   td asdfas
+                    //- tr
+                    //-   td Hihiihih
+                    //-   td asdfasdf
+                    //-   td asdfas
+                    //- tr
+                    //-   td Hihiihih
+                    //-   td asdfasdf
+                    //-   td asdfas
+            .row
+              .col.d-flex.justify-content-end
+                button.btn.btn-info.m-2.buttons(type="button" id="edit-mariner-activity-button" onclick="editMarinerActivity()")
+                  i.bi.bi-pencil-square.text-dark
+                  span.text-dark   &nbsp;Edit
+                button.btn.btn-danger.m-2.buttons(type="button" id="delete-mariner-activity-button" onclick="confirmAndDeleteActivity()")
+                  i.bi.bi-x-circle-fill.text-dark
+                  span.text-dark   &nbsp;Delete
+          form(action="/activity" method="POST" id="activityForm")
+            .row.my-4
+              .col
+                label.form-label(for="notes") Mariner Notes:
+                textarea.form-control.bg-white.text-dark(type="text" id="notes" name="activity" data-parsley-maxlength="255" form="activityForm")
+                input.form-control(hidden id="activityProcessingAgent" name='activityProcessingAgent')
+                input.form-control(hidden id="marinerActivityID" name="marinerIDActivity")
+            .row
+              .col
+              .col.d-flex.justify-content-end#saveMarinerActivity
+                button.form-control.btn.m-2.text-dark(style="background-color: var(--green-color); color:#4f4f4f;" id="save-mariner-activity-button" type='submit' value="Save" onclick="saveMarinerActivity()")
+                  i.bi.bi-save(style="font-size=1rem")
+                  span    &nbsp;Save
+            //- .row.my-4
+            //-   .col
+            //-     button.btn.btn-lg.mx-2#appModalButton(style="background-color: var(--yellow-color);" type="button" value="Application" data-mdb-target="#applicationModal")
+            //-       i.bi.bi-file-medical(style="font-size: 1rem;")
+            //-       span   &nbsp;Application
+            //-     a.btn.btn-lg.mx-1(style="background-color: var(--yellow-color);" type="button" id="licenses-button" value="Licenses" data-mdb-target="#licensesModal" href='/licenses' target="_blank")
+            //-       i.bi.bi-credit-card(style="font-size: 1rem;")
+            //-       span   &nbsp;Licenses
 
   include includes/applicationModal
 
+  script(src="/js/edit.js")
   script.
+    // Get the selected Mariner
     let marinerObject = !{JSON.stringify(viewMariner)};
     console.log(marinerObject);
     console.log(marinerObject['MarinerID']);
@@ -135,13 +196,28 @@ block content
     let viewApplicationID = marinerObject['ApplicationID'];
     console.log(viewApplicationID);
 
+    // Get the current User and place into the UI
+    let storedUser = localStorage.getItem("currentUser");
+    if (storedUser == "admin") {storedUser = 4};
+    console.log("user:" + storedUser);
+    let activityProcessingHidden = $('#activityProcessingAgent');
+    console.log("element: " + activityProcessingHidden)
+    activityProcessingHidden.attr('value', storedUser);
+
+    // Stringify the countries, agents an employers
     let countriesArray = !{JSON.stringify(countries)};
     let agentsArray = !{JSON.stringify(agents)};
     let employersArray = !{JSON.stringify(employers)};
+    let activitiesArray = !{JSON.stringify(activities)};
+
+    // Place the MarinerID into the UI
     let marinerHidden = $('#marinerIDHidden');
     //- console.log(marinerHidden);
     marinerHidden.attr("value", viewMarinerID);
+    let marinerActivityHidden = $('#marinerActivityID');
+    marinerActivityHidden.attr("value", viewMarinerID);
 
+    // Place the ApplicationID into the UI
     let applicationIDHidden = $('#applicationIDHidden');
     if (viewApplicationID)
     {
@@ -150,18 +226,20 @@ block content
 
     //- Wait until DOM is loaded
     window.addEventListener('DOMContentLoaded', (event) => {
-      let citizenshipInput = document.getElementById('citizenship');
+    // Select inputs
+    let citizenshipInput = document.getElementById('citizenship');
     let birthCountryInput = document.getElementById('birth-country');
     let employerInput = document.getElementById('employer');
     let agentInput = document.getElementById('processing-agent');
 
+      // Place the countries into the UI
       for(let i = 0; i < countriesArray.length; i++) {
-
+      // Citizenship input
       let element = document.createElement('option');
       element.value = i + 1;
       element.text = countriesArray[i]['CountryName'];
       citizenshipInput.appendChild(element);
-
+      // Birth country input
       let element2 = document.createElement('option');
       element2.value = i + 1;
       element2.text = countriesArray[i]['CountryName'];
@@ -187,7 +265,6 @@ block content
     // Place the values from the mariner object into the UI
     let marinerIDArea = $('#mariner-id');
     marinerIDArea.val(viewMarinerID);
-
     $('#application-id').val(marinerObject['ApplicationID']);
     $('#first-name').val(marinerObject['FirstName']);
     $('#last-name').val(marinerObject['LastName']);
@@ -203,6 +280,8 @@ block content
     $('#birth-city').val(marinerObject['BirthCity']);
     $('#birth-state').val(marinerObject['BirthState']);
     $('#birth-country').val(marinerObject['BirthCountry']);
+
+    // Convert the birth date to a format that fits in the UI
     let dateString = marinerObject['BirthDate'].toString();
     console.log(dateString);
     console.log(dateString.slice(0, 10));
@@ -211,5 +290,28 @@ block content
     $('#processing-agent').val(marinerObject['ProcessingAgent']);
     $('#status').val(marinerObject['Status']);
 
+    // Place the activity information into the UI
+    let activityTableBody = $('#activityTableBody');
+    console.log(activitiesArray);
+    for (let activity of activitiesArray){
+
+    // Format the Date
+    let formattedDate = new Date(activity['ActivityDate']).toString();
+    formattedDateArray = formattedDate.split(' ');
+    formattedDate = formattedDateArray[1] + ' ' + formattedDateArray[2] + ' ' + formattedDate[3] + ' ' + formattedDateArray[4];
+
+    // Create the table row
+    let tableRow = document.createElement('tr');
+    tableRow.dataset.activityid = activity['ActivityID'];
+    tableRow.dataset.marinerid = activity['MarinerID'];
+    tableRow.style = "text-align: center;";
+
+    // Add the cells
+    tableRow.innerHTML = "<td id='" + activity['ActivityID']  + "' data-mariner-id='" + activity['MarinerID'] + "'>" + formattedDate + "</td><td>" + activity['ActivityNote'] + "</td><td>" + activity['ProcessingAgent'] + "</td>";
+    // Append to the table
+    activityTableBody.append(tableRow);
+    }
+
     });
+
   script(src="/js/validation.js")

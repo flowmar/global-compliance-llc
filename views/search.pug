@@ -60,8 +60,7 @@ block content
           //-         i #{searchCategory}
           //-       p.text-warning Search Term:&nbsp; "<i>#{searchText}</i>"
           .row
-            .col
-              include includes/tableHead
+            include includes/tableHead
           .row
             .col-6
             .col-6.d-flex.justify-content-end.p-0#buttons
@@ -77,7 +76,13 @@ block content
 
   script(src="/js/search.js")
   script.
-
+    let loggedInUser = !{JSON.stringify(user)};
+    console.log(loggedInUser);
+    if (loggedInUser) {
+      localStorage.setItem("loggedIn", true);
+      localStorage.setItem("currentUser", loggedInUser);
+      console.log("User in sessionStorage: " + loggedInUser);
+    }
     let employersArray = !{JSON.stringify(employers)};
     console.log(employersArray);
     // Change the Search Input based on the category that is chosen
@@ -210,6 +215,13 @@ block content
       let tableBody = $('tbody');
       for (let mariner of marinerResultArray)
       {
-      tableBody.append("<tr style='text-align: center;'> <td id=" + mariner.marinerID  + ">" + mariner.marinerID + "</td><td>" + mariner.fullName + "</td><td>" + mariner.birthDate + "</td><td>" + mariner.employer + "</td><td>" + mariner.processingAgent + "</td><td>" + mariner.status);
+        // Adjust for null value in database
+        let status = mariner.status;
+        if(status === null)
+        {
+          status = '';
+        }
+      // Append table rows with data to the tableBody
+      tableBody.append("<tr style='text-align: center;'> <td id=" + mariner.marinerID  + ">" + mariner.marinerID + "</td><td>" + mariner.fullName + "</td><td>" + mariner.birthDate + "</td><td>" + mariner.employer + "</td><td>" + mariner.processingAgent + "</td><td>" + status + "</td>");
       }
       });

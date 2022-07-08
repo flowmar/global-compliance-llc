@@ -2,9 +2,13 @@
  * @Author: flowmar
  * @Date: 2022-07-02 23:03:55
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-05 15:09:29
+ * @Last Modified time: 2022-07-08 02:38:25
  */
 
+/**
+ * It takes the selected category and search text, and sends a POST request to the
+ * server with the data
+ */
 // Uses the selected category and search text to send a request to the backend
 function search() {
     let searchCategory = $('#search-by').value;
@@ -32,6 +36,11 @@ function search() {
     });
 }
 
+/**
+ * When the user clicks the delete button, a confirmation dialog appears. If the
+ * user clicks "OK", the selected mariner's ID is sent to the server, which deletes
+ * the mariner from the database
+ */
 // Confirm and delete Mariner
 function confirmDelete() {
     let confirmed = confirm(
@@ -48,10 +57,12 @@ function confirmDelete() {
             })
             .then(function (response) {
                 console.log(response);
+                alert('Mariner Deleted');
                 location.reload();
             })
             .catch(function (error) {
                 console.log(error);
+                alert('Unable to Delete Mariner');
             });
     }
 }

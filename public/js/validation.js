@@ -2,28 +2,12 @@
  * @Author: flowmar
  * @Date: 2022-07-03 07:45:53
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-05 14:25:26
+ * @Last Modified time: 2022-07-08 02:48:49
  */
 
 const marinerID = document.getElementById('marinerIDHidden').value || next;
 const appModal = new mdb.Modal(applicationModal);
 
-$(document).ready(() => {
-    /* Add Mariner Validation */
-    const applicationModal = document.getElementById('applicationModal');
-    const firstNameInput = document.getElementById('first-name');
-    const lastNameInput = document.getElementById('last-name');
-    const birthDateInput = document.getElementById('birth-date');
-    const applicationButton = document.getElementById('appModalButton');
-    let licensesButton = $('#licenses-button');
-    const newLicenseURL = '/licenses/' + marinerID;
-    licensesButton.attr('href', '/licenses/' + marinerID);
-    console.log(licensesButton);
-    const appArea = document.getElementById('appArea');
-    const downloadAppButton = document.getElementById('download-app-button');
-    const deleteAppButton = document.getElementById('delete-app-button');
-    // Places the Mariner ID into the Licenses Button URL
-});
 // Formats Phone Number
 /**
  * If the input is falsy, return the value. If the input is less than 4 characters,
@@ -58,11 +42,12 @@ function formatPhoneNumber(value) {
     )}-${phoneNumber.slice(6, 9)}`;
 }
 
-/**
- * It gets the input field, formats the input, and sets the value to the formatted
- * input
- */
 // Phone number formatter
+
+/**
+ * When the user types in the input field, format the input value and set the value
+ * to the formatted input.
+ */
 function phoneNumberFormatter() {
     // Get input field
     const inputField = document.getElementById('phone-number');
@@ -98,9 +83,11 @@ function uploadApp() {
             processData: false,
             contentType: false,
             success: function (r) {
-                console.log('Result: ' + JSON.parse(JSON.stringify(r)));
+                let rJSON = JSON.parse(JSON.stringify(r));
+                console.log(rJSON);
                 $('#closeApplicationModal').trigger('click');
-                location.reload();
+                $('#application-id').val(rJSON['appID']);
+                alert('Application Uploaded!');
             },
             error: function (err) {
                 console.log('Error: ' + err.message);
@@ -109,25 +96,11 @@ function uploadApp() {
     });
 }
 
-function refreshAppId(marinerIDNumber) {
-    $.ajax({
-        type: 'GET',
-        url: '/getApp',
-        data: { marinerID: marinerID },
-        success: function (result) {
-            let resultJSON = JSON.parse(JSON.stringify(result));
-            console.log(resultJSON);
-            if (resultJSON['appExists']) {
-                $('application-id').attr('value', resultJSON['appId']);
-                console.log('Success');
-            }
-        },
-        error: function (err) {
-            console.log('error:' + err.message);
-        },
-    });
-}
-
+/**
+ * It opens a new window to download the application for the requested ID
+ *
+ * @param id The MarinerID of the application to download
+ */
 // Downloads Application for a given MarinerID
 function downloadApp(id) {
     // Opens a new window to download the application for the requested ID
@@ -136,6 +109,13 @@ function downloadApp(id) {
     window.open('/appDownload?marinerID=' + id);
 }
 
+/**
+ * When the user clicks the delete button, a confirmation window pops up asking if
+ * they're sure they want to delete the application. If they click "OK", the
+ * application is deleted from the database
+ *
+ * @param id The MarinerID of the application to be deleted
+ */
 // Deletes an Application for a given MarinerID
 function deleteAppConfirm(id) {
     // Open a confirmation window for deleting the application
@@ -152,7 +132,7 @@ function deleteAppConfirm(id) {
                 $('#closeApplicationModal').trigger('click');
                 $('#application-id').attr('value', '');
                 $('#application-id').val('');
-                location.reload();
+                alert('Application Deleted!');
             },
             error: function (error) {
                 console.log('Error: ' + error);
@@ -179,7 +159,7 @@ function checkIfAppExists() {
             // If an application exists...
             if (resultJSON['appExists']) {
                 // Hide the Upload Form
-                $('#target').remove();
+                $('#target').attr('style', 'display: none !important');
                 // Show the Download/Delete Area
                 appArea.innerHTML =
                     '<span>' +
@@ -190,6 +170,7 @@ function checkIfAppExists() {
                     marinerID +
                     ")'><i class='bi bi-trash'></i>&nbsp;Delete</button></div>";
             } else {
+                $('#target').attr('style', 'display: block !important');
                 // Otherwise display a message
                 appArea.innerHTML =
                     '<strong><em>No application has been uploaded</em></strong>';
@@ -206,22 +187,76 @@ function checkIfAppExists() {
  * the application exists
  */
 function checkAppModal() {
+    console.log('Checking app modal');
     console.log(applicationModal);
-    applicationModal.addEventListener('show.mdb.modal', () => {
-        checkIfAppExists();
-    });
     appModal.show();
 }
 
-$('#appModalButton').click(function () {
-    checkAppModal();
-});
-
+/**
+ * If the user confirms the request to save the edited Mariner information, then
+ * submit the form
+ */
 // Confirmation/request for saving edited Mariner
 function confirmAndSaveMariner() {
-    let confirmed = confirm('Save edited Mariner information?');
-    if (confirmed) document.getElementById('editMarinerForm').submit();
-    else {
+    if (confirm('Save edited Mariner information?')) {
+        document.getElementById('editMarinerForm').submit();
+    } else {
         console.log('canceled!');
     }
 }
+
+function saveMarinerActivity() {
+    axios
+        .post('/activity', {
+            marinerIDActivity: $('#marinerActivityID').val(),
+            activityProcessingAgent: $('#activityProcessingAgent').val(),
+            activity: $('#notes').val(),
+        })
+        .then((response) => {
+            console.log(response);
+            location.reload();
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
+
+$(document).ready(() => {
+    /* Add Mariner Validation */
+    const applicationModal = document.getElementById('applicationModal');
+    const firstNameInput = document.getElementById('first-name');
+    const lastNameInput = document.getElementById('last-name');
+    const birthDateInput = document.getElementById('birth-date');
+    const applicationButton = document.getElementById('appModalButton');
+
+    // Put the MarinerID in the license button URL
+    let licensesButton = $('#licenses-button');
+    const newLicenseURL = '/licenses/' + marinerID;
+    licensesButton.attr('href', '/licenses/' + marinerID);
+    console.log(licensesButton);
+
+    const appArea = document.getElementById('appArea');
+    const downloadAppButton = document.getElementById('download-app-button');
+    const deleteAppButton = document.getElementById('delete-app-button');
+
+    $('#buttonDiv').on('click', '#appModalButton', function (e) {
+        e.preventDefault();
+        checkAppModal();
+    });
+
+    applicationModal.addEventListener('show.mdb.modal', () => {
+        checkIfAppExists();
+    });
+
+    $('#save-mariner').on('click', (e) => {
+        e.preventDefault();
+        confirmAndSaveMariner();
+    });
+
+    // $(document).on('submit', '#activityForm', () => {
+    //     return false;
+    // });
+    $('#save-mariner-activity-button').on('click', (e) => {
+        e.preventDefault();
+    });
+});

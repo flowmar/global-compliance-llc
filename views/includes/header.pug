@@ -1,10 +1,11 @@
 header.shadow-3-strong
-  nav.navbar.navbar-expand-lg.navbar-dark.shadow-sm
+  nav.navbar.navbar-expand-sm.navbar-dark.shadow-sm
     .container-fluid
-      a.navbar-brand
-        include globalcompliance.svg
-    if title != 'Login'
-      ul.navbar-nav
+      .row
+        a.navbar-brand
+          include globalcompliance.svg
+      if title != 'Login'
+        ul.navbar-nav
           if title == 'Search'
             li.nav-item
               a.nav-link.active(href="/search") Search

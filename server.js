@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-05 15:01:04
+ * @Last Modified time: 2022-07-08 03:46:56
  */
 
 'use strict';
@@ -75,17 +75,17 @@ let upload = multer({
 
 // Request for root URL
 app.get('/', async (_req, res) => {
-    const query = await axios.get('https://randomuser.me/api/?results=9');
     res.render('index', {
-        users: query.data.results,
         title: 'Login',
     });
 });
 
 // Request for '/search' URL
-app.get('/search', async (_req, res) => {
+app.get('/search', async (req, res) => {
     let marinerData = [];
     let mariners = [];
+    let user = req.query.user;
+
     // Retrieve all records from database
     const searchSQL = 'SELECT * FROM Mariners';
     const search_query = mysql.format(searchSQL);
@@ -171,12 +171,21 @@ app.get('/search', async (_req, res) => {
     }
 
     // Send all records over to the page to be rendered
-    res.render('search', {
-        title: 'Search',
-        searched: false,
-        results: mariners,
-        employers: allEmployersJSON,
-    });
+    res.render(
+        'search',
+        {
+            title: 'Search',
+            searched: false,
+            results: mariners,
+            employers: allEmployersJSON,
+            user: user,
+        },
+        (err, html) => {
+            if (err) throw err;
+            console.log(user);
+            res.send(html);
+        }
+    );
 });
 
 // Request for '/view' URL
@@ -221,33 +230,45 @@ app.get('/view/:id', async (req, res) => {
 app.get('/edit/:id', async (req, res) => {
     let marinerID = req.params.id;
 
+    // Get the selected Mariner
     const viewSQL = 'SELECT * FROM Mariners WHERE MarinerID = ?';
     const view_query = mysql.format(viewSQL, [marinerID]);
     const viewRows = await db.query(view_query);
     const viewJSON = viewRows[0][0];
     console.log(viewJSON);
 
+    // Get all employers
     const all_employers_query = mysql.format('SELECT * FROM Employers');
     const allEmployerRows = await db.query(all_employers_query);
     const allEmployersJSON = allEmployerRows[0];
     // console.log(allEmployersJSON);
 
+    // Get all Agents
     const agents_query = mysql.format('SELECT * FROM Agents');
     const agentsRows = await db.query(agents_query);
     const agentsJSON = agentsRows[0];
     // console.log(agentsJSON);
 
+    // Get all Countries
     const countries_query = mysql.format('SELECT * FROM Countries');
     const countriesRows = await db.query(countries_query);
     const countriesJSON = countriesRows[0];
     // console.log(countriesJSON);
 
+    // Get all activities for the selected Mariner
+    let activitySQL = 'SELECT * FROM MarinerActivities WHERE MarinerID = ?';
+    let activity_query = mysql.format(activitySQL, [marinerID]);
+    let activityRows = await db.query(activity_query);
+    let activityJSON = activityRows[0];
+
+    // Render the Edit page, sending the Mariner information
     res.render('edit', {
         title: 'Edit',
         viewMariner: viewJSON,
         employers: allEmployersJSON,
         agents: agentsJSON,
         countries: countriesJSON,
+        activities: activityJSON,
     });
 });
 
@@ -404,8 +425,9 @@ app.post('/authenticate', async (req, res) => {
             // Compare the passwords using bcrypt
             if (await bcrypt.compare(password, hashedPassword)) {
                 console.log('Success!');
-                // res.send(`${user}` + " has successfully logged in!");
-                res.redirect('/search');
+                // res.send(`${user}` + ' has successfully logged in!');
+
+                res.redirect('/search?user=' + user);
             } else {
                 console.log('Password Incorrect!');
                 res.send('Your password was incorrect.');
@@ -617,6 +639,45 @@ app.post('/edit', async (req, res) => {
     await db.query(update_query);
 
     res.redirect('/search');
+});
+
+// Route for MarinerActivities
+app.post('/activity', async (req, res) => {
+    console.log(req.body);
+    let activity = req.body.activity;
+    let marinerID = req.body.marinerIDActivity;
+    let processingAgent = req.body.activityProcessingAgent;
+
+    let activitySQL =
+        'INSERT INTO MarinerActivities SET ActivityNote = ?, ActivityDate = CURRENT_TIMESTAMP(), MarinerID = ?, ProcessingAgent = ?';
+    let activity_query = mysql.format(activitySQL, [
+        activity,
+        marinerID,
+        processingAgent,
+    ]);
+    let activityRows = await db.query(activity_query);
+    let activityJSON = JSON.parse(JSON.stringify(activityRows));
+
+    res.send({
+        activityJSON: activityJSON,
+    });
+});
+
+app.post('/activity/delete', async (req, res) => {
+    // Get the activity id
+    let activityID = req.query.activityid;
+
+    // SQL query for deleting activity
+    let deleteSQL = 'DELETE FROM MarinerActivities WHERE ActivityID = ?';
+    let delete_query = mysql.format(deleteSQL, [activityID]);
+
+    let deleteRows = await db.query(delete_query);
+
+    let deleteJSON = JSON.parse(JSON.stringify(deleteRows));
+
+    res.send({
+        deleteJSON: deleteJSON,
+    });
 });
 
 /**

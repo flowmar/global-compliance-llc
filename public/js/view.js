@@ -1,8 +1,8 @@
 /*
  * @Author: flowmar
  * @Date: 2022-07-05 01:43:12
- * @Last Modified by:   flowmar
- * @Last Modified time: 2022-07-05 01:43:12
+ * @Last Modified by: flowmar
+ * @Last Modified time: 2022-07-05 15:38:24
  */
 
 /* Add Mariner Validation */
@@ -19,6 +19,16 @@ const appModal = new mdb.Modal(applicationModal);
 // Places the Mariner ID into the Licenses Button URL
 licensesButton.href = `/licenses/${marinerIDNumber}`;
 
+/**
+ * If the input is falsy, return the value. If the input is less than 4 characters,
+ * return the value. If the input is less than 7 characters, return the value with
+ * formatting. If the input is greater than 7 characters, return the value with
+ * formatting
+ *
+ * @param value The value of the input
+ *
+ * @return the value of the phone number with the correct formatting.
+ */
 // Formats Phone Number
 function formatPhoneNumber(value) {
     // If input is falsy, return the value
@@ -45,6 +55,10 @@ function formatPhoneNumber(value) {
     )}-${phoneNumber.slice(6, 9)}`;
 }
 
+/**
+ * It gets the input field, formats the input, and sets the value to the formatted
+ * input
+ */
 // Phone number formatter
 function phoneNumberFormatter() {
     // Get input field
@@ -56,11 +70,8 @@ function phoneNumberFormatter() {
 }
 
 /**
- * Checks to see if
- * First Name, Last Name and Date of Birth
- * are filled out before allowing the App Modal to open
+ * It takes the file that the user has selected and sends it to the server
  */
-
 // Uploads the application document to the database
 function uploadApp() {
     let processingAgent = document.getElementById('processing-agent').value;
@@ -94,6 +105,11 @@ function uploadApp() {
     });
 }
 
+/**
+ * It opens a new window to download the application for the requested ID
+ *
+ * @param id The MarinerID of the application to download
+ */
 // Downloads Application for a given MarinerID
 function downloadApp(id) {
     // Opens a new window to download the application for the requested ID
@@ -102,6 +118,12 @@ function downloadApp(id) {
     window.open('/appDownload?marinerID=' + id);
 }
 
+/**
+ * It opens a confirmation window for deleting an application, and if the user
+ * confirms, it sends a POST request to the server to delete the application
+ *
+ * @param id The MarinerID of the application to be deleted
+ */
 // Deletes an Application for a given MarinerID
 function deleteAppConfirm(id) {
     // Open a confirmation window for deleting the application
@@ -126,6 +148,11 @@ function deleteAppConfirm(id) {
     }
 }
 
+/**
+ * It checks to see if an application for the specified MarinerID exists, and if it
+ * does, it displays the application's filename and two buttons: one to download
+ * the application and one to delete it.
+ */
 // Checks to see if an application for the specified MarinerID exists,
 function checkIfAppExists() {
     $.ajax({
@@ -155,6 +182,10 @@ function checkIfAppExists() {
     });
 }
 
+/**
+ * It adds an event listener to the application modal that checks if the
+ * application exists when the modal is shown
+ */
 function checkAppModal() {
     applicationModal.addEventListener('show.mdb.modal', () => {
         checkIfAppExists();

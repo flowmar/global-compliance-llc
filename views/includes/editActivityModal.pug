@@ -1,0 +1,14 @@
+.modal.fade#editActivityModal(tabindex="-1" aria-labelledby="editActivityModal" aria-hidden="true")
+  .modal-dialog.text-dark.modal-lg
+    .modal-content
+      .modal-header
+        h5.modal-title Mariner Activity
+        button.btn-close(type="button" data-mdb-dismiss="modal" aria-label="Close")
+      .modal-body.text-center
+        input(type="text" hidden id="marinerIDNumber" name="marinerIDNumber" value="marinerID")
+        #appArea.text-center.mt-4
+      .modal-footer
+        button.btn.btn-secondary(type="button" data-mdb-dismiss="modal" id="closeApplicationModal")
+          i.bi.bi-x(style="font-size: .9rem;")
+          span Close
+        //- button.btn.btn-primary Save
