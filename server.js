@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 08:55:47
+ * @Last Modified time: 2022-07-08 09:35:51
  */
 
 'use strict';
@@ -22,7 +22,7 @@ const multer = require('multer');
 const fs = require('fs-extra');
 
 /* Express Setup */
-// Use Express to create the application
+// Use Express to create the attachment
 const app = express();
 
 // Logger Set Up
@@ -296,10 +296,10 @@ app.get('/new', async (_req, res) => {
     let lastAppID;
     let nextAppID;
     // AppID Query
-    let appIDSQL = 'SELECT MAX(ApplicationID) FROM Applications';
+    let appIDSQL = 'SELECT MAX(attachmentID) FROM attachments';
     let appID_query = mysql.format(appIDSQL);
     let appIDRows = await db.query(appID_query);
-    lastAppID = appIDRows[0][0]['MAX(ApplicationID)'];
+    lastAppID = appIDRows[0][0]['MAX(attachmentID)'];
     if (lastAppID != null) {
         nextAppID = parseInt(lastAppID) + 1;
     } else {
@@ -467,9 +467,9 @@ app.get('/form', async (_req, res) => {
     // ID Query
     let marinerIDSQL = 'SELECT MAX(MarinerID) FROM Mariners';
     let id_query = mysql.format(marinerIDSQL);
-    // ApplicationID Query
-    let applicationIDSQL = 'SELECT MAX(ApplicationID) FROM Applications';
-    let applicationID_query = mysql.format(applicationIDSQL);
+    // attachmentID Query
+    let attachmentIDSQL = 'SELECT MAX(attachmentID) FROM attachments';
+    let attachmentID_query = mysql.format(attachmentIDSQL);
     // Country Query
     let countrySearch = 'SELECT * FROM Countries';
     let country_query = mysql.format(countrySearch);
@@ -488,10 +488,10 @@ app.get('/form', async (_req, res) => {
         console.log(lastMarinerID);
         nextMarinerID = parseInt(lastMarinerID) + 1;
     });
-    // Sets the ApplicationID to the next number
-    db.query(applicationID_query).then((result) => {
+    // Sets the attachmentID to the next number
+    db.query(attachmentID_query).then((result) => {
         console.log(result[0]);
-        lastAppID = result[0][0]['MAX(ApplicationID)'];
+        lastAppID = result[0][0]['MAX(attachmentID)'];
         console.log(lastAppID);
         nextAppID = parseInt(lastAppID) + 1;
         console.log(nextAppID);
@@ -548,7 +548,7 @@ app.post('/add', async (req, res) => {
     let birthDate = req.body.birthDate;
     let processingAgent = req.body.processingAgent;
     let marinerStatus = req.body.status;
-    let applicationID = req.body.applicationID;
+    let attachmentID = req.body.attachmentID;
     let notes = req.body.notes;
 
     // Insert SQL statement
@@ -573,7 +573,7 @@ app.post('/add', async (req, res) => {
         birthDate,
         processingAgent,
         notes,
-        applicationID,
+        attachmentID,
         marinerStatus,
     ]);
 
@@ -610,11 +610,11 @@ app.post('/edit', async (req, res) => {
     let birthDate = req.body.birthDate;
     let processingAgent = req.body.processingAgent;
     let marinerStatus = req.body.status;
-    let applicationID = req.body.applicationIDNumber;
+    let attachmentID = req.body.attachmentIDNumber;
     let notes = req.body.notes;
 
-    if (applicationID == '') {
-        applicationID = null;
+    if (attachmentID == '') {
+        attachmentID = null;
     }
     if (notes == '') {
         notes = null;
@@ -622,7 +622,7 @@ app.post('/edit', async (req, res) => {
 
     // Create SQL Statement
     let updateMarinerSQL =
-        'UPDATE Mariners SET FirstName = ?, LastName = ?, MiddleName = ?, StreetAddress = ?, PhoneNumber = ?, Email = ?, EmployerID = ?, VesselName = ?, MarinerReferenceNumber = ?, PassportNumber = ?, Citizenship = ?, BirthCity = ?, BirthState = ?, BirthCountry = ?, BirthDate = ?, ProcessingAgent = ?, Note = ?, ApplicationID = ?, Status = ? WHERE MarinerID = ?';
+        'UPDATE Mariners SET FirstName = ?, LastName = ?, MiddleName = ?, StreetAddress = ?, PhoneNumber = ?, Email = ?, EmployerID = ?, VesselName = ?, MarinerReferenceNumber = ?, PassportNumber = ?, Citizenship = ?, BirthCity = ?, BirthState = ?, BirthCountry = ?, BirthDate = ?, ProcessingAgent = ?, Note = ?, attachmentID = ?, Status = ? WHERE MarinerID = ?';
     let update_query = mysql.format(updateMarinerSQL, [
         firstName,
         lastName,
@@ -641,7 +641,7 @@ app.post('/edit', async (req, res) => {
         birthDate,
         processingAgent,
         notes,
-        applicationID,
+        attachmentID,
         marinerStatus,
         marinerId,
     ]);
@@ -716,44 +716,44 @@ app.post('/activity/edit', async (req, res) => {
 });
 
 /**
- * Routes relating to Applications
+ * Routes relating to attachments
  */
 
-// Check if Application exists for a Mariner
+// Check if attachment exists for a Mariner
 app.get('/getApp', async (req, res) => {
     console.log(req.query);
     let marinerID = req.query.marinerID;
 
-    // Check database to see if an application for the mariner exists
+    // Check database to see if an attachment for the mariner exists
     let appSQL =
-        'SELECT ApplicationID,ApplicationFileName FROM Applications WHERE marinerID = ?';
+        'SELECT attachmentID,attachmentFileName FROM attachments WHERE marinerID = ?';
     let app_query = mysql.format(appSQL, [marinerID]);
 
-    // Check the database for an application with the matching MarinerID
+    // Check the database for an attachment with the matching MarinerID
     db.pool.query(app_query, async (err, result) => {
         if (err) throw err;
         // Stringify and parse the result as JSON
         let resultJSON = JSON.parse(JSON.stringify(result));
         if (resultJSON[0]) {
-            console.log(resultJSON[0]['ApplicationFileName']);
-            console.log(resultJSON[0]['ApplicationID']);
+            console.log(resultJSON[0]['attachmentFileName']);
+            console.log(resultJSON[0]['attachmentID']);
             // Send result back to frontend
             res.send({
                 appExists: true,
-                appFilename: resultJSON[0]['ApplicationFileName'],
-                appID: resultJSON[0]['ApplicationID'],
+                appFilename: resultJSON[0]['attachmentFileName'],
+                appID: resultJSON[0]['attachmentID'],
             });
         } else {
             res.send({
                 appExists: false,
-                appFilename: 'No Application Has Been Uploaded',
+                appFilename: 'No attachment Has Been Uploaded',
             });
         }
     });
 });
 
-// Route for uploading newApplication document
-app.post('/newAppUpload', upload.single('application'), async (req, res) => {
+// Route for uploading newattachment document
+app.post('/newAppUpload', upload.single('attachment'), async (req, res) => {
     // Get the file from the request
     let file = req.file;
     // console.log(file);
@@ -768,16 +768,16 @@ app.post('/newAppUpload', upload.single('application'), async (req, res) => {
     let requestJSON = JSON.parse(JSON.stringify(req.body));
     // console.log(requestJSON);
     let marinerID = requestJSON.marinerIDNumber;
-    let applicationID = requestJSON.applicationIDNumber;
+    let attachmentID = requestJSON.attachmentIDNumber;
     let processingAgent = requestJSON.processingAgent;
     let firstName = requestJSON.firstName;
     let middleName = requestJSON.middleName;
     let lastName = requestJSON.lastName;
     let birthDate = requestJSON.birthDate;
 
-    // SQL for inserting new Mariner along with application file
+    // SQL for inserting new Mariner along with attachment file
     const insertMarinerSQL =
-        'INSERT INTO Mariners SET MarinerID = ?, FirstName = ?, MiddleName = ?, LastName = ?, BirthDate = ?, ProcessingAgent = ?, ApplicationID = ?';
+        'INSERT INTO Mariners SET MarinerID = ?, FirstName = ?, MiddleName = ?, LastName = ?, BirthDate = ?, ProcessingAgent = ?, attachmentID = ?';
     const insert_mariner_query = mysql.format(insertMarinerSQL, [
         marinerID,
         firstName,
@@ -785,40 +785,40 @@ app.post('/newAppUpload', upload.single('application'), async (req, res) => {
         lastName,
         birthDate,
         processingAgent,
-        applicationID,
+        attachmentID,
     ]);
 
     await db.query(insert_mariner_query);
 
-    // Query for inserting application into database
-    let applicationSql = 'INSERT INTO Applications VALUES (0, ?, ?, ?)';
-    let application_query = mysql.format(applicationSql, [
+    // Query for inserting attachment into database
+    let attachmentSql = 'INSERT INTO attachments VALUES (0, ?, ?, ?)';
+    let attachment_query = mysql.format(attachmentSql, [
         file_buffer,
         file.filename,
         marinerID,
     ]);
 
-    await db.query(application_query);
+    await db.query(attachment_query);
 
     // Delete the uploaded file from memory after insertion into the db
     let uploadedFile = 'public/uploads/' + file.filename;
     await fs.unlinkSync(uploadedFile);
     console.log('File Uploaded!');
 
-    // Query for setting the ApplicationID in the Mariners table to the corresponding one in the Applications table
+    // Query for setting the attachmentID in the Mariners table to the corresponding one in the attachments table
     let checkAppIdSQL =
-        'SELECT ApplicationID FROM Applications WHERE MarinerID = ?';
+        'SELECT attachmentID FROM attachments WHERE MarinerID = ?';
     let check_app_id_query = mysql.format(checkAppIdSQL, [marinerID]);
 
     let checkAppRows = await db.query(check_app_id_query);
     // console.log(checkAppRows);
     let rJSON = JSON.parse(JSON.stringify(checkAppRows));
     // console.log(rJSON);
-    let appId = rJSON[0][0]['ApplicationID'];
+    let appId = rJSON[0][0]['attachmentID'];
     console.log(appId);
 
     let updateMarinerSQL =
-        'UPDATE Mariners SET ApplicationID = ? WHERE MarinerID = ? ';
+        'UPDATE Mariners SET attachmentID = ? WHERE MarinerID = ? ';
     let update_mariner_query = mysql.format(updateMarinerSQL, [
         appId,
         marinerID,
@@ -828,14 +828,14 @@ app.post('/newAppUpload', upload.single('application'), async (req, res) => {
     res.redirect('/search');
 });
 
-// Route for uploading application document
-app.post('/appUpload', upload.single('application'), async (req, res) => {
+// Route for uploading attachment document
+app.post('/appUpload', upload.single('attachment'), async (req, res) => {
     // Error handling
     if (!req.file) {
         return res.status(400).send({ message: 'Please upload a file.' });
     }
 
-    let applicationID;
+    let attachmentID;
     // Get the file from the request
     let file = req.file;
 
@@ -851,16 +851,16 @@ app.post('/appUpload', upload.single('application'), async (req, res) => {
     let marinerID = marinerIDjson.marinerIDNumber[1];
     console.log(marinerIDjson);
 
-    // Query for inserting application into database
-    let applicationSql = 'INSERT INTO Applications VALUES (0, ?, ?, ?)';
-    let application_query = mysql.format(applicationSql, [
+    // Query for inserting attachment into database
+    let attachmentSql = 'INSERT INTO attachments VALUES (0, ?, ?, ?)';
+    let attachment_query = mysql.format(attachmentSql, [
         file_buffer,
         file.filename,
         marinerID,
     ]);
 
-    // Upload application to database
-    let appQueryRows = await db.query(application_query);
+    // Upload attachment to database
+    let appQueryRows = await db.query(attachment_query);
     // Delete the uploaded file from memory after insertion into the db
     let uploadedFile = 'public/uploads/' + file.filename;
     fs.unlinkSync(uploadedFile);
@@ -869,14 +869,14 @@ app.post('/appUpload', upload.single('application'), async (req, res) => {
     console.log(appQueryRows);
     let appQueryJSON = JSON.parse(JSON.stringify(appQueryRows));
     console.log(appQueryJSON);
-    applicationID = appQueryJSON[0]['insertId'];
-    console.log('Application ID: ' + applicationID);
+    attachmentID = appQueryJSON[0]['insertId'];
+    console.log('attachment ID: ' + attachmentID);
 
-    // Update the Mariner with the ApplicationID
+    // Update the Mariner with the attachmentID
     let updateMarinerSQL =
-        'UPDATE Mariners SET ApplicationID = ? WHERE MarinerID = ?';
+        'UPDATE Mariners SET attachmentID = ? WHERE MarinerID = ?';
     let update_query = mysql.format(updateMarinerSQL, [
-        applicationID,
+        attachmentID,
         marinerID,
     ]);
     await db.query(update_query);
@@ -884,12 +884,12 @@ app.post('/appUpload', upload.single('application'), async (req, res) => {
     res.send({
         appUploaded: true,
         appFilename: file.filename,
-        appID: applicationID,
+        appID: attachmentID,
     });
 });
 
 /**
- *  Route for downloading an application document
+ *  Route for downloading an attachment document
  */
 
 app.get('/appDownload', async (req, res) => {
@@ -897,41 +897,37 @@ app.get('/appDownload', async (req, res) => {
     let marinerID = req.query.marinerID;
     console.log('MarinerID: ' + marinerID);
 
-    // SQL to find Application that matches the mariner ID
-    let appSQL = 'SELECT * FROM Applications WHERE MarinerID = ?';
+    // SQL to find attachment that matches the mariner ID
+    let appSQL = 'SELECT * FROM attachments WHERE MarinerID = ?';
     let app_query = mysql.format(appSQL, [marinerID]);
 
     // Get the Blob object from the database
     db.pool.query(app_query, async (error, response) => {
         if (error) throw error;
         console.log(response[0]);
-        console.log(response[0]['ApplicationID']);
-        let applicationID = response[0]['ApplicationID'];
+        console.log(response[0]['attachmentID']);
+        let attachmentID = response[0]['attachmentID'];
 
         // Create a Buffer from the BLOB object
-        let buff = await new Buffer.from(response[0]['ApplicationDocument'], {
-            type: 'application/pdf',
+        let buff = await new Buffer.from(response[0]['attachmentDocument'], {
+            type: 'attachment/pdf',
         });
         console.log(buff);
 
         const tempFilePath =
             'public/downloads/' +
-            'application_' +
-            applicationID +
+            'attachment_' +
+            attachmentID +
             '_for_mariner_' +
             marinerID +
             '.pdf';
         const fileName =
-            'application_' +
-            applicationID +
-            '_for_mariner_' +
-            marinerID +
-            '.pdf';
+            'attachment_' + attachmentID + '_for_mariner_' + marinerID + '.pdf';
 
         // Write the binary buffer data to a file
         let pdf = await fs.writeFileSync(
             tempFilePath,
-            response[0]['ApplicationDocument']
+            response[0]['attachmentDocument']
         );
 
         // Send the document to the browser for download
@@ -946,27 +942,90 @@ app.get('/appDownload', async (req, res) => {
     });
 });
 
-// Route for Deleting an Application Document from the database
+// Route for Deleting an attachment Document from the database
 app.post('/deleteApp', async (req, res) => {
     // Get ID from request parameters
     let marinerID = req.body.marinerID;
-    // SQL Statement to Delete Application
-    let deleteSQL = 'DELETE FROM Applications WHERE MarinerID = ?';
+    // SQL Statement to Delete attachment
+    let deleteSQL = 'DELETE FROM attachments WHERE MarinerID = ?';
     let delete_query = mysql.format(deleteSQL, [marinerID]);
 
-    // Delete the Application Document
+    // Delete the attachment Document
     db.pool.query(delete_query, async (err, _res) => {
         if (err) throw err;
-        console.log('Application Deleted for MarinerID: ' + marinerID);
+        console.log('attachment Deleted for MarinerID: ' + marinerID);
     });
 
     // Update the Mariner to reflect the deletion
     let updateMarinerSQL =
-        'UPDATE Mariners SET ApplicationID = null WHERE MarinerID = ?';
+        'UPDATE Mariners SET attachmentID = null WHERE MarinerID = ?';
     let update_query = mysql.format(updateMarinerSQL, [marinerID]);
     await db.query(update_query);
 
-    res.send('Application successfully deleted');
+    res.send('attachment successfully deleted');
+});
+
+// Route for uploading a Mariner attachment
+app.post('/attachment', upload.single('attachment'), async (req, res) => {
+    // Error handling
+    if (!req.file) {
+        return res.status(400).send({ message: 'Please upload a file.' });
+    }
+
+    let attachmentID;
+    // Get the file from the request
+    let file = req.file;
+
+    // Read the file as a buffer
+    const file_buffer = fs.readFileSync('public/uploads/' + file.filename);
+    console.log(file);
+    console.log(file.filename);
+
+    // Parse the request body
+    let bodyJSON = JSON.parse(JSON.stringify(req.body));
+
+    // Get the marinerID from the request body
+    let marinerID = bodyJSON.marinerID;
+    let processingAgentID = bodyJSON.processingAgent;
+    console.log(bodyJSON);
+
+    // Query for inserting attachment into database
+    let attachmentSql =
+        'INSERT INTO MarinerAttachments SET MarinerAttachment = ?, AttachmentFileName = ?,MarinerID = ?, MarinerAttachmentDate = CURRENT_TIMESTAMP(), ProcessingAgent = ?';
+    let attachment_query = mysql.format(attachmentSql, [
+        file_buffer,
+        file.filename,
+        marinerID,
+        processingAgentID,
+    ]);
+
+    // Upload attachment to database
+    let attachmentRows = await db.query(attachment_query);
+    // Delete the uploaded file from memory after insertion into the db
+    let uploadedFile = 'public/uploads/' + file.filename;
+    fs.unlinkSync(uploadedFile);
+    console.log('File Uploaded!');
+
+    console.log(attachmentRows);
+    let attachmentJSON = JSON.parse(JSON.stringify(attachmentRows));
+    console.log(attachmentJSON);
+    attachmentID = attachmentJSON[0]['insertId'];
+    console.log('attachment ID: ' + attachmentID);
+
+    // // Update the Mariner with the attachmentID
+    // let updateMarinerSQL =
+    //     'UPDATE Mariners SET attachmentID = ? WHERE MarinerID = ?';
+    // let update_query = mysql.format(updateMarinerSQL, [
+    //     attachmentID,
+    //     marinerID,
+    // ]);
+    // await db.query(update_query);
+
+    res.send({
+        attachmentUploaded: true,
+        attachmentFilename: file.filename,
+        attachmentID: attachmentID,
+    });
 });
 
 /**
@@ -1129,7 +1188,7 @@ app.post('/search', async (_req, res) => {
     });
 });
 
-// Route for deleteing a Mariner
+// Route for deleting a Mariner
 app.post('/delete/:id', async (req, res) => {
     let marinerID = req.params.id;
 
@@ -1177,7 +1236,7 @@ if (process.env.MACHINE == 'local') {
     );
 }
 
-// Set the application to listen on a port for requests
+// Set the attachment to listen on a port for requests
 app.listen(PORT, () => {
     console.log(`Listening to requests on http://localhost:${PORT}...`);
 });

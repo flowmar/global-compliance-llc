@@ -2,8 +2,6 @@ this is an example
 
 how cool!
 
-TODO: Add Mariner Attachment form
-
 TODO: Upload Mariner Attachment to MarinerAttachments Table
 
 TODO: Retrieve MarinerAttachments from db and display in UI

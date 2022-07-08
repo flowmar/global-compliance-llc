@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-08 07:05:56
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 08:28:26
+ * @Last Modified time: 2022-07-08 09:30:08
  */
 
 /**
@@ -69,7 +69,38 @@ function confirmAndDeleteActivity() {
     } else console.log('Delete activity cancelled!');
 }
 
+function uploadAttachment(data) {
+    // Make a POST request with the selected file
+    $.ajax({
+        type: 'POST',
+        url: '/attachment',
+        data: data,
+        cache: false,
+        processData: false,
+        contentType: false,
+        success: function (r) {
+            let rJSON = JSON.parse(JSON.stringify(r));
+            console.log(rJSON);
+            alert('Attachement Uploaded!');
+        },
+        error: function (err) {
+            console.log('Error: ' + err.message);
+        },
+    });
+}
+
 $(document).ready(() => {
+    $('#attachmentForm').on('submit', function (e) {
+        e.preventDefault();
+        let formData = new FormData(this);
+        formData.append('marinerID', marinerID);
+        formData.append(
+            'processingAgent',
+            window.localStorage.getItem('processingAgentID')
+        );
+        uploadAttachment(formData);
+    });
+
     let selectedRow;
     if (!selectedRow) {
         $('.buttons').hide();
