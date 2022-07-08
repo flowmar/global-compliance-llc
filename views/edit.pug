@@ -226,22 +226,22 @@ block content
     window.localStorage.setItem('processingAgentID', currentProcessingAgentID);
     //- console.log(currentProcessingAgentID);
     //- console.log("user:" + storedUser);
-    let activityProcessingHidden = $('#activityProcessingAgent');
+    let activityProcessingHidden = document.getElementById('activityProcessingAgent');
     //- console.log("element: " + activityProcessingHidden)
-    activityProcessingHidden.attr('value', currentProcessingAgentID);
+    activityProcessingHidden.setAttribute('value', currentProcessingAgentID);
 
     // Place the MarinerID into the UI
-    let marinerHidden = $('#marinerIDHidden');
+    let marinerHidden = document.getElementById('marinerIDHidden');
     //- console.log(marinerHidden);
-    marinerHidden.attr("value", viewMarinerID);
-    let marinerActivityHidden = $('#marinerActivityID');
-    marinerActivityHidden.attr("value", viewMarinerID);
+    marinerHidden.setAttribute("value", viewMarinerID);
+    let marinerActivityHidden = document.getElementById('marinerActivityID');
+    marinerActivityHidden.setAttribute("value", viewMarinerID);
 
     // Place the ApplicationID into the UI
-    let applicationIDHidden = $('#applicationIDHidden');
+    let applicationIDHidden = document.getElementById('applicationIDHidden');
     if (viewApplicationID)
     {
-      applicationIDHidden.attr('value', viewApplicationID);
+      applicationIDHidden.setAttribute('value', viewApplicationID);
     }
 
     //- Wait until DOM is loaded
