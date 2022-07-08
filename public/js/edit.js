@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-08 07:05:56
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 09:44:18
+ * @Last Modified time: 2022-07-08 14:20:20
  */
 
 /**
@@ -69,6 +69,11 @@ function confirmAndDeleteActivity() {
     } else console.log('Delete activity cancelled!');
 }
 
+/**
+ * `uploadAttachment` takes a `FormData` object and makes a POST request to the
+ * `/attachment` endpoint
+ * @param data - The data to be sent to the server.
+ */
 function uploadAttachment(data) {
     // Make a POST request with the selected file
     $.ajax({
@@ -90,7 +95,19 @@ function uploadAttachment(data) {
     });
 }
 
+function downloadMarinerAttachment(marinerID, attachmentID) {
+    window.open(
+        '/attachment/download?marinerID=' +
+            marinerID +
+            '&attachmentID=' +
+            attachmentID
+    );
+}
+
+function confirmAndDeleteAttachment() {}
+
 $(document).ready(() => {
+    // Create a FormData object for uploading the attachment
     $('#attachmentForm').on('submit', function (e) {
         e.preventDefault();
         let formData = new FormData(this);
@@ -108,10 +125,10 @@ $(document).ready(() => {
     }
 
     // Make table rows selectable
-    $('tbody tr').on('click', function () {
+    $('#activityTableBody tr').on('click', function () {
         $('.buttons').show();
         // Remove active class from anything previously selected
-        $('.table-active').removeClass('table-active');
+        $('#activityTableBody tr').removeClass('table-active');
 
         // Add active class to newly selected row
         $(this).addClass('table-active');
@@ -127,5 +144,34 @@ $(document).ready(() => {
         // Get the Edit Button
         let editModalTextBox = $('#editModalTextBox');
         editModalTextBox.val(selectedRow[0].dataset.activity);
+    });
+
+    let selectedAttachmentRow;
+    if (!selectedAttachmentRow) {
+        $('.attachment-buttons').hide();
+    }
+    $('#attachmentsTableBody tr').on('click', function () {
+        $('.attachment-buttons').show();
+        // Remove active class from anything previously selected
+        $('#attachmentsTableBody tr').removeClass('table-active');
+
+        // Add active class to newly selected row
+        $(this).addClass('table-active');
+
+        // Get the selected attachment row
+        selectedAttachmentRow = $(this);
+        let selectedAttachmentID =
+            selectedAttachmentRow[0].dataset.attachmentId;
+
+        console.log(selectedAttachmentID);
+
+        $('#download-mariner-attachment-button').attr(
+            'onclick',
+            'downloadMarinerAttachment(' +
+                marinerID +
+                ', ' +
+                selectedAttachmentID +
+                ')'
+        );
     });
 });

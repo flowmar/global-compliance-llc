@@ -172,10 +172,10 @@ block content
                   tbody.bg-white.text-dark.table-group-divider.table-divider-color(style="font-size: 1rem; font-weight: bold;")#attachmentsTableBody
             .row
               .col.d-flex.justify-content-end
-                button.btn.btn-info.m-2.buttons(id="edit-mariner-activity-button" data-mdb-target="#editActivityModal")
-                  i.bi.bi-pencil-square.text-dark
-                  span.text-dark   &nbsp;Edit
-                button.btn.btn-danger.m-2.buttons(id="delete-mariner-activity-button" type="button" onclick="confirmAndDeleteActivity()")
+                button.btn.btn-primary.m-2.attachment-buttons(id="download-mariner-attachment-button" onclick="downloadMarinerAttachment()")
+                  i.bi.bi-download.text-dark
+                  span.text-dark   &nbsp;Download
+                button.btn.btn-danger.m-2.attachment-buttons(id="delete-mariner-attachment-button" type="button" onclick="confirmAndDeleteAttachment()")
                   i.bi.bi-x-circle-fill.text-dark
                   span.text-dark   &nbsp;Delete
           form.form-horizontal.d-inline(id="attachmentForm" method="POST" action="/attachment" enctype="multipart/form-data")
@@ -213,6 +213,7 @@ block content
     let agentsArray = !{JSON.stringify(agents)};
     let employersArray = !{JSON.stringify(employers)};
     let activitiesArray = !{JSON.stringify(activities)};
+    let attachmentsArray = !{JSON.stringify(attachments)};
 
     // Get the current User and place into the UI
     let storedUser = window.localStorage.getItem("currentUser");
@@ -313,6 +314,8 @@ block content
     // Place the activity information into the UI
     let activityTableBody = $('#activityTableBody');
     console.log(activitiesArray);
+
+    // Loop through activitiesArray
     for (let activity of activitiesArray){
 
     // Format the Date
@@ -343,7 +346,35 @@ block content
     activityTableBody.append(tableRow);
 
     }
+    let attachmentTableBody = document.getElementById('attachmentsTableBody');
 
+    for (attachment of attachmentsArray){
+      console.log(attachment);
+
+      let attachmentDate = attachment.MarinerAttachmentDate;
+      let attachmentID = attachment.MarinerAttachmentID;
+      let attachmentName = attachment.AttachmentFileName;
+      let processingAgent = attachment.ProcessingAgent;
+
+      // Format the Date
+    let formattedDate = new Date(attachmentDate).toString();
+    let formattedTime = new Date(attachmentDate).toLocaleTimeString();
+    console.log(formattedTime);
+    console.log(formattedDate);
+    formattedDateArray = formattedDate.split(' ');
+    console.log(formattedDateArray);
+    formattedDate = formattedDateArray[0] + ' ' + formattedDateArray[1] + ' ' + formattedDateArray[2] + ' ' + formattedDateArray[3] + ' ' + formattedTime;
+
+      let tableRow = document.createElement("tr");
+      tableRow.dataset.attachmentId = attachmentID;
+      tableRow.dataset.attachmentName = attachmentName;
+      tableRow.dataset.attachmentAgent = processingAgent;
+      tableRow.style = 'text-align:center;'
+
+      tableRow.innerHTML = `<td>${formattedDate}</td> <td>${attachmentName}</td> <td>${processingAgent}</td>`;
+      attachmentTableBody.appendChild(tableRow);
+
+    }
     });
 
   script(src="/js/validation.js")

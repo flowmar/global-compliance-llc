@@ -2,8 +2,6 @@ this is an example
 
 how cool!
 
-TODO: Retrieve MarinerAttachments from db and display in UI
-
 TODO: Add buttons to download/delete Mariner attachments
 
 TODO: Create Licenses screen w/tabs

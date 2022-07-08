@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 13:26:12
+ * @Last Modified time: 2022-07-08 14:28:26
  */
 
 'use strict';
@@ -272,6 +272,12 @@ app.get('/edit/:id', async (req, res) => {
     let activityRows = await db.query(activity_query);
     let activityJSON = activityRows[0];
 
+    // Get all attachments for the selected Mariner
+    let attachmentSQL = 'SELECT * FROM MarinerAttachments WHERE MarinerID = ?';
+    let attachment_query = mysql.format(attachmentSQL, [marinerID]);
+    let attachmentRows = await db.query(attachment_query);
+    let attachmentJSON = attachmentRows[0];
+
     // Render the Edit page, sending the Mariner information
     res.render('edit', {
         title: 'Edit',
@@ -280,6 +286,7 @@ app.get('/edit/:id', async (req, res) => {
         agents: agentsJSON,
         countries: countriesJSON,
         activities: activityJSON,
+        attachments: attachmentJSON,
     });
 });
 
@@ -1029,6 +1036,59 @@ app.post('/attachment', upload.single('attachment'), async (req, res) => {
         attachmentUploaded: true,
         attachmentFilename: file.filename,
         attachmentID: attachmentID,
+    });
+});
+
+app.get('/attachment/download', async (req, res) => {
+    // Get the MarinerID from the request body
+    let marinerID = req.query.marinerID;
+    let attachmentID = req.query.attachmentID;
+    console.log('MarinerID: ' + marinerID);
+    console.log('AttachmentID: ' + attachmentID);
+
+    // SQL to find application that matches the mariner ID
+    let attachmentSQL =
+        'SELECT * FROM MarinerAttachments WHERE MarinerAttachmentID = ?';
+    let attachment_query = mysql.format(attachmentSQL, [attachmentID]);
+
+    // Get the Blob object from the database
+    db.pool.query(attachment_query, async (error, response) => {
+        if (error) throw error;
+        console.log(response[0]);
+        console.log(response[0]['MarinerAttachmentID']);
+        let applicationID = response[0]['MarinerAttachmentID'];
+
+        // Create a Buffer from the BLOB object
+        let buff = await new Buffer.from(response[0]['MarinerAttachment'], {
+            type: 'application/pdf',
+        });
+        console.log(buff);
+
+        const tempFilePath =
+            'public/downloads/' +
+            'attachment_' +
+            attachmentID +
+            '_for_mariner_' +
+            marinerID +
+            '.pdf';
+        const fileName =
+            'attachment_' + attachmentID + '_for_mariner_' + marinerID + '.pdf';
+
+        // Write the binary buffer data to a file
+        let pdf = await fs.writeFileSync(
+            tempFilePath,
+            response[0]['MarinerAttachment']
+        );
+
+        // Send the document to the browser for download
+        res.download(tempFilePath, fileName, (err) => {
+            // Throw an error is there is an error
+            if (err) throw err;
+            // If the download completes, display a success message
+            console.log('Attachment Download Complete!');
+            // Delete the temporary file from the server
+            fs.unlink(tempFilePath);
+        });
     });
 });
 
