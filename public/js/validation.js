@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-03 07:45:53
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 04:16:58
+ * @Last Modified time: 2022-07-08 06:56:09
  */
 
 const marinerID = document.getElementById('marinerIDHidden').value || next;
@@ -256,7 +256,7 @@ $(document).ready(() => {
     });
 
     // editActivityModal.addEventListener('show.mdb.modal', () => {}
-    $('#edit-mariner-activity-button').on('click', (e) => {
+    $('#edit-mariner-activity-button').on('click', () => {
         editModal.show();
     });
 

@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 04:51:04
+ * @Last Modified time: 2022-07-08 06:53:59
  */
 
 'use strict';
@@ -440,6 +440,7 @@ app.post('/authenticate', async (req, res) => {
 app.get('/logout', async (_req, res) => {
     res.render('index', {
         title: 'Login',
+        removeUser: true,
     });
 });
 

@@ -44,3 +44,10 @@ block content
       .col-2
 
       //- include includes/createUser.pug
+
+    script.
+      let removeUser = !{removeUser}
+
+      if (removeUser) {
+        localStorage.removeItem("currentUser");
+      }
