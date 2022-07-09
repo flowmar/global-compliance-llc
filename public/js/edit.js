@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-08 07:05:56
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 20:18:26
+ * @Last Modified time: 2022-07-08 20:41:13
  */
 
 /**
@@ -101,12 +101,14 @@ function uploadAttachment(data) {
  * @param marinerID - The ID of the mariner
  * @param attachmentID - The ID of the attachment you want to download.
  */
-function downloadMarinerAttachment(marinerID, attachmentID) {
+function downloadMarinerAttachment(marinerID, attachmentID, fullName) {
     window.open(
         '/attachment/download?marinerID=' +
             marinerID +
             '&attachmentID=' +
-            attachmentID
+            attachmentID +
+            '&fullName=' +
+            fullName
     );
 }
 
@@ -135,10 +137,16 @@ function confirmAndDeleteAttachment(attachmentID) {
 }
 
 $(document).ready(() => {
+    let marinerFirstName = $('#first-name').val();
+    let marinerMiddleName = $('#middle-name').val();
+    let marinerLastName = $('#last-name').val();
+    let marinerFullName =
+        marinerFirstName + ' ' + marinerMiddleName + ' ' + marinerLastName;
     // Create a FormData object for uploading the attachment
     $('#attachmentForm').on('submit', function (e) {
         e.preventDefault();
         let formData = new FormData(this);
+        console.log(formData);
         formData.append('marinerID', marinerID);
         formData.append(
             'processingAgent',
@@ -203,7 +211,9 @@ $(document).ready(() => {
                 marinerID +
                 ', ' +
                 selectedAttachmentID +
-                ')'
+                ', "' +
+                marinerFullName +
+                '")'
         );
 
         // Change the onclick event for the delete button to include the selectedAttachmentID as a parameter
@@ -220,7 +230,7 @@ $(document).ready(() => {
     let characterCountMessage = document.getElementById(
         'characterCountMessage'
     );
-
+    // Listen for key presses on the notes text field
     notesTextField.addEventListener('keyup', function (e) {
         totalCharacters = notesTextField.value.length;
         if (totalCharacters < 225) {

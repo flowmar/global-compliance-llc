@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 14:51:55
+ * @Last Modified time: 2022-07-08 20:41:59
  */
 
 'use strict';
@@ -1045,6 +1045,7 @@ app.get('/attachment/download', async (req, res) => {
     // Get the MarinerID from the request body
     let marinerID = req.query.marinerID;
     let attachmentID = req.query.attachmentID;
+    let marinerFullName = req.query.fullName;
     console.log('MarinerID: ' + marinerID);
     console.log('AttachmentID: ' + attachmentID);
 
@@ -1058,7 +1059,6 @@ app.get('/attachment/download', async (req, res) => {
         if (error) throw error;
         console.log(response[0]);
         console.log(response[0]['MarinerAttachmentID']);
-        let applicationID = response[0]['MarinerAttachmentID'];
 
         // Create a Buffer from the BLOB object
         let buff = await new Buffer.from(response[0]['MarinerAttachment'], {
@@ -1069,12 +1069,17 @@ app.get('/attachment/download', async (req, res) => {
         const tempFilePath =
             'public/downloads/' +
             'attachment_' +
-            attachmentID +
+            response[0]['AttachmentName'] +
             '_for_mariner_' +
-            marinerID +
+            marinerFullName +
             '.pdf';
+
         const fileName =
-            'attachment_' + attachmentID + '_for_mariner_' + marinerID + '.pdf';
+            'attachment_' +
+            response[0]['AttachmentName'] +
+            '_for_mariner_' +
+            marinerFullName +
+            '.pdf';
 
         // Write the binary buffer data to a file
         let pdf = await fs.writeFileSync(

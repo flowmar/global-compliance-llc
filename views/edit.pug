@@ -184,8 +184,11 @@ block content
           form.form-horizontal.d-inline(id="attachmentForm" method="POST" action="/attachment" enctype="multipart/form-data")
             .row.my-4
               .col-6
+                label(for="attachmentNameInput") Attachment Name:
+                input.form-control.text-dark(id='attachmentNameInput' name="attachmentName" type='text')
+              .col-6
                 label(for="attachment-input-group") New Attachment:
-                .input-group.mt-2#attachment-input-group
+                .input-group#attachment-input-group
                   input.form-control.form-control-file.text-dark(id="attachment-file" name="attachment" type="file")
                   button.input-group-text.btn(id="attachment-upload-button" type="submit" style="background-color: var(--yellow-color); font-weight: bold;" value="Upload") Upload
             //- .row.my-4
@@ -356,7 +359,8 @@ block content
 
       let attachmentDate = attachment.MarinerAttachmentDate;
       let attachmentID = attachment.MarinerAttachmentID;
-      let attachmentName = attachment.AttachmentFileName;
+      let attachmentFileName = attachment.AttachmentFileName;
+      let attachmentName = attachment.AttachmentName
       let processingAgent = attachment.ProcessingAgent;
 
       // Format the Date
