@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-08 07:05:56
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 14:54:17
+ * @Last Modified time: 2022-07-08 20:18:26
  */
 
 /**
@@ -95,6 +95,12 @@ function uploadAttachment(data) {
     });
 }
 
+/**
+ * It opens a new window and navigates to the URL of the download attachment
+ * endpoint
+ * @param marinerID - The ID of the mariner
+ * @param attachmentID - The ID of the attachment you want to download.
+ */
 function downloadMarinerAttachment(marinerID, attachmentID) {
     window.open(
         '/attachment/download?marinerID=' +
@@ -104,14 +110,28 @@ function downloadMarinerAttachment(marinerID, attachmentID) {
     );
 }
 
+/**
+ * It sends a DELETE request to the server, and then reloads the page
+ * @param attachmentID - The ID of the attachment you want to delete.
+ */
 function confirmAndDeleteAttachment(attachmentID) {
-    axios
-        .delete('/attachment?attachmentID=' + attachmentID)
-        .then((response) => {
-            console.log(response);
-            location.reload();
-        })
-        .catch((error) => console.log(error));
+    // Confirmation for deletion
+    if (
+        confirm(
+            'Are you sure you want to delete this attachment? This operation cannot be undone.'
+        )
+    ) {
+        // Send a DELETE request to the server for the selected attachment
+        axios
+            .delete('/attachment?attachmentID=' + attachmentID)
+            .then((response) => {
+                console.log(response);
+                location.reload();
+            })
+            .catch((error) => console.log(error));
+    } else {
+        console.log('Delete attachment cancelled!');
+    }
 }
 
 $(document).ready(() => {
@@ -155,10 +175,13 @@ $(document).ready(() => {
     });
 
     let selectedAttachmentRow;
+    // Hide attachment buttons if nothing is selected
     if (!selectedAttachmentRow) {
         $('.attachment-buttons').hide();
     }
+    // Make attachment table rows selectable
     $('#attachmentsTableBody tr').on('click', function () {
+        // Show attachment buttons when something is selected
         $('.attachment-buttons').show();
         // Remove active class from anything previously selected
         $('#attachmentsTableBody tr').removeClass('table-active');
@@ -173,7 +196,7 @@ $(document).ready(() => {
 
         console.log(selectedAttachmentID);
 
-        // Change the onlick event for the download button
+        // Change the onlick event for the download button to include the marinerID and selectedAttachmentID as parameters
         $('#download-mariner-attachment-button').attr(
             'onclick',
             'downloadMarinerAttachment(' +
@@ -182,10 +205,35 @@ $(document).ready(() => {
                 selectedAttachmentID +
                 ')'
         );
-        // Change the onclick event for the delete button
+
+        // Change the onclick event for the delete button to include the selectedAttachmentID as a parameter
         $('#delete-mariner-attachment-button').attr(
             'onclick',
             'confirmAndDeleteAttachment(' + selectedAttachmentID + ')'
         );
+    });
+
+    // Character counter for notes text field
+    let notesTextField = document.getElementById('notes');
+
+    let totalCharacters = notesTextField.value.length;
+    let characterCountMessage = document.getElementById(
+        'characterCountMessage'
+    );
+
+    notesTextField.addEventListener('keyup', function (e) {
+        totalCharacters = notesTextField.value.length;
+        if (totalCharacters < 225) {
+            characterCountMessage.style = 'color: white;';
+        }
+        if (totalCharacters > 225) {
+            characterCountMessage.style = 'color: var(--red-color);';
+        }
+        if (totalCharacters === 255) {
+            characterCountMessage.style = 'color: red;';
+        }
+        let charactersRemaining = 255 - totalCharacters;
+        characterCountMessage.textContent =
+            'Characters remaining: ' + charactersRemaining;
     });
 });

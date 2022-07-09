@@ -15,7 +15,7 @@
     "seafoam"
   ],
   "docwriter.style": "Auto-detect",
-  "docwriter.progress.trackFunctions": false,
+  "docwriter.progress.trackFunctions": true,
   "docwriter.progress.trackMethods": true,
   "docwriter.progress.trackClasses": false
 }

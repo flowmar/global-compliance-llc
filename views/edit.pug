@@ -143,12 +143,15 @@ block content
                   i.bi.bi-x-circle-fill.text-dark
                   span.text-dark   &nbsp;Delete
           form(id="activityForm" action="/activity" method="POST")
-            .row.my-4
+            .row.mt-4
               .col
                 label.form-label(for="notes") New Note:
-                textarea.form-control.bg-white.text-dark(id="notes" name="activity" data-parsley-maxlength="255" type="text" form="activityForm")
+                textarea.form-control.bg-white.text-dark(id="notes" name="activity" data-parsley-maxlength="255" type="text" form="activityForm" maxlength="255")
                 input.form-control(id="activityProcessingAgent" name='activityProcessingAgent' hidden)
                 input.form-control(id="marinerActivityID" name="marinerIDActivity" hidden)
+            .row.mt-0.pr-2
+              .col.d-flex.justify-content-end
+                span#characterCountMessage
             .row
               .col
               .col-3.d-flex.justify-content-end#saveMarinerActivity

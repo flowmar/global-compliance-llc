@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-03 07:45:53
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 14:49:08
+ * @Last Modified time: 2022-07-08 19:40:32
  */
 
 const marinerID = document.getElementById('marinerIDHidden').value || next;
@@ -234,10 +234,10 @@ $(document).ready(() => {
     /* Add Mariner Validation */
     const applicationModal = document.getElementById('applicationModal');
     const editActivityModal = document.getElementById('editActivityModal');
-    const firstNameInput = document.getElementById('first-name');
-    const lastNameInput = document.getElementById('last-name');
-    const birthDateInput = document.getElementById('birth-date');
-    const applicationButton = document.getElementById('appModalButton');
+    // const firstNameInput = document.getElementById('first-name');
+    // const lastNameInput = document.getElementById('last-name');
+    // const birthDateInput = document.getElementById('birth-date');
+    // const applicationButton = document.getElementById('appModalButton');
 
     // Put the MarinerID in the license button URL
     let licensesButton = $('#licenses-button');
