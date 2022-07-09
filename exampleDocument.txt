@@ -2,8 +2,6 @@ this is an example
 
 how cool!
 
-TODO: Create Licenses screen w/tabs
-
 TODO: Ask how many Licenses to create, generate textboxes for names, generate tabs for licenses with info and add license to database
 
 TODO: In each tab, accept License info, add save button

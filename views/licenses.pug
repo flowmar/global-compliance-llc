@@ -22,8 +22,38 @@ block content
             .col-3.mt-4
               button.btn.btn-warning(id="generate-licenses-button" type="button" value="Generate") Generate
           .row#licenseNamesRow &nbsp;
-          .row#licensesArea
+          .row.my-4#licensesArea
+            .col.bg-white.rounded.text-dark
+              ul.nav.nav-tabs.mb-3#licensesTabList(role="tablist")
+                //- li.nav-item(role="presentation")
+                //-   a.nav-link.active#ex1-tab-1(data-mdb-toggle='tab' href='#ex1-tabs-1' role='tab' aria-controls='ex1-tabs-1' aria-selected='true') Tab 1
+                //- li.nav-item(role="presentation")
+                //-   a.nav-link#ex1-tab-2(data-mdb-toggle='tab' href='#ex1-tabs-2' role='tab' aria-controls='ex1-tabs-2' aria-selected='false') Tab 2
+                //- li.nav-item(role="presentation")
+                //-   a.nav-link#ex1-tab-3(data-mdb-toggle='tab' href='#ex1-tabs-3' role='tab' aria-controls='ex1-tabs-3' aria-selected='false') Tab 3
+              .tab-content#tab-content
+                //- .tab-pane.fade.show.active.p-3#ex1-tabs-1(role='tabpanel' aria-labelledby='ex1-tab-1') Tab 1 Content
+                //- .tab-pane.fade.p-3#ex1-tabs-2(role='tabpanel' aria-labelledby='ex1-tab-2') Tab 2 Content
+                //- .tab-pane.fade.p-3#ex1-tabs-3(role='tabpanel' aria-labelledby='ex1-tab-3') Tab 3 Content
+          //- .row
+          //-   .col
+          //-     <ul class="nav nav-tabs mb-3" id="ex1" role="tablist">
+          //-       <li class="nav-item" role="presentation">
+          //-         <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab" href="#ex1-tabs-1" role="tab" aria-controls="ex1-tabs-1" aria-selected="true">Tab 1</a>
+          //-       </li>
+          //-       <li class="nav-item" role="presentation">
+          //-         <a class="nav-link" id="ex1-tab-2" data-mdb-toggle="tab" href="#ex1-tabs-2" role="tab" aria-controls="ex1-tabs-2" aria-selected="false" >Tab 2</a>
+          //-       </li>
+          //-       <li class="nav-item" role="presentation">
+          //-         <a class="nav-link" id="ex1-tab-3" data-mdb-toggle="tab" href="#ex1-tabs-3" role="tab" aria-controls="ex1-tabs-3" aria-selected="false">Tab 3</a>
+          //-       </li>
+          //-     </ul>
 
+          //-     <div class="tab-content" id="ex1-content">
+          //-       <div class="tab-pane fade show active" id="ex1-tabs-1" role="tabpanel" aria-labelledby="ex1-tab-1"> Tab 1 content </div>
+          //-       <div class="tab-pane fade" id="ex1-tabs-2" role="tabpanel" aria-labelledby="ex1-tab-2"> Tab 2 content </div>
+          //-       <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel" aria-labelledby="ex1-tab-3">Tab 3 content</div>
+          //-     </div>
               //- <div class="datatable" data-mdb-dark="true" data-mdb-color="blue-grey-dark" data-mdb-border-color="light" data-mdb-full-pagination="true" data-mdb-hover="true" data-mdb-striped="true" data-mdb-selectable="true">
               //-   table.table
               //-     thead
@@ -51,9 +81,20 @@ block content
   script.
 
     $(document).ready( function() {
+
+      //TODO: Check to see if there are any licenses in the database, if there are, skip the license tab generation part
+
       let generateLicensesButton = document.getElementById('generate-licenses-button');
       let licensesModule = $('#licensesModule');
+      let licensesArea = $('#licensesArea');
+      let licensesTabList = $('#licensesTabList');
+      let tabContent = $('#tab-content');
 
+
+      // Hide the licenses area from view
+      licensesArea.hide();
+
+      // When the generate button is clicked...
       generateLicensesButton.addEventListener('click', function(e) {
 
         // Get the value in the input field
@@ -84,8 +125,10 @@ block content
           div.appendChild(label);
           div.appendChild(element);
 
+          // Append the text fields to the license names row
           licenseNamesRow.append(div);
         }
+
         // Create an add the Create button to the UI
         let createButton = document.createElement('button');
         createButton.textContent = "Create";
@@ -100,10 +143,82 @@ block content
         createButtonDiv.appendChild(createButton);
 
         // Append the div to the main module
-        licensesModule.append(createButtonDiv);
+        licenseNamesRow.append(createButtonDiv);
+
+        // Select the create button
+        let createLicensesButton = $('#create-licenses-button');
+
+      // When the create button is clicked...
+      createLicensesButton.on('click', function (e) {
+
+        // Array to hold the license names
+        let licenseNamesArray = [];
+
+        // Get the text from each of the license name text fields
+        for(let j = 1; j <= numberOfLicenses; j++)
+        {
+
+          // Create the selector for the license text field
+          let licenseSelector = "#nameLicense" + j;
+          console.log(licenseSelector);
+
+          // Select the text field
+          let licenseTextbox = $(licenseSelector);
+          console.log(licenseTextbox);
+
+          // Get the value in the text field
+          let licenseName = licenseTextbox.val();
+          console.log(licenseName);
+
+          // Add the license name to the names array
+          licenseNamesArray.push(licenseName);
+        }
+
+        // Show the licenses area
+        $('#licensesArea').show();
+
+        // Generate Tabs for each license in the names array
+        for (let k = 0; k < licenseNamesArray.length; k++)
+        {
+        // Create the HTML for the tabs
+        let navItem = document.createElement('li');
+        navItem.classList = 'nav-item';
+        navItem.role = 'presentation';
+
+        // Create the HTML for the nav links
+        let navLink = document.createElement('a');
+        navLink.classList = 'nav-link';
+        navLink.id = 'license-tab-' + (k + 1);
+        navLink.setAttribute('data-mdb-toggle', 'tab');
+        navLink.href = '#license-tabs-' + (k + 1);
+        navLink.role = 'tab';
+        navLink.setAttribute('aria-controls', 'license-tabs-' + (k + 1));
+        navLink.setAttribute('aria-selected', 'false');
+        navLink.textContent = licenseNamesArray[k];
+
+        // Append the navLink to the navItem
+        navItem.appendChild(navLink);
+        // Append the navItem to the tab list
+        licensesTabList.append(navItem);
+
+        // Create HTML for the tab content
+        let tabPane = document.createElement('div');
+        tabPane.classList = 'tab-pane fade p-3';
+        tabPane.id = 'license-tabs-' + (k + 1);
+        tabPane.role = 'tabpanel';
+        tabPane.setAttribute('aria-labelledby', 'license-tab-' + (k + 1));
+        tabPane.textContent = 'License: ' + licenseNamesArray[k] + ' Content';
+
+        // Append the tab pane to the tab content
+        tabContent.append(tabPane);
+
+        // Hide the license names row
+        licenseNamesRow.hide();
+        }
+
+      });
       });
 
-      let createLicensesButton = $('#create-licenses-button');
 
 
     });

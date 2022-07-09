@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 20:41:59
+ * @Last Modified time: 2022-07-09 17:23:21
  */
 
 'use strict';
@@ -1013,25 +1013,18 @@ app.post('/attachment', upload.single('attachment'), async (req, res) => {
 
     // Upload attachment to database
     let attachmentRows = await db.query(attachment_query);
+
     // Delete the uploaded file from memory after insertion into the db
     let uploadedFile = 'public/uploads/' + file.filename;
     fs.unlinkSync(uploadedFile);
     console.log('File Uploaded!');
 
+    // Get information about attachment insert
     console.log(attachmentRows);
     let attachmentJSON = JSON.parse(JSON.stringify(attachmentRows));
     console.log(attachmentJSON);
     attachmentID = attachmentJSON[0]['insertId'];
     console.log('attachment ID: ' + attachmentID);
-
-    // // Update the Mariner with the attachmentID
-    // let updateMarinerSQL =
-    //     'UPDATE Mariners SET attachmentID = ? WHERE MarinerID = ?';
-    // let update_query = mysql.format(updateMarinerSQL, [
-    //     attachmentID,
-    //     marinerID,
-    // ]);
-    // await db.query(update_query);
 
     res.send({
         attachmentUploaded: true,
@@ -1066,6 +1059,7 @@ app.get('/attachment/download', async (req, res) => {
         });
         console.log(buff);
 
+        // Path for temporary file
         const tempFilePath =
             'public/downloads/' +
             'attachment_' +
@@ -1074,6 +1068,7 @@ app.get('/attachment/download', async (req, res) => {
             marinerFullName +
             '.pdf';
 
+        // Default name of file
         const fileName =
             'attachment_' +
             response[0]['AttachmentName'] +
@@ -1086,6 +1081,7 @@ app.get('/attachment/download', async (req, res) => {
             tempFilePath,
             response[0]['MarinerAttachment']
         );
+        console.log(pdf);
 
         // Send the document to the browser for download
         res.download(tempFilePath, fileName, (err) => {
@@ -1099,6 +1095,7 @@ app.get('/attachment/download', async (req, res) => {
     });
 });
 
+// Route for deleting an attachment
 app.delete('/attachment', async (req, res) => {
     let attachmentID = req.query.attachmentID;
 
