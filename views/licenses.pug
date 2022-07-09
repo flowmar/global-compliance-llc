@@ -8,27 +8,102 @@
 extends layout
 
 block content
+  .container-fluid
+    .row.mt-5
+      .col-4.display-5.mx-5.page-title Mariner Licenses
+      .col-7
+    .row.bg-dark.m-3.p-1.py-3
+      .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.m-2.mb-0
+        .container#licensesModule
+          .row#numberOfLicensesRow
+            .col
+              label(for="numberOfLicenses") Number of Licenses:
+              input.form-control(id="numberOfLicenses" type="number")
+            .col-3.mt-4
+              button.btn.btn-warning(id="generate-licenses-button" type="button" value="Generate") Generate
+          .row#licenseNamesRow &nbsp;
+          .row#licensesArea
 
-  <div class="datatable" data-mdb-dark="true" data-mdb-color="blue-grey-dark" data-mdb-border-color="light" data-mdb-full-pagination="true" data-mdb-hover="true" data-mdb-striped="true" data-mdb-selectable="true">
-    table.table
-      thead
-        tr
-          th(scope="col") Date
-          th(scope="col") License Name
-          th(scope="col") Country
-          th(scope="col") Issue Date
-          th(scope="col") Expiration Date
-          th(scope="col") Pending GC
-          th(scope="col") Pending Government
-          th(scope="col") Upload Credential
-      tbody
-        tr
-          td Date
-          td License Name
-          td Country
-          td Issue Date
-          td Expiration Date
-          td Pending GC
-          td Pending Government
-          td Upload Credential
-    </div>
+              //- <div class="datatable" data-mdb-dark="true" data-mdb-color="blue-grey-dark" data-mdb-border-color="light" data-mdb-full-pagination="true" data-mdb-hover="true" data-mdb-striped="true" data-mdb-selectable="true">
+              //-   table.table
+              //-     thead
+              //-       tr
+              //-         th(scope="col") Date
+              //-         th(scope="col") License Name
+              //-         th(scope="col") Country
+              //-         th(scope="col") Issue Date
+              //-         th(scope="col") Expiration Date
+              //-         th(scope="col") Pending GC
+              //-         th(scope="col") Pending Government
+              //-         th(scope="col") Upload Credential
+              //-     tbody
+              //-       tr
+              //-         td Date
+              //-         td License Name
+              //-         td Country
+              //-         td Issue Date
+              //-         td Expiration Date
+              //-         td Pending GC
+              //-         td Pending Government
+              //-         td Upload Credential
+              //-   </div>
+
+  script.
+
+    $(document).ready( function() {
+      let generateLicensesButton = document.getElementById('generate-licenses-button');
+      let licensesModule = $('#licensesModule');
+
+      generateLicensesButton.addEventListener('click', function(e) {
+
+        // Get the value in the input field
+        let numberOfLicenses = parseInt($('#numberOfLicenses').val());
+
+        // Select the license Names row
+        let licenseNamesRow = $('#licenseNamesRow');
+
+        // Hide the generate licenses row
+        $('#numberOfLicensesRow').attr('style','display: none !important;');
+
+        // Based on the number of licenses, create text fields to accept the names
+        for(let i = 1; i <= numberOfLicenses; i++)
+        {
+          // Create a label for the text field
+          let label = document.createElement('label');
+          label.setAttribute('for', "nameLicense" + i);
+          label.textContent = "License " + i;
+
+          // Create the text field for the license name
+          let element = document.createElement('input');
+          element.classList = 'form-control bg-white';
+          element.setAttribute('id', "nameLicense" + i);
+
+          // Create a wrapper to place them into
+          let div = document.createElement('div');
+          div.classList = 'col-4 my-2'
+          div.appendChild(label);
+          div.appendChild(element);
+
+          licenseNamesRow.append(div);
+        }
+        // Create an add the Create button to the UI
+        let createButton = document.createElement('button');
+        createButton.textContent = "Create";
+        createButton.setAttribute('id', 'create-licenses-button');
+        createButton.classList = 'btn btn-secondary my-2';
+
+        // Create a wrapper for the button
+        let createButtonDiv = document.createElement('div');
+        createButtonDiv.classList = '.row';
+
+        // Append the button to the div
+        createButtonDiv.appendChild(createButton);
+
+        // Append the div to the main module
+        licensesModule.append(createButtonDiv);
+      });
+
+      let createLicensesButton = $('#create-licenses-button');
+
+
+    });

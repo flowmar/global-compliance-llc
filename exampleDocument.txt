@@ -2,9 +2,6 @@ this is an example
 
 how cool!
 
-TODO: Delete attachments
-TODO: Allow User to edit the name of the uploaded attachment
-
 TODO: Create Licenses screen w/tabs
 
 TODO: Ask how many Licenses to create, generate textboxes for names, generate tabs for licenses with info and add license to database

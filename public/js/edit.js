@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-08 07:05:56
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 20:41:13
+ * @Last Modified time: 2022-07-08 20:45:11
  */
 
 /**
@@ -231,7 +231,7 @@ $(document).ready(() => {
         'characterCountMessage'
     );
     // Listen for key presses on the notes text field
-    notesTextField.addEventListener('keyup', function (e) {
+    notesTextField.addEventListener('keyup', function () {
         totalCharacters = notesTextField.value.length;
         if (totalCharacters < 225) {
             characterCountMessage.style = 'color: white;';
