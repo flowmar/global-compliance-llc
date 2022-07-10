@@ -82,14 +82,14 @@ block content
                       .col
                         .form-check
                           label.form-label Pending Government
-                          input.form-check-input(type="checkbox" name="gvtPending" id="gvtPending")
+                          input.form-check-input(type="checkbox" name="govtPending" id="govtPending")
                     .row
                       .col.d-flex.justify-content-end
                         button.btn.btn-success(type="button" onclick="saveLicenseInformation()") Save
                     .row.p-3
-                    .col-6
-                      .display-5.fw-bold License Activity
-                    hr.mt-1
+                      .col-6
+                        .display-5.fw-bold License Activity
+                      hr.mt-1
                     .row
                       h2 GC Activity
                     .row.my-4
@@ -101,7 +101,7 @@ block content
                         textarea.form-control.bg-white.text-dark(data-parsley-maxlength="255" type="text" form="activityForm" maxlength="255")
                     .row
                       .col-6.d-flex.justify-content-end
-                        button.btn.btn-success Save
+                        button.btn.btn-success(type="button" onclick="saveGCActivity") Save
                       hr.mt-5
                     .row
                       h2 Govt Activity
@@ -114,7 +114,7 @@ block content
                         textarea.form-control.bg-white.text-dark(data-parsley-maxlength="255" type="text" form="activityForm" maxlength="255")
                     .row
                       .col-6.d-flex.justify-content-end
-                        button.btn.btn-success Save
+                        button.btn.btn-success(type="button" onclick="saveGovtActivity()") Save
                       hr.mt-5
                     .row
                       h2 License Attachments
@@ -274,8 +274,8 @@ block content
         // Select the create button
         let createLicensesButton = $('#create-licenses-button');
 
-      // When the create button is clicked...
-      createLicensesButton.on('click', function (e) {
+        // When the create button is clicked...
+        createLicensesButton.on('click', function (e) {
 
         // Array to hold the license names
         let licenseNamesArray = [];
@@ -345,6 +345,8 @@ block content
         // Set the id of the form clone
         formClone.setAttribute('id', formIdFormatted);
 
+        formClone.dataset.formNumber = k + 1;
+
         // Append the clone to the tab pane
         tabPane.appendChild(formClone);
 
@@ -375,8 +377,8 @@ block content
         let formGCPending = $('#gcPending').attr('id');
         $(selector + ' #gcPending').attr('id', formGCPending + suffix);
 
-        let formGvtPending = $('#gvtPending').attr('id');
-        $(selector + ' #gvtPending').attr('id', formGvtPending + suffix);
+        let formGovtPending = $('#govtPending').attr('id');
+        $(selector + ' #govtPending').attr('id', formGovtPending + suffix);
 
         }
         // Hide the license names row
@@ -439,6 +441,5 @@ block content
       });
       });
       }
-
-
     });
+  script(src="/js/licenses.js")

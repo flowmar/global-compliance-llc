@@ -2,8 +2,6 @@ this is an example
 
 how cool!
 
-TODO: Create route for handling uploaded license data
-
 TODO: Pull license data from database and display in UI
 
 TODO: If there is no license data in the database, begin license tab generation

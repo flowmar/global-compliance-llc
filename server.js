@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-09 23:36:53
+ * @Last Modified time: 2022-07-10 03:29:38
  */
 
 'use strict';
@@ -755,7 +755,46 @@ app.post('/activity/edit', async (req, res) => {
 });
 
 // Handles creating a new license
-app.post('/li');
+app.post('/licenses/:id', async (req, res) => {
+    let marinerID = req.params.id;
+    let licenseID = req.body.licenseID;
+    let licenseName = req.body.licenseName;
+    let licenseType = req.body.licenseType;
+    let licenseCountry = req.body.licenseCountry;
+    let issueDate = req.body.issueDate;
+    let expirationDate = req.body.expirationDate;
+    let gcPending = req.body.gcPending;
+    let govtPending = req.body.govtPending;
+
+    if (licenseID === '') {
+        let licenseIDQuery = await db.query(
+            'SELECT MAX(LicenseID) FROM Licenses'
+        );
+        licenseID = licenseIDQuery[0]['MAX(LicenseID)'];
+    }
+
+    console.log(licenseID);
+    // SQL Query to add license to database
+    let insertSQL =
+        'INSERT INTO Licenses SET LicenseName = ?,LicenseTypeID = ?, CountryID = ?, MarinerID = ?, Timestamp = CURRENT_TIMESTAMP(), IssueDate = ?, ExpirationDate = ?, PendingGC = ?, PendingGovt = ?';
+    let insert_query = mysql.format(insertSQL, [
+        licenseName,
+        licenseType,
+        licenseCountry,
+        marinerID,
+        issueDate,
+        expirationDate,
+        gcPending,
+        govtPending,
+    ]);
+
+    let insertRows = await db.query(insert_query);
+
+    let insertJSON = insertRows[0];
+
+    console.log(insertJSON);
+    res.send('hi');
+});
 
 /**
  * Routes relating to applications
