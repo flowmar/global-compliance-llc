@@ -21,14 +21,14 @@ block content
     .row.bg-dark.m-3.p-1.py-3
       .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.m-2.mb-0
         .container#licensesModule
-          .row#numberOfLicensesRow
+          .row#numberOfLicensesRow(style="display: none !important")
             .col
               label.form-label(for="numberOfLicenses") Number of Licenses:
               input.form-control(id="numberOfLicenses" type="number")
             .col-3.mt-4.d-flex.align-items-end
               button.btn.btn-warning(id="generate-licenses-button" type="button" value="Generate") Generate
           .row#licenseNamesRow
-          .row.my-4#licensesArea
+          .row.my-4#licensesArea(style="display: none !important")
             .col.bg-dark.rounded.text-white.border.bg-opacity-75.p-0.shadow-4-strong
               ul.nav.nav-pills.nav-justified.mb-3.ms-0#licensesTabList(style="margin-left: 0;" role="tablist")
                 //- li.nav-item(role="presentation")
@@ -47,16 +47,16 @@ block content
                     .row
                       .col-3
                         label.form-label MarinerID:
-                        input.form-control(type="text" value=`${marinerID}` disabled)
+                        input.form-control(type="text" value=`${marinerID}` readonly)
                         input.form-control(type="text" value=`${marinerID}` name="marinerID" id="marinerIDhidden" hidden)
                       .col-1
                       .col-4
                         label.form-label Mariner Name:
-                        input.form-control(type="text" name="marinerName" disabled)
+                        input.form-control(type="text" name="marinerName" readonly)
                       .col-1
                       .col-3
                         label.form-label LicenseID:
-                        input.form-control(type="text" disabled)
+                        input.form-control#licenseID(type="text" readonly)
                         input.form-control(type="text" name="licenseID" id="licenseIDhidden" hidden)
                     .row.my-4
                       .col-4
@@ -205,19 +205,19 @@ block content
       }
 
       let numberOfLicensesRow = $('#numberOfLicensesRow');
-      numberOfLicensesRow.hide();
+      //- numberOfLicensesRow.hide();
       let licensesArea = $('#licensesArea');
          // Hide the licenses area from view
       //- licensesArea.hide();
 
       //TODO: Check to see if there are any licenses in the database, if there are, skip the license tab generation part
+      let tabContent = $('#tab-content');
+      let licensesTabList = $('#licensesTabList');
 
       if (licensesArray.length < 1) {
 
       let generateLicensesButton = document.getElementById('generate-licenses-button');
       let licensesModule = $('#licensesModule');
-      let licensesTabList = $('#licensesTabList');
-      let tabContent = $('#tab-content');
       let licenseForm = document.getElementById('licenseForm');
       numberOfLicensesRow.show();
       // When the generate button is clicked...
@@ -440,6 +440,206 @@ block content
 
       });
       });
+      }
+      else
+      {
+
+        // Show the licenses area
+        $('#licensesArea').show();
+
+        console.log(licensesArray);
+        let licenseNamesArray = [];
+
+        for(let j = 0; j < licensesArray.length; j++) {
+          licenseNamesArray.push(licensesArray[j]['LicenseName']);
+        }
+
+        // Generate Tabs for each license in the names array
+        for (let k = 0; k < licenseNamesArray.length; k++)
+        {
+          // Create the HTML for the tabs
+        let navItem = document.createElement('li');
+        navItem.classList = 'nav-item';
+        navItem.role = 'presentation';
+
+        // Create the HTML for the nav links
+        let navLink = document.createElement('a');
+        navLink.classList = 'nav-link';
+        navLink.id = 'license-tab-' + (k + 1);
+        navLink.setAttribute('data-mdb-toggle', 'tab');
+        navLink.href = '#license-tabs-' + (k + 1);
+        navLink.role = 'tab';
+        navLink.setAttribute('aria-controls', 'license-tabs-' + (k + 1));
+        navLink.setAttribute('aria-selected', 'false');
+        navLink.textContent = licenseNamesArray[k];
+
+        // Append the navLink to the navItem
+        navItem.appendChild(navLink);
+        // Append the navItem to the tab list
+        licensesTabList.append(navItem);
+
+        // Create HTML for the tab content
+        let tabPane = document.createElement('div');
+        tabPane.classList = 'tab-pane fade p-3';
+        tabPane.id = 'license-tabs-' + (k + 1);
+        tabPane.role = 'tabpanel';
+        tabPane.setAttribute('aria-labelledby', 'license-tab-' + (k + 1));
+
+        // Create a clone of the form
+        let formClone = licenseForm.cloneNode(true);
+
+        // Replace spaces with hyphens and make the name lowercase
+        let formIdName = licenseNamesArray[k].toLowerCase() + ' form';
+        let formIdFormatted = formIdName.replace(/\s/g, '-');
+
+        // Set the id of the form clone
+        formClone.setAttribute('id', formIdFormatted);
+
+        formClone.dataset.formNumber = k + 1;
+
+        // Append the clone to the tab pane
+        tabPane.appendChild(formClone);
+
+        // Append the tab pane to the tab content
+        tabContent.append(tabPane);
+
+        // Change the IDs on the cloned form
+        let suffix = k + 1;
+        let selector = '#' + formIdFormatted;
+
+        let formMarinerID = $("#marinerIDhidden").attr('id');
+        $(selector + ' #marinerIDhidden').attr('id', formMarinerID + suffix);
+
+        $(selector + ' #licenseID').attr('id', 'licenseID' + suffix);
+
+        $(selector + ' #licenseIDhidden').attr('id', 'licenseIDhidden' + suffix);
+
+        let formLicenseType = $('#licenseTypesField').attr('id');
+        $(selector + ' #licenseTypesField').attr('id', formLicenseType + suffix);
+
+        let formCountry = $('#countriesField').attr('id');
+        $(selector + ' #countriesField').attr('id', formCountry + suffix);
+
+        let formIssueDate = $('#issueDate').attr('id');
+        $(selector + ' #issueDate').attr('id', formIssueDate + suffix);
+
+        let formExpireDate = $('#expirationDate').attr('id');
+        $(selector +' #expirationDate').attr('id', formExpireDate + suffix);
+
+        let formGCPending = $('#gcPending').attr('id');
+        $(selector + ' #gcPending').attr('id', formGCPending + suffix);
+
+        let formGovtPending = $('#govtPending').attr('id');
+        $(selector + ' #govtPending').attr('id', formGovtPending + suffix);
+        }
+        // Hide the license names row
+        //- licenseNamesRow.hide();
+
+        // Create the HTML for the + and summary tabs
+        let addNavItem = document.createElement('li');
+        addNavItem.classList = 'nav-item';
+        addNavItem.role = 'presentation';
+
+        // Create the HTML for the nav links
+        let addNavLink = document.createElement('a');
+        addNavLink.classList = 'nav-link';
+        addNavLink.id = 'addLicense';
+        addNavLink.setAttribute('data-mdb-toggle', 'pill');
+        addNavLink.href = '#';
+        addNavLink.role = 'tab';
+        addNavLink.setAttribute('aria-controls', 'addLicense');
+        addNavLink.setAttribute('aria-selected', 'false');
+        addNavLink.textContent = '+';
+
+        // Append the navLink to the navItem
+        addNavItem.appendChild(addNavLink);
+        // Append the navItem to the tab list
+        licensesTabList.append(addNavItem);
+
+        let summaryItem = document.createElement('li');
+        summaryItem.classList = 'nav-item';
+        summaryItem.role = 'presentation';
+
+        // Create the HTML for the summary link
+        let summaryLink = document.createElement('a');
+        summaryLink.classList = 'nav-link';
+        summaryLink.id = 'summary';
+        summaryLink.setAttribute('data-mdb-toggle', 'pill');
+        summaryLink.href = '#summary-tab';
+        summaryLink.role = 'tab';
+        summaryLink.setAttribute('aria-controls', 'summary');
+        summaryLink.setAttribute('aria-selected', 'false');
+        summaryLink.textContent = 'Summary';
+
+        // Append the summary link to the summaryItem
+        summaryItem.appendChild(summaryLink);
+
+        // Prepend the summary tab to the licenses tab list
+        licensesTabList.prepend(summaryItem);
+
+        // Create HTML for the summary tab content
+        let summaryTabPane = document.createElement('div');
+        summaryTabPane.classList = 'tab-pane fade p-3';
+        summaryTabPane.id = 'summary-tab';
+        summaryTabPane.role = 'tabpanel';
+        summaryTabPane.setAttribute('aria-labelledby', 'summary');
+
+        // Prepend the summary tab pane to the tab content
+        tabContent.prepend(summaryTabPane);
+
+        // Loop through the licensesArray and put the data into the UI
+        for(let n = 0; n < licensesArray.length; n++){
+          let license = licensesArray[n];
+          console.log(license);
+          let licenseName = license.LicenseName;
+          let licenseID = license.LicenseID;
+          let licenseType = license.LicenseTypeID;
+          let licenseCountry = license.CountryID;
+          let issueDate = license.IssueDate;
+          let expirationDate = license.ExpirationDate;
+          let pendingGC = license.PendingGC;
+          let pendingGovt = license.PendingGovt;
+
+          console.log(licenseID)
+
+          let forms = $('form');
+
+          console.log(forms);
+
+          let currentFormID = forms[n + 1].id;
+          let selector = '#' + currentFormID + " ";
+          let suffix = n + 1;
+
+          $("#licenseID" + suffix).val(licenseID);
+          //- console.log($("#licenseID" + suffix ));
+
+          $("#licenseTypesField" + suffix).val(licenseType);
+          //- console.log($("#licenseTypesField" + suffix));
+
+          $("#countriesField" + suffix).val(licenseCountry);
+
+          // Convert the date to a format that fits in the UI
+          let issueDateString = issueDate.toString();
+          //- console.log(issueDateString);
+          //- console.log(issueDateString.slice(0, 10));
+          //
+          let formattedIssueDate = issueDateString.slice(0, 10);
+          $('#issueDate' + suffix).val(formattedIssueDate);
+
+          // Convert the date to a format that fits in the UI
+          let expirationDateString = expirationDate.toString();
+          let formattedExpDate = expirationDateString.slice(0, 10);
+          $('#expirationDate' + suffix).val(formattedExpDate);
+
+          if(pendingGC == 1) {
+            $("#gcPending" + suffix).attr('checked', 'checked');
+          }
+
+          if(pendingGovt == 1) {
+            $('#govtPending' + suffix).attr('checked', 'checked');
+          }
+
+        }
       }
     });
   script(src="/js/licenses.js")

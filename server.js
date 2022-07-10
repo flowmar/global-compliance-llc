@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-10 03:29:38
+ * @Last Modified time: 2022-07-10 09:15:52
  */
 
 'use strict';
@@ -20,6 +20,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const multer = require('multer');
 const fs = require('fs-extra');
+const helmet = require('helmet');
 
 /* Express Setup */
 // Use Express to create the application
@@ -93,6 +94,7 @@ app.get('/search', async (req, res) => {
     let marinerData = [];
     let mariners = [];
     let user = req.query.user;
+    console.log('USER: ', user);
     if (!user) {
         user = 'admin';
     }
@@ -456,7 +458,7 @@ app.post('/authenticate', async (req, res) => {
     let password = req.body.inputPassword;
 
     // Create and format the SQL query
-    const sqlSearch = 'SELECT * FROM `users` WHERE user = ? ';
+    const sqlSearch = 'SELECT * FROM users WHERE user = ? ';
     const search_query = mysql.format(sqlSearch, [user]);
 
     // Search for the username in the database
@@ -476,7 +478,7 @@ app.post('/authenticate', async (req, res) => {
                 console.log('Success!');
                 // res.send(`${user}` + ' has successfully logged in!');
 
-                res.redirect('/search?user=' + user);
+                res.redirect('/search');
             } else {
                 console.log('Password Incorrect!');
                 res.send('Your password was incorrect.');
@@ -1191,7 +1193,7 @@ app.delete('/attachment', async (req, res) => {
 app.post('/search', async (_req, res) => {
     console.log(_req.body);
     let category = _req.body.searchBy;
-    console.log(category);
+    console.log('category:', category);
     let sqlStatement;
     let parameterArray = [];
     let searchText = _req.body.searchText || _req.body.date;
@@ -1237,7 +1239,7 @@ app.post('/search', async (_req, res) => {
 
     // Place the Searched Text into the parameterArray
     parameterArray.push(searchText);
-    console.log(parameterArray);
+    // console.log(parameterArray);
 
     // Format SQL Query
     let search_query = mysql.format(sqlStatement, parameterArray);
@@ -1274,7 +1276,7 @@ app.post('/search', async (_req, res) => {
         if (mariner['EmployerID'] != null) {
             // Get the employerID Number
             let employerIDNumber = mariner['EmployerID'];
-            console.log(employerIDNumber);
+            // console.log(employerIDNumber);
             // Place it in the query
             let employer_query = mysql.format(employerSQL, [employerIDNumber]);
             let employerName;
@@ -1295,7 +1297,7 @@ app.post('/search', async (_req, res) => {
 
         // Get the AgentID Number
         let agentIDNumber = mariner['ProcessingAgent'];
-        console.log(agentIDNumber);
+        // console.log(agentIDNumber);
         // Place it in the query
         let agent_query = mysql.format(agentSQL, [agentIDNumber]);
         let agentName;
@@ -1311,9 +1313,9 @@ app.post('/search', async (_req, res) => {
 
         // Get the date from the database
         let mySQLbirthDate = mariner['BirthDate'];
-        console.log(mySQLbirthDate);
+        // console.log(mySQLbirthDate);
         let jsDate = Date.parse(mySQLbirthDate);
-        console.log(jsDate);
+        // console.log(jsDate);
         // Convert to a String
         let dateString = mySQLbirthDate.toString();
         console.log(dateString);
@@ -1328,7 +1330,7 @@ app.post('/search', async (_req, res) => {
             splitDate[3];
         formatted['birthDate'] = formattedDate;
 
-        formatted['status'] = ' ';
+        formatted['status'] = mariner['Status'];
 
         mariners.push(formatted);
     }

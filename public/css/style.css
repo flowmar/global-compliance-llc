@@ -40,9 +40,9 @@ header
   font-weight: bold;
 }
 
-.form-label {
+/* .form-label {
   color: black;
-}
+} */
 
 .bg-indigo {
   background-color: var(--indigo-color) !important;

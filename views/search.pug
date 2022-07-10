@@ -76,12 +76,12 @@ block content
 
   script(src="/js/search.js")
   script.
-    let loggedInUser = !{JSON.stringify(user)};
+    let loggedInUser = localStorage.getItem("currentUser");
     console.log(loggedInUser);
     if (loggedInUser) {
-      window.localStorage.setItem("loggedIn", true);
-      window.localStorage.setItem("currentUser", loggedInUser);
-      console.log("User in localStorage: " + loggedInUser);
+      localStorage.setItem("loggedIn", true);
+      localStorage.setItem("currentUser", loggedInUser);
+      console.log("User in localStorage: " + localStorage.getItem("currentUser"));
     }
     let employersArray = !{JSON.stringify(employers)};
     console.log(employersArray);

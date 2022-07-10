@@ -14,38 +14,32 @@ block content
       .col-4.display-5.page-title Login
       .col-7
     .row.bg-dark.m-3.p-4
-      .col-2
-      .col-8.shadow-4-strong.bg-light.bg-opacity-25
-        form(action="/authenticate" method="post" name="loginForm").container
-          br
-          .row
+      .col.shadow-4-strong.bg-light.bg-opacity-25
+        form(action="/authenticate" method="POST" name="loginForm").container
+          .row.my-4
             .col
               .text-center Please enter your credentials.
-              br
-              br
-          .row
+          .row.my-4
             .col
               .form-outline
                 input.form-control.bg-white.text-dark#inputUsername(type="text" name="inputUsername" required)
                 label.form-label.text-dark(for="inputUsername") Username
-              br
           .row
             .col
               .form-outline
                 input.form-control.bg-white.text-dark#inputPassword(type="password" name="inputPassword" required)
                 label.form-label.text-dark(for="inputPassword") Password
-              br
-          .row
-            .col-9
-            .col-3
-              input#loginButton.btn.btn-lg.btn-success(type="submit" name="submit" value="Login")
-              br
-              br
-      .col-2
-
+          .row.my-2
+            .col.d-flex.justify-content-end
+              input#loginButton.btn.btn-lg.btn-success(onclick="authenticateUser()" value="Login")
       //- include includes/createUser.pug
 
       script.
+
+        document.querySelectorAll('.form-outline').forEach((formOutline) => {
+        new mdb.Input(formOutline).update();
+          });
+
         let removeUser = !{JSON.stringify(removeUser)};
         console.log(removeUser);
         if (removeUser) {
@@ -53,3 +47,17 @@ block content
           removeUser = false;
         }
 
+        function authenticateUser(){
+        let username = $('#inputUsername').val();
+        let password = $('#inputPassword').val();
+
+        axios.post('/authenticate', {
+          inputUsername: username,
+          inputPassword: password
+        }).then(response => {
+          console.log(response);
+          window.location.href = '/search';
+        }).catch(error => {
+          console.log(error);
+        })
+        }
