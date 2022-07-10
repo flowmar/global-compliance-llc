@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-09 23:12:04
+ * @Last Modified time: 2022-07-09 23:36:53
  */
 
 'use strict';
@@ -753,6 +753,9 @@ app.post('/activity/edit', async (req, res) => {
         editJSON: editJSON,
     });
 });
+
+// Handles creating a new license
+app.post('/li');
 
 /**
  * Routes relating to applications

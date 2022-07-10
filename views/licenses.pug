@@ -25,7 +25,7 @@ block content
             .col
               label.form-label(for="numberOfLicenses") Number of Licenses:
               input.form-control(id="numberOfLicenses" type="number")
-            .col-3.mt-4
+            .col-3.mt-4.d-flex.align-items-end
               button.btn.btn-warning(id="generate-licenses-button" type="button" value="Generate") Generate
           .row#licenseNamesRow
           .row.my-4#licensesArea
@@ -48,42 +48,44 @@ block content
                       .col-3
                         label.form-label MarinerID:
                         input.form-control(type="text" value=`${marinerID}` disabled)
+                        input.form-control(type="text" value=`${marinerID}` name="marinerID" id="marinerIDhidden" hidden)
                       .col-1
                       .col-4
                         label.form-label Mariner Name:
-                        input.form-control(type="text" disabled)
+                        input.form-control(type="text" name="marinerName" disabled)
                       .col-1
                       .col-3
                         label.form-label LicenseID:
                         input.form-control(type="text" disabled)
+                        input.form-control(type="text" name="licenseID" id="licenseIDhidden" hidden)
                     .row.my-4
                       .col-4
                         label.form-label License Type:
-                        select.form-select#licenseTypesField()
+                        select.form-select#licenseTypesField(name="licenseType")
                       .col-4
                         label.form-label Country:
-                        select.form-select#countriesField()
+                        select.form-select#countriesField(name="country")
                     .row.my-4
                       .col-3
                         label.form-label Issue Date:
-                        input.form-control(type="date")
+                        input.form-control(type="date" name="issueDate" id="issueDate")
                       .col-1
                       .col-3
                         label.form-label Expiration Date:
-                        input.form-control(type="date")
+                        input.form-control(type="date" name="expirationDate" id="expirationDate")
                       .col
                     .row.my-5
                       .col
                         .form-check
-                          input.form-check-input(type="checkbox")
+                          input.form-check-input(type="checkbox" name="gcPending" id="gcPending")
                           label.form-label Pending Global Compliance
                       .col
                         .form-check
                           label.form-label Pending Government
-                          input.form-check-input(type="checkbox")
+                          input.form-check-input(type="checkbox" name="gvtPending" id="gvtPending")
                     .row
                       .col.d-flex.justify-content-end
-                        button.btn.btn-success Save
+                        button.btn.btn-success(type="button" onclick="saveLicenseInformation()") Save
                     .row.p-3
                     .col-6
                       .display-5.fw-bold License Activity
@@ -171,14 +173,15 @@ block content
                 //-   </div>
 
   script.
+    // Get information from server
     let marinerID = !{JSON.stringify(marinerID)};
     let licensesArray = !{JSON.stringify(licenseInfo)};
     let countriesArray = !{JSON.stringify(countries)};
     let licenseTypesArray = !{JSON.stringify(licenseTypes)};
-    console.log(licensesArray);
-    console.log(countriesArray);
-    console.log(licenseTypesArray);
-    console.log(marinerID)
+    //- console.log(licensesArray);
+    //- console.log(countriesArray);
+    //- console.log(licenseTypesArray);
+    //- console.log(marinerID);
 
 
     $(document).ready( function() {
@@ -193,7 +196,7 @@ block content
       }
 
       // Place the license types into the licenseForm
-     for(let i = 0; i < licenseTypesArray.length; i++) {
+      for(let i = 0; i < licenseTypesArray.length; i++) {
       // Citizenship input
       let element = document.createElement('option');
       element.value = i + 1;
@@ -201,19 +204,22 @@ block content
       document.getElementById('licenseTypesField').appendChild(element);
       }
 
+      let numberOfLicensesRow = $('#numberOfLicensesRow');
+      numberOfLicensesRow.hide();
+      let licensesArea = $('#licensesArea');
+         // Hide the licenses area from view
+      //- licensesArea.hide();
+
       //TODO: Check to see if there are any licenses in the database, if there are, skip the license tab generation part
+
+      if (licensesArray.length < 1) {
 
       let generateLicensesButton = document.getElementById('generate-licenses-button');
       let licensesModule = $('#licensesModule');
-      let licensesArea = $('#licensesArea');
       let licensesTabList = $('#licensesTabList');
       let tabContent = $('#tab-content');
       let licenseForm = document.getElementById('licenseForm');
-
-
-      // Hide the licenses area from view
-      licensesArea.hide();
-
+      numberOfLicensesRow.show();
       // When the generate button is clicked...
       generateLicensesButton.addEventListener('click', function(e) {
 
@@ -280,15 +286,15 @@ block content
 
           // Create the selector for the license text field
           let licenseSelector = "#nameLicense" + j;
-          console.log(licenseSelector);
+          //- console.log(licenseSelector);
 
           // Select the text field
           let licenseTextbox = $(licenseSelector);
-          console.log(licenseTextbox);
+          //- console.log(licenseTextbox);
 
           // Get the value in the text field
           let licenseName = licenseTextbox.val();
-          console.log(licenseName);
+          //- console.log(licenseName);
 
           // Add the license name to the names array
           licenseNamesArray.push(licenseName);
@@ -332,8 +338,12 @@ block content
         // Create a clone of the form
         let formClone = licenseForm.cloneNode(true);
 
+        // Replace spaces with hyphens and make the name lowercase
+        let formIdName = licenseNamesArray[k].toLowerCase() + ' form';
+        let formIdFormatted = formIdName.replace(/\s/g, '-');
+
         // Set the id of the form clone
-        formClone.setAttribute('id','license' + licenseNamesArray[k] + 'Form');
+        formClone.setAttribute('id', formIdFormatted);
 
         // Append the clone to the tab pane
         tabPane.appendChild(formClone);
@@ -341,8 +351,34 @@ block content
         // Append the tab pane to the tab content
         tabContent.append(tabPane);
 
-        }
+        // Change the IDs on the cloned form
+        let suffix = k + 1;
+        let selector = '#' + formIdFormatted;
 
+        let formMarinerID = $("#marinerIDhidden").attr('id');
+        $(selector + ' #marinerIDhidden').attr('id', formMarinerID + suffix);
+
+        $(selector + ' #licenseIDhidden').attr('id', 'licenseIDhidden' + suffix);
+
+        let formLicenseType = $('#licenseTypesField').attr('id');
+        $(selector + ' #licenseTypesField').attr('id', formLicenseType + suffix);
+
+        let formCountry = $('#countriesField').attr('id');
+        $(selector + ' #countriesField').attr('id', formCountry + suffix);
+
+        let formIssueDate = $('#issueDate').attr('id');
+        $(selector + ' #issueDate').attr('id', formIssueDate + suffix);
+
+        let formExpireDate = $('#expirationDate').attr('id');
+        $(selector +' #expirationDate').attr('id', formExpireDate + suffix);
+
+        let formGCPending = $('#gcPending').attr('id');
+        $(selector + ' #gcPending').attr('id', formGCPending + suffix);
+
+        let formGvtPending = $('#gvtPending').attr('id');
+        $(selector + ' #gvtPending').attr('id', formGvtPending + suffix);
+
+        }
         // Hide the license names row
         licenseNamesRow.hide();
 
@@ -402,8 +438,7 @@ block content
 
       });
       });
-
-
+      }
 
 
     });

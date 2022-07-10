@@ -2,9 +2,7 @@ this is an example
 
 how cool!
 
-TODO: Create UI for licenses tabs
-
-TODO: Create route for handling license data
+TODO: Create route for handling uploaded license data
 
 TODO: Pull license data from database and display in UI
 
