@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-09 17:23:21
+ * @Last Modified time: 2022-07-09 23:12:04
  */
 
 'use strict';
@@ -68,6 +68,13 @@ let upload = multer({
     storage: storage,
     dest: 'public/uploads',
 });
+
+// async function getAllCountries() {
+//     // Get all Countries
+//     const countries_query = mysql.format('SELECT * FROM Countries');
+//     const countriesRows = await db.query(countries_query);
+//     return countriesRows[0];
+// }
 
 /**
  * Routing
@@ -367,9 +374,33 @@ app.get('/maintenance', async (_req, res) => {
 });
 
 // Request for '/licenses' URL
-app.get('/licenses/:id', async (_req, res) => {
+app.get('/licenses/:id', async (req, res) => {
+    // Get the marinerID from the request
+    let marinerID = req.params.id;
+
+    // SQL query to get the Licenses for the mariner
+    let licenseSQL = 'SELECT * FROM Licenses WHERE MarinerID = ?';
+    let license_query = mysql.format(licenseSQL, [marinerID]);
+
+    // Query the database
+    let licenseRows = await db.query(license_query);
+    let licenseJSON = licenseRows[0];
+    console.log(licenseJSON);
+
+    // Get all Countries
+    const countries_query = mysql.format('SELECT * FROM Countries');
+    const countriesRows = await db.query(countries_query);
+
+    // Get all license types
+    const license_type_query = mysql.format('SELECT * FROM LicenseTypes');
+    const licenseTypeRows = await db.query(license_type_query);
+
     res.render('licenses', {
         title: 'Licenses',
+        marinerID: marinerID,
+        licenseInfo: licenseJSON,
+        countries: countriesRows[0],
+        licenseTypes: licenseTypeRows[0],
     });
 });
 
@@ -760,7 +791,7 @@ app.get('/getApp', async (req, res) => {
     });
 });
 
-// Route for uploading newapplication document
+// Route for uploading new application document
 app.post('/newAppUpload', upload.single('application'), async (req, res) => {
     // Get the file from the request
     let file = req.file;

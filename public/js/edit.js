@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-08 07:05:56
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 20:45:11
+ * @Last Modified time: 2022-07-09 23:19:23
  */
 
 /**
@@ -86,7 +86,7 @@ function uploadAttachment(data) {
         success: function (r) {
             let rJSON = JSON.parse(JSON.stringify(r));
             console.log(rJSON);
-            alert('Attachement Uploaded!');
+            alert('Attachment Uploaded!');
             location.reload();
         },
         error: function (err) {

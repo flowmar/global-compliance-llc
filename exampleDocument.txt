@@ -2,7 +2,13 @@ this is an example
 
 how cool!
 
-TODO: Ask how many Licenses to create, generate textboxes for names, generate tabs for licenses with info and add license to database
+TODO: Create UI for licenses tabs
+
+TODO: Create route for handling license data
+
+TODO: Pull license data from database and display in UI
+
+TODO: If there is no license data in the database, begin license tab generation
 
 TODO: In each tab, accept License info, add save button
 
