@@ -2,10 +2,19 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-10 23:52:26
+ * @Last Modified time: 2022-07-11 08:12:33
  */
 
-function saveLicenseInformation() {
+let licenseID,
+    licenseName,
+    licenseType,
+    licenseCountry,
+    issueDate,
+    expirationDate,
+    gcPending,
+    govtPending;
+
+function collectFormInformation() {
     // Get the selected form
     let selectedForm = $('.active form');
     let selectedFormID = '#';
@@ -18,53 +27,77 @@ function saveLicenseInformation() {
     console.log(selectedForm[0].dataset.formNumber);
 
     // Use the selected form and number to select the fields
-    let marinerID = $(
+    marinerID = $(
         selectedFormID + ' #marinerIDhidden' + selectedFormNumber
     ).val();
     console.log(marinerID);
 
-    let licenseID = $(
+    licenseID = $(
         selectedFormID + ' #licenseIDhidden' + selectedFormNumber
     ).val();
     console.log(licenseID);
 
-    let licenseType = $(
+    licenseType = $(
         selectedFormID + ' #licenseTypesField' + selectedFormNumber
     ).val();
     console.log(licenseType);
 
-    let licenseCountry = $(
+    licenseCountry = $(
         selectedFormID + ' #countriesField' + selectedFormNumber
     ).val();
     console.log(licenseCountry);
 
-    let issueDate = $(
-        selectedFormID + ' #issueDate' + selectedFormNumber
-    ).val();
+    issueDate = $(selectedFormID + ' #issueDate' + selectedFormNumber).val();
     console.log(issueDate);
 
-    let expirationDate = $(
+    expirationDate = $(
         selectedFormID + ' #expirationDate' + selectedFormNumber
     ).val();
     console.log(expirationDate);
 
-    let gcPending = $(selectedFormID + ' #gcPending' + selectedFormNumber).is(
+    gcPending = $(selectedFormID + ' #gcPending' + selectedFormNumber).is(
         ':checked'
     );
     gcPending = gcPending ? 1 : 0;
     console.log(gcPending);
 
-    let govtPending = $(
-        selectedFormID + ' #govtPending' + selectedFormNumber
-    ).is(':checked');
+    govtPending = $(selectedFormID + ' #govtPending' + selectedFormNumber).is(
+        ':checked'
+    );
     govtPending = govtPending ? 1 : 0;
     console.log(govtPending);
 
-    let licenseName = $(selectedFormID + '#licenseName' + selectedFormNumber);
+    licenseName = $(
+        selectedFormID + ' #licenseName' + selectedFormNumber
+    ).val();
+}
 
+function saveLicenseInformation() {
+    collectFormInformation();
     // Post request with the form information
     axios
         .post('/licenses/' + marinerID, {
+            licenseID: licenseID,
+            licenseName: licenseName,
+            licenseType: licenseType,
+            licenseCountry: licenseCountry,
+            issueDate: issueDate,
+            expirationDate: expirationDate,
+            gcPending: gcPending,
+            govtPending: govtPending,
+        })
+        .then((response) => {
+            console.log(response);
+            alert('License Created!');
+        })
+        .catch((error) => console.log(error));
+}
+
+function editLicenseInformation() {
+    collectFormInformation();
+
+    axios
+        .put('/licenses/' + marinerID, {
             licenseID: licenseID,
             licenseName: licenseName,
             licenseType: licenseType,

@@ -85,7 +85,11 @@ block content
                           input.form-check-input(id="govtPending" name="govtPending" type="checkbox")
                     .row
                       .col.d-flex.justify-content-end
-                        button.btn.btn-success(type="button" onclick="saveLicenseInformation()") Save
+                        button.btn.btn-success#saveButton(type="button" onclick="saveLicenseInformation()") Save
+                    .row
+                      .col.d-flex.justify-content-end
+                        button.btn.btn-info.mx-1#editButton(type="button" onclick="editLicenseInformation()") Edit
+                        button.btn.btn-danger.mx-1#deleteButton(type="button" onclick="deleteLicense()") Delete
                     .row
                       .col-6.p-0
                         .display-5.fw-bold License Activity
@@ -214,7 +218,12 @@ block content
       let tabContent = $('#tab-content');
       let licensesTabList = $('#licensesTabList');
 
+      // If there is no license data in the database...
       if (licensesArray.length < 1) {
+
+      // Hide Delete and Edit Buttons
+      $('#editButton').hide();
+      $('#deleteButton').hide();
 
       let generateLicensesButton = document.getElementById('generate-licenses-button');
       let licensesModule = $('#licensesModule');
@@ -443,7 +452,8 @@ block content
       }
       else
       {
-
+        // Hide the save button
+        $('#saveButton').hide();
         // Show the licenses area
         $('#licensesArea').show();
 
@@ -533,6 +543,12 @@ block content
 
         let formGovtPending = $('#govtPending').attr('id');
         $(selector + ' #govtPending').attr('id', formGovtPending + suffix);
+
+        let saveButton = $('#saveButton').attr('id');
+        $(selector + ' #saveButton').attr('id', saveButton + suffix);
+
+        $(selector + ' #editButton').attr('id', 'editButtons' + suffix);
+
         }
         // Hide the license names row
         //- licenseNamesRow.hide();

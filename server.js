@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-10 23:44:39
+ * @Last Modified time: 2022-07-11 08:39:38
  */
 
 'use strict';
@@ -732,6 +732,7 @@ app.delete('/activity', async (req, res) => {
     });
 });
 
+// Edits a mariner Activity
 app.post('/activity/edit', async (req, res) => {
     // Get the activity id
     let activityID = req.query.activityid;
@@ -800,6 +801,123 @@ app.post('/licenses/:id', async (req, res) => {
         insertJSON: insertJSON,
     });
 });
+
+// Updates a license
+app.put('/licenses/:id', async (req, res) => {
+    // Get request parameter
+    let marinerID = req.params.id;
+    // Get the variables form the body
+    let licenseID = req.body.licenseID;
+    let licenseName = req.body.licenseName;
+    let licenseType = req.body.licenseType;
+    let licenseCountry = req.body.licenseCountry;
+    let issueDate = req.body.issueDate;
+    let expirationDate = req.body.expirationDate;
+    let gcPending = req.body.gcPending;
+    let govtPending = req.body.govtPending;
+
+    // SQL Query to update the license
+    let updateSQL =
+        'UPDATE Licenses SET LicenseName = ?,LicenseTypeID = ?, CountryID = ?, MarinerID = ?, Timestamp = CURRENT_TIMESTAMP(), IssueDate = ?, ExpirationDate = ?, PendingGC = ?, PendingGovt = ? WHERE LicenseID = ?';
+    let update_query = mysql.format(updateSQL, [
+        licenseName,
+        licenseType,
+        licenseCountry,
+        marinerID,
+        issueDate,
+        expirationDate,
+        gcPending,
+        govtPending,
+        licenseID,
+    ]);
+
+    let updateRows = await db.query(update_query);
+
+    let updateJSON = updateRows[0];
+
+    console.log(updateJSON);
+
+    res.send({
+        updateJSON: updateJSON,
+    });
+});
+
+// Gets all gc license activities for a given licenseID
+app.get('/licenses/gcactivities/:id', async ( req, res ) =>
+{
+  // Get URL parameter
+  let licenseID = req.params.licenseID;
+
+  // SQL for getting all activities for a license
+  let licensesSQL = 'SELECT * FROM LicenseActivities WHERE LicenseID = ?';
+  let licenses_query = mysql.format(licensesSQL, [licenseID]);
+
+  let licenseActivityRows = await db.query( licenses_query );
+
+  res.send( {
+    licenseActivitiesJSON: licenseActivityRows[ 0 ]
+  } )
+} );
+
+// Add a new gc license activity for a given LicenseID
+app.post('/licenses/gcactivities/:id', async ( req, res ) =>
+{
+  // Get URL parameter
+  let licenseID = req.params.licenseID;
+
+  let marinerID = req.body.marinerID;
+  let activityNote = req.body.activityNote;
+
+  // SQL for getting all activities for a license
+  let licensesSQL = 'INSERT INTO GCLicenseActivities SET GCActivityNote = ?, GCActivityTimestamp = CURRENT_TIMESTAMP(), MarinerID = ?, LicenseID = ?';
+
+  let licenses_query = mysql.format(licensesSQL, [activityNote, marinerID, licenseID]);
+
+  let licenseActivityRows = await db.query( licenses_query );
+
+  res.send( {
+    licenseActivitiesJSON: licenseActivityRows[ 0 ]
+  } )
+} );
+
+// Gets all govt license activities for a given licenseID
+app.get('/licenses/govtactivities/:id', async ( req, res ) =>
+{
+  // Get URL parameter
+  let licenseID = req.params.licenseID;
+
+  // SQL for getting all activities for a license
+  let licensesSQL = 'SELECT * FROM LicenseActivities WHERE LicenseID = ?';
+  let licenses_query = mysql.format(licensesSQL, [licenseID]);
+
+  let licenseActivityRows = await db.query( licenses_query );
+
+  res.send( {
+    licenseActivitiesJSON: licenseActivityRows[ 0 ];
+  } )
+} );
+
+// Inserts a new govt license activity into the database
+app.post('/licenses/govtactivities/:id', async ( req, res ) =>
+{
+  // Get URL parameter
+  let licenseID = req.params.licenseID;
+
+  let marinerID = req.body.marinerID;
+  let activityNote = req.body.activityNote;
+
+  // SQL for getting all activities for a license
+  let licensesSQL = 'INSERT INTO GovtLicenseActivities SET GovtActivityNote = ?, GovtActivityTimestamp = CURRENT_TIMESTAMP(), MarinerID = ?, LicenseID = ?';
+
+  let licenses_query = mysql.format(licensesSQL, [activityNote, marinerID, licenseID]);
+
+  let licenseActivityRows = await db.query( licenses_query );
+
+  res.send( {
+    licenseActivitiesJSON: licenseActivityRows[ 0 ]
+  } )
+} );
+
 
 /**
  * Routes relating to applications

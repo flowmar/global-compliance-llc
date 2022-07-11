@@ -2,15 +2,29 @@ this is an example
 
 how cool!
 
-TODO: In each tab, accept License info, add save button
+TODO: Delete Mariner License -- delete corresponding license activities and license attachments with the same license ID
 
-TODO: Compare previous data to current data and change to a PUT request if there are any differences
+TODO: Create Route for getting license attachments
+
+TODO: Create Route for handling upload of license attachments
+
+TODO: Create HTML for license activity tables
+
+TODO: Create HTML for license attachment tables
 
 TODO: In each tab, show License information, License activity feed, License Attachments
 
-TODO: Add activities to LicenseActivities, pull from db and display in UI, add buttons to edit/delete License Activities
+TODO: Make License activity and license attachment table rows selectable
 
-TODO: Upload License Attachments, Buttons for Downloading/Deleting License Attachments
+TODO: Add Edit/Delete Buttons for License Activities and Attachments
+
+TODO: Create Route for handling edits of license activities
+
+TODO: Create Route for handling deletion of license activities
+
+TODO: Create Route for downloading license attachments
+
+TODO: Create Route for deleting license attachments
 
  //- if title == 'Add'
         //-   .row
