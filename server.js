@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-10 09:15:52
+ * @Last Modified time: 2022-07-10 23:44:39
  */
 
 'use strict';
@@ -795,7 +795,10 @@ app.post('/licenses/:id', async (req, res) => {
     let insertJSON = insertRows[0];
 
     console.log(insertJSON);
-    res.send('hi');
+
+    res.send({
+        insertJSON: insertJSON,
+    });
 });
 
 /**

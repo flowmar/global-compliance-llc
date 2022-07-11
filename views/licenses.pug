@@ -30,7 +30,7 @@ block content
           .row#licenseNamesRow
           .row.my-4#licensesArea(style="display: none !important")
             .col.bg-dark.rounded.text-white.border.bg-opacity-75.p-0.shadow-4-strong
-              ul.nav.nav-pills.nav-justified.mb-3.ms-0#licensesTabList(style="margin-left: 0;" role="tablist")
+              ul.nav.nav-pills.nav-justified.mb-3.ms-0#licensesTabList(role="tablist" style="margin-left: 0;")
                 //- li.nav-item(role="presentation")
                 //-   a.link-light.nav-link.active#ex1-tab-1.bg-dark.bg-opacity-50(data-mdb-toggle='pill' href='#ex1-tabs-1' role='tab' aria-controls='ex1-tabs-1' aria-selected='true') Tab 1
                 //- li.nav-item(role="presentation")
@@ -39,7 +39,7 @@ block content
                 //-   a.nav-link#ex1-tab-3(data-mdb-toggle='tab' href='#ex1-tabs-3' role='tab' aria-controls='ex1-tabs-3' aria-selected='false') Tab 3
               .tab-content#tab-content
                 .tab-pane.fade.p-3#ex1-tabs-1(role='tabpanel' aria-labelledby='ex1-tab-1')
-                  form(action="/license" method='POST' id="licenseForm").container
+                  form(id="licenseForm" action="/license" method='POST').container
                     .row
                       .col
                         .display-5.fw-bold License Information
@@ -48,16 +48,16 @@ block content
                       .col-3
                         label.form-label MarinerID:
                         input.form-control(type="text" value=`${marinerID}` readonly)
-                        input.form-control(type="text" value=`${marinerID}` name="marinerID" id="marinerIDhidden" hidden)
+                        input.form-control(id="marinerIDhidden" name="marinerID" type="text" value=`${marinerID}` hidden)
                       .col-1
                       .col-4
-                        label.form-label Mariner Name:
-                        input.form-control(type="text" name="marinerName" readonly)
+                        label.form-label License Name:
+                        input.form-control#licenseName(name="licenseName" type="text")
                       .col-1
                       .col-3
                         label.form-label LicenseID:
                         input.form-control#licenseID(type="text" readonly)
-                        input.form-control(type="text" name="licenseID" id="licenseIDhidden" hidden)
+                        input.form-control(id="licenseIDhidden" name="licenseID" type="text" hidden)
                     .row.my-4
                       .col-4
                         label.form-label License Type:
@@ -68,26 +68,26 @@ block content
                     .row.my-4
                       .col-3
                         label.form-label Issue Date:
-                        input.form-control(type="date" name="issueDate" id="issueDate")
+                        input.form-control(id="issueDate" name="issueDate" type="date")
                       .col-1
                       .col-3
                         label.form-label Expiration Date:
-                        input.form-control(type="date" name="expirationDate" id="expirationDate")
+                        input.form-control(id="expirationDate" name="expirationDate" type="date")
                       .col
                     .row.my-5
                       .col
                         .form-check
-                          input.form-check-input(type="checkbox" name="gcPending" id="gcPending")
+                          input.form-check-input(id="gcPending" name="gcPending" type="checkbox")
                           label.form-label Pending Global Compliance
                       .col
                         .form-check
                           label.form-label Pending Government
-                          input.form-check-input(type="checkbox" name="govtPending" id="govtPending")
+                          input.form-check-input(id="govtPending" name="govtPending" type="checkbox")
                     .row
                       .col.d-flex.justify-content-end
                         button.btn.btn-success(type="button" onclick="saveLicenseInformation()") Save
-                    .row.p-3
-                      .col-6
+                    .row
+                      .col-6.p-0
                         .display-5.fw-bold License Activity
                       hr.mt-1
                     .row
@@ -512,6 +512,8 @@ block content
 
         $(selector + ' #licenseID').attr('id', 'licenseID' + suffix);
 
+        $(selector + ' #licenseName').attr('id', 'licenseName' + suffix);
+
         $(selector + ' #licenseIDhidden').attr('id', 'licenseIDhidden' + suffix);
 
         let formLicenseType = $('#licenseTypesField').attr('id');
@@ -612,6 +614,8 @@ block content
 
           $("#licenseID" + suffix).val(licenseID);
           //- console.log($("#licenseID" + suffix ));
+
+          $('#licenseName' + suffix).val(licenseName);
 
           $("#licenseTypesField" + suffix).val(licenseType);
           //- console.log($("#licenseTypesField" + suffix));

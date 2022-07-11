@@ -2,11 +2,9 @@ this is an example
 
 how cool!
 
-TODO: Pull license data from database and display in UI
-
-TODO: If there is no license data in the database, begin license tab generation
-
 TODO: In each tab, accept License info, add save button
+
+TODO: Compare previous data to current data and change to a PUT request if there are any differences
 
 TODO: In each tab, show License information, License activity feed, License Attachments
 

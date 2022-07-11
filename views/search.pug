@@ -22,7 +22,7 @@ block content
       .col-7
     .row.bg-dark.m-3.p-1.py-3
       .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.m-2.mb-0
-        form.container-fluid(action="/search" method="POST" name="searchDatabase" data-parsley-validate)
+        form.container-fluid(name="searchDatabase" data-parsley-validate action="/search" method="POST")
           if searched == true
             .row.mt-4
               .col-4.border.p-3.mx-3#search-text-display
@@ -33,7 +33,7 @@ block content
           .row.d-flex.align-items-end.mt-4
             .col-3.mx-1
               label.form-label(for="search-by") Search By:
-              select.form-select.bg-white(id="search-by" aria-label="Select a search category" name="searchBy")
+              select.form-select.bg-white(id="search-by" name="searchBy" aria-label="Select a search category")
                 option()
                 option(value="Mariner ID") Mariner ID
                 option(value="First Name") First Name
@@ -44,11 +44,11 @@ block content
                 option(value="Status") Status
             .col-1
             .col
-              label.form-label(for="search-input" id="search-label") Search:
+              label.form-label(id="search-label" for="search-input") Search:
               #search-input
               //- input.form-control.bg-white(type="text" id="search-input" name="searchText")
             .col-2.p-0
-              button.btn.text-white(style="background-color: var(--purple-color);" id="search-button" onclick="search()")
+              button.btn.text-white(id="search-button" style="background-color: var(--purple-color);" onclick="search()")
                 span
                   i.bi.bi-search(style="font-size: .88rem;")
                   span(style="font-size: .85rem;") &nbsp;&nbsp;Search
@@ -64,13 +64,13 @@ block content
           .row
             .col-6
             .col-6.d-flex.justify-content-end.p-0#buttons
-              a.btn.text-white.mx-2.buttons(style="background-color: var(--seafoam-color)" type="button" id="view-mariner-button" href="#")
+              a.btn.text-white.mx-2.buttons(id="view-mariner-button" type="button" href="#" style="background-color: var(--seafoam-color)")
                 i.bi.bi-eye-fill(style="font-size: .88rem;")
                 span(style="font-size: .85rem;")   &nbsp;View
-              a.btn.btn-info.mx-2.buttons(type="button" id="edit-mariner-button" href="#")
+              a.btn.btn-info.mx-2.buttons(id="edit-mariner-button" type="button" href="#")
                 i.bi.bi-pencil-square(style="font-size: .88rem;")
                 span(style="font-size: .85rem;")   &nbsp;Edit
-              button.btn.btn-danger.mx-2.buttons(type="button" id="delete-mariner-button" href="#" onclick="confirmDelete()")
+              button.btn.btn-danger.mx-2.buttons(id="delete-mariner-button" type="button" href="#" onclick="confirmDelete()")
                 i.bi.bi-x-circle-fill(style="font-size: .88rem;")
                 span(style="font-size: .85rem;")   &nbsp;Delete
 
@@ -113,6 +113,7 @@ block content
         element.name = 'searchText';
         element.min = '10001';
         element.value = '10001';
+        element.id = 'searchTextBox';
         searchInput.append(element);
         break;
 
@@ -204,6 +205,18 @@ block content
       default:
         break;
       }
+
+      // Set up an event listener for the enter key on text boxes
+      $('#searchTextBox').on('keypress', function (event) {
+          if (event.key == 'Enter') {
+            $('#search-button').click();
+          }
+        });
+      $('#first-name-input').on('keypress', function (event) {
+          if (event.key == 'Enter') {
+            $('#search-button').click();
+          }
+        });
       });
       //- Wait until DOM is loaded
       window.addEventListener('DOMContentLoaded', (event) => {

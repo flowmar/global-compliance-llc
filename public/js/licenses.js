@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-10 03:36:02
+ * @Last Modified time: 2022-07-10 23:52:26
  */
 
 function saveLicenseInformation() {
@@ -60,8 +60,7 @@ function saveLicenseInformation() {
     govtPending = govtPending ? 1 : 0;
     console.log(govtPending);
 
-    let licenseName = document.querySelector('a.active').textContent;
-    console.log(licenseName);
+    let licenseName = $(selectedFormID + '#licenseName' + selectedFormNumber);
 
     // Post request with the form information
     axios
@@ -77,8 +76,7 @@ function saveLicenseInformation() {
         })
         .then((response) => {
             console.log(response);
-
-            //TODO: Refresh after uploading
+            alert('License Updated!');
         })
         .catch((error) => console.log(error));
 }

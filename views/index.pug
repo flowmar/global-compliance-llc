@@ -61,3 +61,12 @@ block content
           console.log(error);
         })
         }
+
+        let passwordInput = document.getElementById('inputPassword');
+
+        passwordInput.addEventListener("keypress", function(e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            document.getElementById('loginButton').click();
+          }
+        })
