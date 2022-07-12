@@ -38,7 +38,7 @@ block content
                 //- li.nav-item(role="presentation")
                 //-   a.nav-link#ex1-tab-3(data-mdb-toggle='tab' href='#ex1-tabs-3' role='tab' aria-controls='ex1-tabs-3' aria-selected='false') Tab 3
               .tab-content#tab-content
-                .tab-pane.fade.p-3#ex1-tabs-1(role='tabpanel' aria-labelledby='ex1-tab-1')
+                .tab-pane.fade.p-3#license-tabs-0(role='tabpanel' aria-labelledby='ex1-tab-1')
                   form(id="licenseForm" action="/license" method='POST').container
                     .row
                       .col
@@ -175,6 +175,8 @@ block content
                 //-         td Pending Government
                 //-         td Upload Credential
                 //-   </div>
+
+            include includes/summaryTableHead
 
   script.
     // Get information from server
@@ -560,14 +562,15 @@ block content
 
         // Create the HTML for the nav links
         let addNavLink = document.createElement('a');
-        addNavLink.classList = 'nav-link';
+        addNavLink.classList = 'nav-link btn';
         addNavLink.id = 'addLicense';
-        addNavLink.setAttribute('data-mdb-toggle', 'pill');
+        //- addNavLink.setAttribute('data-mdb-toggle', 'pill');
         addNavLink.href = '#';
         addNavLink.role = 'tab';
-        addNavLink.setAttribute('aria-controls', 'addLicense');
-        addNavLink.setAttribute('aria-selected', 'false');
+        //- addNavLink.setAttribute('aria-controls', 'addLicense');
+        //- addNavLink.setAttribute('aria-selected', 'false');
         addNavLink.textContent = '+';
+        addNavLink.setAttribute('onclick', 'addNewLicenseForm()');
 
         // Append the navLink to the navItem
         addNavItem.appendChild(addNavLink);
@@ -602,9 +605,6 @@ block content
         summaryTabPane.role = 'tabpanel';
         summaryTabPane.setAttribute('aria-labelledby', 'summary');
 
-        // Prepend the summary tab pane to the tab content
-        tabContent.prepend(summaryTabPane);
-
         // Loop through the licensesArray and put the data into the UI
         for(let n = 0; n < licensesArray.length; n++){
           let license = licensesArray[n];
@@ -617,12 +617,13 @@ block content
           let expirationDate = license.ExpirationDate;
           let pendingGC = license.PendingGC;
           let pendingGovt = license.PendingGovt;
+          let timestamp = license.Timestamp;
 
-          console.log(licenseID)
+          //- console.log(licenseID)
 
           let forms = $('form');
 
-          console.log(forms);
+          //- console.log(forms);
 
           let currentFormID = forms[n + 1].id;
           let selector = '#' + currentFormID + " ";
@@ -659,7 +660,74 @@ block content
             $('#govtPending' + suffix).attr('checked', 'checked');
           }
 
+          let timestampString = timestamp.toString();
+          let formattedTimestamp = timestampString.slice(0, 10);
+
+           // Summary tab data
+
+          // Create the table row
+          let summaryTableRow = document.createElement('tr');
+          summaryTableRow.style = 'text-align: center; vertical-align: middle;';
+          summaryTableRow.id = 'summaryTableRow' + (n + 1);
+          console.log(summaryTableRow)
+
+          let idCell = document.createElement('td');
+          idCell.style = 'text-align: center;'
+          idCell.textContent = licenseID;
+
+          let dateCell = document.createElement('td');
+          dateCell.style = 'text-align: center;';
+          dateCell.textContent = formattedTimestamp;
+
+          let nameCell = document.createElement('td');
+          nameCell.style = 'text-align: center;';
+          nameCell.textContent = licenseName;
+
+          let typeCell = document.createElement('td');
+          typeCell.style = 'text-align: center;';
+          typeCell.textContent = licenseType;
+
+          let countryCell = document.createElement('td');
+          countryCell.style = 'text-align: center;';
+          countryCell.textContent = licenseCountry;
+
+          let issueCell = document.createElement('td');
+          issueCell.style = 'text-align: center;';
+          issueCell.textContent = formattedIssueDate;
+
+          let expCell = document.createElement('td');
+          expCell.style = 'text-align: center;';
+          expCell.textContent = formattedExpDate;
+
+          let gcCell = document.createElement('td');
+          gcCell.style = 'text-align: center;';
+          gcCell.textContent = pendingGC;
+
+          let govtCell = document.createElement('td');
+          govtCell.style = 'text-align: center';
+          govtCell.textContent = pendingGovt;
+
+          // Select the table body
+          let summaryBody = $('#summaryBody');
+          console.log(summaryBody);
+          // Append the table row to it
+          summaryBody.append(summaryTableRow);
+          // Append the cells to the row
+          summaryTableRow.append(idCell, dateCell, nameCell, typeCell, countryCell, issueCell, expCell, gcCell, govtCell);
         }
+        // Make it visible
+        $('.invisible').removeClass('invisible');
+
+        // Select the entire table
+        let summaryTableWrapper = $('#summaryTableWrapper');
+
+        // Append it to the summary tab pane
+        summaryTableWrapper.appendTo(summaryTabPane);
+
+        // Prepend the summary tab pane to the tab content
+        tabContent.prepend(summaryTabPane);
+
       }
+
     });
   script(src="/js/licenses.js")

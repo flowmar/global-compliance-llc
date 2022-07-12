@@ -2,6 +2,10 @@ this is an example
 
 how cool!
 
+TODO: Make + button functional on licenses page
+
+TODO: Make Save activities buttons functional on the licenses page
+
 TODO: Delete Mariner License -- delete corresponding license activities and license attachments with the same license ID
 
 TODO: Create Route for getting license attachments

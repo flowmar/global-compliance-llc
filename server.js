@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-11 08:39:38
+ * @Last Modified time: 2022-07-11 21:42:12
  */
 
 'use strict';
@@ -13,6 +13,8 @@ const router = express.Router();
 const axios = require('axios'); // HTTP request library
 const path = require('path');
 const PORT = process.env.PORT;
+const KEY_PATH = process.env.KEY_PATH;
+const CERT_PATH = process.env.CERT_PATH;
 const db = require('./config');
 const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
@@ -21,10 +23,27 @@ const cors = require('cors');
 const multer = require('multer');
 const fs = require('fs-extra');
 const helmet = require('helmet');
+const https = require('https');
 
 /* Express Setup */
 // Use Express to create the application
 const app = express();
+
+// Helmet for security
+app.use(helmet.hidePoweredBy());
+app.use(helmet.noSniff());
+app.use(
+    helmet.frameguard({
+        action: 'sameorigin',
+    })
+);
+app.use(helmet.xssFilter());
+app.use(
+    helmet.permittedCrossDomainPolicies({
+        permittedPolicies: 'none',
+    })
+);
+app.use(helmet.hsts());
 
 // Logger Set Up
 if (process.env.MACHINE == 'local') {
@@ -843,81 +862,86 @@ app.put('/licenses/:id', async (req, res) => {
 });
 
 // Gets all gc license activities for a given licenseID
-app.get('/licenses/gcactivities/:id', async ( req, res ) =>
-{
-  // Get URL parameter
-  let licenseID = req.params.licenseID;
+app.get('/licenses/gcactivities/:id', async (req, res) => {
+    // Get URL parameter
+    let licenseID = req.params.licenseID;
 
-  // SQL for getting all activities for a license
-  let licensesSQL = 'SELECT * FROM LicenseActivities WHERE LicenseID = ?';
-  let licenses_query = mysql.format(licensesSQL, [licenseID]);
+    // SQL for getting all activities for a license
+    let licensesSQL = 'SELECT * FROM LicenseActivities WHERE LicenseID = ?';
+    let licenses_query = mysql.format(licensesSQL, [licenseID]);
 
-  let licenseActivityRows = await db.query( licenses_query );
+    let licenseActivityRows = await db.query(licenses_query);
 
-  res.send( {
-    licenseActivitiesJSON: licenseActivityRows[ 0 ]
-  } )
-} );
+    res.send({
+        licenseActivitiesJSON: licenseActivityRows[0],
+    });
+});
 
 // Add a new gc license activity for a given LicenseID
-app.post('/licenses/gcactivities/:id', async ( req, res ) =>
-{
-  // Get URL parameter
-  let licenseID = req.params.licenseID;
+app.post('/licenses/gcactivities/:id', async (req, res) => {
+    // Get URL parameter
+    let licenseID = req.params.licenseID;
 
-  let marinerID = req.body.marinerID;
-  let activityNote = req.body.activityNote;
+    let marinerID = req.body.marinerID;
+    let activityNote = req.body.activityNote;
 
-  // SQL for getting all activities for a license
-  let licensesSQL = 'INSERT INTO GCLicenseActivities SET GCActivityNote = ?, GCActivityTimestamp = CURRENT_TIMESTAMP(), MarinerID = ?, LicenseID = ?';
+    // SQL for getting all activities for a license
+    let licensesSQL =
+        'INSERT INTO GCLicenseActivities SET GCActivityNote = ?, GCActivityTimestamp = CURRENT_TIMESTAMP(), MarinerID = ?, LicenseID = ?';
 
-  let licenses_query = mysql.format(licensesSQL, [activityNote, marinerID, licenseID]);
+    let licenses_query = mysql.format(licensesSQL, [
+        activityNote,
+        marinerID,
+        licenseID,
+    ]);
 
-  let licenseActivityRows = await db.query( licenses_query );
+    let licenseActivityRows = await db.query(licenses_query);
 
-  res.send( {
-    licenseActivitiesJSON: licenseActivityRows[ 0 ]
-  } )
-} );
+    res.send({
+        licenseActivitiesJSON: licenseActivityRows[0],
+    });
+});
 
 // Gets all govt license activities for a given licenseID
-app.get('/licenses/govtactivities/:id', async ( req, res ) =>
-{
-  // Get URL parameter
-  let licenseID = req.params.licenseID;
+app.get('/licenses/govtactivities/:id', async (req, res) => {
+    // Get URL parameter
+    let licenseID = req.params.licenseID;
 
-  // SQL for getting all activities for a license
-  let licensesSQL = 'SELECT * FROM LicenseActivities WHERE LicenseID = ?';
-  let licenses_query = mysql.format(licensesSQL, [licenseID]);
+    // SQL for getting all activities for a license
+    let licensesSQL = 'SELECT * FROM LicenseActivities WHERE LicenseID = ?';
+    let licenses_query = mysql.format(licensesSQL, [licenseID]);
 
-  let licenseActivityRows = await db.query( licenses_query );
+    let licenseActivityRows = await db.query(licenses_query);
 
-  res.send( {
-    licenseActivitiesJSON: licenseActivityRows[ 0 ];
-  } )
-} );
+    res.send({
+        licenseActivitiesJSON: licenseActivityRows[0],
+    });
+});
 
 // Inserts a new govt license activity into the database
-app.post('/licenses/govtactivities/:id', async ( req, res ) =>
-{
-  // Get URL parameter
-  let licenseID = req.params.licenseID;
+app.post('/licenses/govtactivities/:id', async (req, res) => {
+    // Get URL parameter
+    let licenseID = req.params.licenseID;
 
-  let marinerID = req.body.marinerID;
-  let activityNote = req.body.activityNote;
+    let marinerID = req.body.marinerID;
+    let activityNote = req.body.activityNote;
 
-  // SQL for getting all activities for a license
-  let licensesSQL = 'INSERT INTO GovtLicenseActivities SET GovtActivityNote = ?, GovtActivityTimestamp = CURRENT_TIMESTAMP(), MarinerID = ?, LicenseID = ?';
+    // SQL for getting all activities for a license
+    let licensesSQL =
+        'INSERT INTO GovtLicenseActivities SET GovtActivityNote = ?, GovtActivityTimestamp = CURRENT_TIMESTAMP(), MarinerID = ?, LicenseID = ?';
 
-  let licenses_query = mysql.format(licensesSQL, [activityNote, marinerID, licenseID]);
+    let licenses_query = mysql.format(licensesSQL, [
+        activityNote,
+        marinerID,
+        licenseID,
+    ]);
 
-  let licenseActivityRows = await db.query( licenses_query );
+    let licenseActivityRows = await db.query(licenses_query);
 
-  res.send( {
-    licenseActivitiesJSON: licenseActivityRows[ 0 ]
-  } )
-} );
-
+    res.send({
+        licenseActivitiesJSON: licenseActivityRows[0],
+    });
+});
 
 /**
  * Routes relating to applications
@@ -1195,16 +1219,19 @@ app.post('/attachment', upload.single('attachment'), async (req, res) => {
     // Get the marinerID from the request body
     let marinerID = bodyJSON.marinerID;
     let processingAgentID = bodyJSON.processingAgent;
+    let attachmentName = bodyJSON.attachmentName;
+
     console.log(bodyJSON);
 
     // Query for inserting attachment into database
     let attachmentSql =
-        'INSERT INTO MarinerAttachments SET MarinerAttachment = ?, AttachmentFileName = ?,MarinerID = ?, MarinerAttachmentDate = CURRENT_TIMESTAMP(), ProcessingAgent = ?';
+        'INSERT INTO MarinerAttachments SET MarinerAttachment = ?, AttachmentFileName = ?,MarinerID = ?, MarinerAttachmentDate = CURRENT_TIMESTAMP(), ProcessingAgent = ?, AttachmentName = ?';
     let attachment_query = mysql.format(attachmentSql, [
         file_buffer,
         file.filename,
         marinerID,
         processingAgentID,
+        attachmentName,
     ]);
 
     // Upload attachment to database
@@ -1514,7 +1541,19 @@ if (process.env.MACHINE == 'local') {
     );
 }
 
+https
+    .createServer(
+        {
+            key: fs.readFileSync(KEY_PATH),
+            cert: fs.readFileSync(CERT_PATH),
+        },
+        app
+    )
+    .listen(PORT, () => {
+        console.log(`Listening to requests on https://localhost:${PORT}...`);
+    });
+
 // Set the application to listen on a port for requests
-app.listen(PORT, () => {
-    console.log(`Listening to requests on http://localhost:${PORT}...`);
-});
+// app.listen(PORT, () => {
+//     console.log(`Listening to requests on http://localhost:${PORT}...`);
+// });
