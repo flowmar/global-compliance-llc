@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-25 21:51:55
+ * @Last Modified time: 2022-07-26 03:12:59
  */
 
 'use strict';
@@ -515,6 +515,18 @@ app.get('/logout', async (_req, res) => {
  * Data Routes
  */
 
+// Handles rig filtering
+app.get('/rigs/:id', async (req, res) => {
+    let employerID = req.params.id;
+    console.log(employerID);
+    const employerSQL = 'SELECT * FROM Rigs WHERE EmployerID = ?';
+    const employer_query = mysql.format(employerSQL, [employerID]);
+
+    const result = await db.query(employer_query);
+    console.log(result[0]);
+    res.send(result[0]);
+});
+
 // Route for /form
 app.get('/form', async (_req, res) => {
     // Variables for holding ID numbers
@@ -589,7 +601,7 @@ app.get('/form', async (_req, res) => {
 app.post('/add', async (req, res) => {
     console.log(req.body);
     // Get submitted form data
-    let marinerId = req.body.marinerId;
+    let marinerId = req.body.marinerID;
     let firstName = req.body.firstName;
     let middleName = req.body.middleName;
     let lastName = req.body.lastName;
@@ -608,11 +620,18 @@ app.post('/add', async (req, res) => {
     let processingAgent = req.body.processingAgent;
     let marinerStatus = req.body.status;
     let applicationID = req.body.applicationID;
-    let notes = req.body.notes;
+    let height = req.body.height;
+    let weight = req.body.weight;
+    let hair = req.body.hair;
+    let eyeColor = req.body.eyeColor;
+    let marks = req.body.marks;
+    let physDate = req.body.physDate;
+    let coContact = req.body.coContact;
+    let imoNumber = req.body.imoNumber;
 
     // Insert SQL statement
     let sqlInsert =
-        'INSERT INTO `mariners` VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        'INSERT INTO Mariners SET MarinerID = ?, LastName = ?, FirstName = ?, MiddleName = ?, StreetAddress = ?, PhoneNumber =  ?, Email = ?, EmployerID = ?, RigID = ?, MarinerReferenceNumber = ?, PassportNumber = ?, Citizenship = ? , BirthCity = ?, BirthState = ?, BirthCountry = ?, BirthDate = ?, ProcessingAgent = ?, ApplicationID = ?, Status = ?, Height = ?, Weight = ?, HairColor = ?, EyeColor = ?, Marks = ?, PhysDate = ? , CoContact = ?, IMONum = ?';
     let insert_query = mysql.format(sqlInsert, [
         marinerId,
         lastName,
@@ -631,9 +650,16 @@ app.post('/add', async (req, res) => {
         birthCountry,
         birthDate,
         processingAgent,
-        notes,
         applicationID,
         marinerStatus,
+        height,
+        weight,
+        hair,
+        eyeColor,
+        marks,
+        physDate,
+        coContact,
+        imoNumber,
     ]);
 
     // Insert Mariner into database

@@ -2,8 +2,10 @@
  * @Author: flowmar
  * @Date: 2022-07-03 07:45:53
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-08 19:40:32
+ * @Last Modified time: 2022-07-26 02:38:12
  */
+
+// const errors = require('bluebird/js/release/errors');
 
 const marinerID = document.getElementById('marinerIDHidden').value || next;
 const appModal = new mdb.Modal(applicationModal);
@@ -230,6 +232,34 @@ function saveMarinerActivity() {
     }
 }
 
+/**
+ * When the user selects a rig type, send a request to the server to retrieve all
+ * rigs of that type, then populate the rig select element with the results
+ * @param selection - The value of the selected option in the dropdown
+ */
+function filterRigs(selection) {
+    console.log(selection);
+    // Send request to retrieve matching rigs
+    axios
+        .get('/rigs/' + selection)
+        .then((response) => {
+            // Select the dropdown
+            let rigSelect = $('#vessel-name');
+            // Clear out any previous data
+            rigSelect.empty();
+            // Loop through the response from the server, attaching rig options
+            for (let rig of response.data) {
+                let element = document.createElement('option');
+                element.value = rig.RigID;
+                element.textContent = rig.RigName;
+                rigSelect.append(element);
+            }
+        })
+        .catch((err) => {
+            throw err;
+        });
+}
+
 $(document).ready(() => {
     /* Add Mariner Validation */
     const applicationModal = document.getElementById('applicationModal');
@@ -258,7 +288,7 @@ $(document).ready(() => {
         checkIfAppExists();
     });
 
-    $('#save-mariner').on('click', (e) => {
+    $('#save-edited-mariner').on('click', (e) => {
         e.preventDefault();
         confirmAndSaveMariner();
     });
@@ -273,5 +303,8 @@ $(document).ready(() => {
     // });
     $('#save-mariner-activity-button').on('click', (e) => {
         e.preventDefault();
+    });
+    $('#employer').on('input', function (e) {
+        filterRigs(e.target.value);
     });
 });
