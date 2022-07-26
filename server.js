@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-11 21:42:12
+ * @Last Modified time: 2022-07-25 21:42:47
  */
 
 'use strict';
@@ -158,7 +158,7 @@ app.get('/search', async (req, res) => {
         const employerRows = await db.query(employer_query);
         // Parse the result and place the employerName into the object
         let employerJSON = JSON.parse(JSON.stringify(employerRows[0]));
-        console.log(employerJSON);
+        // console.log(employerJSON);
         if (employerJSON[0]) {
             employerName = employerJSON[0]['EmployerName'];
             formatted['employer'] = employerName;
@@ -174,7 +174,7 @@ app.get('/search', async (req, res) => {
         const agentRows = await db.query(agent_query);
         // Parse the result and place the AgentName into the Object
         let agentJSON = JSON.parse(JSON.stringify(agentRows[0]));
-        console.log(agentJSON);
+        // console.log(agentJSON);
         if (agentJSON[0]) {
             agentName = agentJSON[0]['AgentName'];
             formatted['processingAgent'] = agentName;
@@ -1541,19 +1541,23 @@ if (process.env.MACHINE == 'local') {
     );
 }
 
-https
-    .createServer(
-        {
-            key: fs.readFileSync(KEY_PATH),
-            cert: fs.readFileSync(CERT_PATH),
-        },
-        app
-    )
-    .listen(PORT, () => {
-        console.log(`Listening to requests on https://localhost:${PORT}...`);
+if (process.env.MACHINE == 'local') {
+    https
+        .createServer(
+            {
+                key: fs.readFileSync(KEY_PATH),
+                cert: fs.readFileSync(CERT_PATH),
+            },
+            app
+        )
+        .listen(PORT, () => {
+            console.log(
+                `Listening to requests on https://localhost:${PORT}...`
+            );
+        });
+} else {
+    // Set the application to listen on a port for requests
+    app.listen(PORT, () => {
+        console.log(`Listening to requests on http://localhost:${PORT}...`);
     });
-
-// Set the application to listen on a port for requests
-// app.listen(PORT, () => {
-//     console.log(`Listening to requests on http://localhost:${PORT}...`);
-// });
+}

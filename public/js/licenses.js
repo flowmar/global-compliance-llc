@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-11 17:03:54
+ * @Last Modified time: 2022-07-12 03:29:41
  */
 
 let licenseID,
@@ -145,13 +145,13 @@ function addNewLicenseForm() {
     let buttonContents = tabButtonClone.contents();
     let id = buttonContents.attr('id').slice(0, -1);
     id += newSuffix;
-    console.log(id);
+    // console.log(id);
     let ariaControls = buttonContents.attr('aria-controls').slice(0, -1);
     ariaControls += newSuffix;
     let buttonHref = buttonContents.attr('href').slice(0, -1);
     buttonHref += newSuffix;
-    console.log(ariaControls);
-    console.log(buttonHref);
+    // console.log(ariaControls);
+    // console.log(buttonHref);
     buttonContents.empty();
     buttonContents.attr({
         id: id,
@@ -159,7 +159,11 @@ function addNewLicenseForm() {
         href: buttonHref,
     });
 
-    // Select the last tab pane
+    // Select the first tab pane
+    // let paneContent = $('#license-tabs-0');
+    // let node = $('#tab-content').children().last();
+    // paneContent.insertAfter(node);
+
     let contentClone = $('#tab-content').children().first().next().clone();
     console.log(contentClone);
     let node = $('#tab-content').children().last();
@@ -173,13 +177,13 @@ function addNewLicenseForm() {
     contentClone.attr('id', contentID);
 
     console.log(contentClone.find($('button')));
-    let saveButton = contentClone.find($('button')[0]);
-    let editButton = contentClone.find($('button')[1]);
-    let deleteButton = contentClone.find($('button')[2]);
-    console.log(saveButton);
-    saveButton.css('display: block !important;');
-    editButton.css('display: block !important;');
-    deleteButton.css('display: block !important;');
+    contentClone.find($('button'))[0].id = 'saveButton1';
+    contentClone.find($('button'))[1].id = 'editButton1';
+    contentClone.find($('button'))[2].id = 'deleteButton1';
+
+    $('#saveButton1').style.display = 'block !important;';
+    $('#editButton1').style.display = 'none !important;';
+    $('#deleteButton1').style.display = 'none !important;';
 }
 
 // function saveGCActivity() {}
