@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-25 21:42:47
+ * @Last Modified time: 2022-07-25 21:46:48
  */
 
 'use strict';
@@ -1557,7 +1557,7 @@ if (process.env.MACHINE == 'local') {
         });
 } else {
     // Set the application to listen on a port for requests
-    app.listen(PORT, () => {
-        console.log(`Listening to requests on http://localhost:${PORT}...`);
+    app.listen(3306, () => {
+        console.log(`Listening to requests on http://localhost:3306...`);
     });
 }
