@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-03 07:45:53
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-26 02:38:12
+ * @Last Modified time: 2022-07-26 11:57:38
  */
 
 // const errors = require('bluebird/js/release/errors');
@@ -247,6 +247,10 @@ function filterRigs(selection) {
             let rigSelect = $('#vessel-name');
             // Clear out any previous data
             rigSelect.empty();
+            let blankElement = document.createElement('option');
+            blankElement.textContent = '';
+            blankElement.value = '';
+            rigSelect.append(blankElement);
             // Loop through the response from the server, attaching rig options
             for (let rig of response.data) {
                 let element = document.createElement('option');
@@ -307,4 +311,8 @@ $(document).ready(() => {
     $('#employer').on('input', function (e) {
         filterRigs(e.target.value);
     });
+
+    if ($('#employer').val() != '') {
+        filterRigs($('#employer').val());
+    }
 });

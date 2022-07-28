@@ -63,8 +63,7 @@ block content
               input.form-control.bg-white(id="birth-state" name="birthState" type="text")
             .col-3
               label.form-label(for="birth-country") Country of Birth:
-              select.form-select.bg-white(id="birth-country" name="birthCountry"
-          aria-label="Select birth country")
+              select.form-select.bg-white(id="birth-country" name="birthCountry" aria-label="Select birth country")
             .col-3
               label.form-label(for="birth-date") Birth Date:
               input.form-control.bg-white.text-dark(id="birth-date" name="birthDate"
@@ -72,11 +71,11 @@ block content
           .row.my-4
             .col-7
               label.form-label(for="marks") Distinguishing Marks:
-              input.form-control.bg-white(id="marks")
+              input.form-control.bg-white(id="marks" name="marks")
             .col-2
             .col-3
               label.form-label(for="physDate") Date of Physical:
-              input.form-control.bg-white(id="physDate" data-parsley-required="false" type="date")
+              input.form-control.bg-white(id="physDate" name="physDate" data-parsley-required="false" type="date")
           .row.my-3
           .row.my-4
             .col-4
@@ -92,10 +91,11 @@ block content
             .col-4
               label.form-label(for="employer") Employer:
               select.form-select.bg-white(id="employer" name="employer")
+                option(value)
             .col-4
               label.form-label(for="vessel-name") Rig:
               select.form-select.bg-white(id="vessel-name" name="vessel" type="text")
-                option(value="0")
+                option(value)
             .col-4
               label.form-label(for="mariner-reference-number") Mariner Reference Number:
               input.form-control.bg-white(id="mariner-reference-number" name="marinerRefNum" data-parsley-type="digits" type="text")
@@ -125,26 +125,35 @@ block content
                 option(value="2") Submitted
                 option(value="3") Completed
           .row.my-4
-            .col-12
-              label.form-label(for="notes") Mariner Notes:
-              textarea.form-control.bg-white.text-dark(id="notes" name="notes" type="text")
-          .row.my-4
-            .col
             .col.d-flex.justify-content-end
-              a.btn.btn-lg.m-2.text-dark(id="cancel-edit-mariner-button" href="/search" style="background-color: var(--red-color); color:#4f4f4f" value="Cancel")
-                i.bi.bi-x-square(style="font-size=.9rem")
+              a.btn.btn-lg.m-2.text-dark(id="cancel-edit-mariner-button" href="/search" style="background-color: var(--red-color); color:#4f4f4f;" value="Cancel")
+                i.bi.bi-x-square(style="font-size: .9rem;")
                 span    &nbsp;Cancel
-              button.btn.btn-lg.m-2.text-dark(id="save-mariner" type="submit" style="background-color: var(--green-color); color:#4f4f4f" value="Save")
-                i.bi.bi-save(style="font-size=.9rem")
-                span    &nbsp;Save
+              button.btn.btn-lg.m-2.text-dark(id="save-mariner" type="submit" style="background-color: var(--green-color); color:#4f4f4f;" value="Save")
+                i.bi.bi-save(style="font-size: .9rem;")
+                span &nbsp; Save
+        //- .row.shadow-4-strong.bg-light.bg-opacity-25
           .row.my-4
             .col
-              //- button.btn.btn-lg.mx-2#appModalButton(style="background-color: var(--yellow-color);" type="button" value="Application" data-mdb-target="#applicationModal")
-              //-   i.bi.bi-file-medical(style="font-size: 1rem;")
-              //-   span   &nbsp;Application
-              //- a.btn.btn-lg.mx-1(style="background-color: var(--yellow-color);" type="button" id="licenses-button" value="Licenses" data-mdb-target="#licensesModal" href='/licenses' target="_blank")
-              //-   i.bi.bi-credit-card(style="font-size: 1rem;")
-              //-   span   &nbsp;Licenses
+                label.form-label(for="notes") Mariner Notes:
+                textarea.form-control.bg-white.text-dark(id="notes" name="notes" type="text")
+          //- .row.my-4
+          //- .col
+          //- .col.d-flex.justify-content-end
+          //- //- a.btn.btn-lg.m-2.text-dark(id="cancel-edit-mariner-button" href="/search" style="background-color: var(--red-color); color:#4f4f4f" value="Cancel")
+          //- i.bi.bi-x-square(style="font-size=.9rem")
+          //- span    &nbsp;Cancel
+          //- //- button.btn.btn-lg.m-2.text-dark(id="save-mariner" type="submit" style="background-color: var(--green-color); color:#4f4f4f" value="Save")
+          //- i.bi.bi-save(style="font-size=.9rem")
+          //- span    &nbsp;Save
+          //- .row.my-4
+          //- .col
+          //- button.btn.btn-lg.mx-2#appModalButton(style="background-color: var(--yellow-color);" type="button" value="Application" data-mdb-target="#applicationModal")
+          //-   i.bi.bi-file-medical(style="font-size: 1rem;")
+          //-   span   &nbsp;Application
+          //- a.btn.btn-lg.mx-1(style="background-color: var(--yellow-color);" type="button" id="licenses-button" value="Licenses" data-mdb-target="#licensesModal" href='/licenses' target="_blank")
+          //-   i.bi.bi-credit-card(style="font-size: 1rem;")
+          //-   span   &nbsp;Licenses
 
   include includes/applicationModal
   include includes/editActivityModal

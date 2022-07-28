@@ -30,6 +30,9 @@ block content
                   button.btn.mx-2#appModalButton(data-mdb-target="#applicationModal" style="background-color: var(--yellow-color);" value="Application")
                     i.bi.bi-file-medical(style="font-size: 1rem;")
                     span   &nbsp;Application
+                  button.btn.mx-2(style="background-color: var(--yellow-color);" value="Print")
+                    i.bi.bi-printer(style="font-size: 1rem;")
+                    span   &nbsp;Print
                 a.btn.mx-1(id="licenses-button" data-mdb-target="#licensesModal" type="button" href='/licenses' style="background-color: var(--yellow-color);" value="Licenses" target="_blank")
                   i.bi.bi-credit-card(style="font-size: 1rem;")
                   span   &nbsp;Licenses
@@ -59,32 +62,18 @@ block content
                 label.form-label(for="last-name") Last Name:
                 input.form-control.bg-white(id="last-name" name="lastName" data-parsley-required="true" type="text")
             .row.my-4
-              .col-4
-                label.form-label(for="address") Address:
-                input.form-control.bg-white(id="address" name="address" type="text")
-              .col-4
-                label.form-label(for="phone-number") Phone Number:
-                input.form-control.bg-white(id="phone-number" name="phone" type="tel" onkeydown="phoneNumberFormatter()")
-              .col-4
-                label.form-label(for="email") Email:
-                input.form-control.bg-white(id="email" name="email" data-parsley-required="false" type="email")
-            .row.my-4
-              .col-4
-                label.form-label(for="employer") Employer:
-                select.form-select.bg-white(id="employer" name="employer")
-              .col-4
-                label.form-label(for="vessel-name") Vessel Name:
-                input.form-control.bg-white(id="vessel-name" name="vessel" type="text")
-              .col-4
-                label.form-label(for="mariner-reference-number") Mariner Reference Number:
-                input.form-control.bg-white(id="mariner-reference-number" name="marinerRefNum" data-parsley-type="digits" type="text")
-            .row.my-4
-              .col-4
-                label.form-label(for="passport-number") Passport Number:
-                input.form-control.bg-white(id="passport-number" name="passportNumber" data-parsley-type="digits" type="text")
-              .col-4
-                label.form-label(for="citizenship") Citizenship:
-                select.form-select.bg-white(id="citizenship" name="citizenship" aria-label="Select citizenship")
+              .col-3
+                label.form-label(for="height") Height:
+                input.form-control.bg-white(id="height" name="height" type="text")
+              .col-3
+                label.form-label(for="weight") Weight:
+                input.form-control.bg-white(id="weight" name="weight" type="text")
+              .col-3
+                label.form-label(for="hairColor") Hair Color:
+                input.form-control.bg-white(id="hairColor" name="hair" type="text")
+              .col-3
+                label.form-label(for="eyeColor") Eye Color:
+                input.form-control.bg-white(id="eyeColor" name="eyeColor" data-parsley-required="false" type="text")
             .row.my-4
               .col-3
                 label.form-label(for="birth-city") City of Birth:
@@ -98,6 +87,51 @@ block content
               .col-3
                 label.form-label(for="birth-date") Birth Date:
                 input.form-control.bg-white.text-dark(id="birth-date" name="birthDate" data-parsley-required="true" type="date")
+            .row.my-4
+              .col-7
+                label.form-label(for="marks") Distinguishing Marks:
+                input.form-control.bg-white(id="marks" name="marks")
+              .col-2
+              .col-3
+                label.form-label(for="physDate") Date of Physical:
+                input.form-control.bg-white(id="physDate" name="physDate" data-parsley-required="false" type="date")
+            .row.my-3
+            .row.my-4
+              .col-4
+                label.form-label(for="address") Address:
+                input.form-control.bg-white(id="address" name="address" type="text")
+              .col-4
+                label.form-label(for="phone-number") Phone Number:
+                input.form-control.bg-white(id="phone-number" name="phone" type="tel" onkeydown="phoneNumberFormatter()")
+              .col-4
+                label.form-label(for="email") Email:
+                input.form-control.bg-white(id="email" name="email" data-parsley-required="false" type="email")
+            .row.my-4
+              .col-4
+                label.form-label(for="employer") Employer:
+                select.form-select.bg-white(id="employer" name="employer")
+                  option(value)
+              .col-4
+                label.form-label(for="vessel-name") Rig:
+                select.form-select.bg-white(id="vessel-name" name="vessel" type="text")
+                  option(value='0')
+              .col-4
+                label.form-label(for="mariner-reference-number") Mariner Reference Number:
+                input.form-control.bg-white(id="mariner-reference-number" name="marinerRefNum" data-parsley-type="digits" type="text")
+            .row.my-4
+              .col-4
+                label.form-label(for="coContact") Co. Contact:
+                input.form-control.bg-white(id="coContact" name="coContact" type="text")
+              .col-4
+                label.form-label(for="imoNumber") IMO Number:
+                input.form-control.bg-white(id="imoNumber" name="imoNumber" data-parsley-type="digits" type="text")
+            .row.my-4
+              .col-4
+                label.form-label(for="passport-number") Passport Number:
+                input.form-control.bg-white(id="passport-number" name="passportNumber" data-parsley-type="digits" type="text")
+              .col-4
+                label.form-label(for="citizenship") Citizenship:
+                select.form-select.bg-white(id="citizenship" name="citizenship" aria-label="Select citizenship")
             .row.my-4
               .col-4
                 label.form-label(for="processing-agent") Processing Agent:
@@ -307,6 +341,16 @@ block content
     $('#birth-city').val(marinerObject['BirthCity']);
     $('#birth-state').val(marinerObject['BirthState']);
     $('#birth-country').val(marinerObject['BirthCountry']);
+    $('#height').val(marinerObject['Height']);
+    $('#weight').val(marinerObject['Weight']);
+    $('#hairColor').val(marinerObject['HairColor']);
+    $('#eyeColor').val(marinerObject['EyeColor']);
+    $('#marks').val(marinerObject['Marks']);
+    let physDateString = marinerObject['PhysDate'].toString();
+    let physDate = physDateString.slice(0, 10);
+    $('#physDate').val(physDate);
+    $('#coContact').val(marinerObject['CoContact']);
+    $('#imoNumber').val(marinerObject['IMONumber']);
 
     // Convert the birth date to a format that fits in the UI
     let dateString = marinerObject['BirthDate'].toString();

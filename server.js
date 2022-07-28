@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-26 03:12:59
+ * @Last Modified time: 2022-07-28 03:50:49
  */
 
 'use strict';
@@ -24,6 +24,7 @@ const multer = require('multer');
 const fs = require('fs-extra');
 const helmet = require('helmet');
 const https = require('https');
+const pdfkit = require('pdfkit');
 
 /* Express Setup */
 // Use Express to create the application
@@ -255,6 +256,12 @@ app.get('/view/:id', async (req, res) => {
     let activityRows = await db.query(activity_query);
     let activityJSON = activityRows[0];
 
+    // Get all rigs from database
+    const rigSQL = mysql.format('SELECT * FROM Rigs');
+    let rigRows = await db.query(rigSQL);
+    let rigJSON = rigRows[0];
+    console.log(rigJSON);
+
     res.render('view', {
         title: 'View',
         viewMariner: viewJSON,
@@ -262,6 +269,7 @@ app.get('/view/:id', async (req, res) => {
         agents: agentsJSON,
         countries: countriesJSON,
         activities: activityJSON,
+        rigs: rigJSON,
     });
 });
 
@@ -629,6 +637,8 @@ app.post('/add', async (req, res) => {
     let coContact = req.body.coContact;
     let imoNumber = req.body.imoNumber;
 
+    console.log(physDate);
+
     // Insert SQL statement
     let sqlInsert =
         'INSERT INTO Mariners SET MarinerID = ?, LastName = ?, FirstName = ?, MiddleName = ?, StreetAddress = ?, PhoneNumber =  ?, Email = ?, EmployerID = ?, RigID = ?, MarinerReferenceNumber = ?, PassportNumber = ?, Citizenship = ? , BirthCity = ?, BirthState = ?, BirthCountry = ?, BirthDate = ?, ProcessingAgent = ?, ApplicationID = ?, Status = ?, Height = ?, Weight = ?, HairColor = ?, EyeColor = ?, Marks = ?, PhysDate = ? , CoContact = ?, IMONum = ?';
@@ -696,21 +706,28 @@ app.post('/edit', async (req, res) => {
     let processingAgent = req.body.processingAgent;
     let marinerStatus = req.body.status;
     let applicationID = req.body.applicationIDNumber;
-    let notes = req.body.notes;
+    let height = req.body.height;
+    let weight = req.body.weight;
+    let hair = req.body.hair;
+    let eyeColor = req.body.eyeColor;
+    let marks = req.body.marks;
+    let physDate = req.body.physDate;
+    let coContact = req.body.coContact;
+    let imoNumber = req.body.imoNumber;
 
     if (applicationID == '') {
         applicationID = null;
     }
-    if (notes == '') {
-        notes = null;
+    if (vessel == 0) {
+        vessel = null;
     }
 
     // Create SQL Statement
     let updateMarinerSQL =
-        'UPDATE Mariners SET FirstName = ?, LastName = ?, MiddleName = ?, StreetAddress = ?, PhoneNumber = ?, Email = ?, EmployerID = ?, VesselName = ?, MarinerReferenceNumber = ?, PassportNumber = ?, Citizenship = ?, BirthCity = ?, BirthState = ?, BirthCountry = ?, BirthDate = ?, ProcessingAgent = ?, Note = ?, applicationID = ?, Status = ? WHERE MarinerID = ?';
+        'UPDATE Mariners SET LastName = ?, FirstName = ?, MiddleName = ?, StreetAddress = ?, PhoneNumber =  ?, Email = ?, EmployerID = ?, RigID = ?, MarinerReferenceNumber = ?, PassportNumber = ?, Citizenship = ? , BirthCity = ?, BirthState = ?, BirthCountry = ?, BirthDate = ?, ProcessingAgent = ?, ApplicationID = ?, Status = ?, Height = ?, Weight = ?, HairColor = ?, EyeColor = ?, Marks = ?, PhysDate = ? , CoContact = ?, IMONum = ? WHERE MarinerID = ?';
     let update_query = mysql.format(updateMarinerSQL, [
-        firstName,
         lastName,
+        firstName,
         middleName,
         address,
         phone,
@@ -725,9 +742,16 @@ app.post('/edit', async (req, res) => {
         birthCountry,
         birthDate,
         processingAgent,
-        notes,
         applicationID,
         marinerStatus,
+        height,
+        weight,
+        hair,
+        eyeColor,
+        marks,
+        physDate,
+        coContact,
+        imoNumber,
         marinerId,
     ]);
 
@@ -1185,7 +1209,7 @@ app.get('/appDownload', async (req, res) => {
         // Write the binary buffer data to a file
         let pdf = await fs.writeFileSync(
             tempFilePath,
-            response[0]['applicationDocument']
+            response[0]['ApplicationDocument']
         );
 
         // Send the document to the browser for download
@@ -1315,7 +1339,8 @@ app.get('/attachment/download', async (req, res) => {
             response[0]['AttachmentName'] +
             '_for_mariner_' +
             marinerFullName +
-            '.pdf';
+            '.' +
+            response[0]['AttachmentFileName'].split('.')[1];
 
         // Default name of file
         const fileName =
@@ -1323,7 +1348,8 @@ app.get('/attachment/download', async (req, res) => {
             response[0]['AttachmentName'] +
             '_for_mariner_' +
             marinerFullName +
-            '.pdf';
+            '.' +
+            response[0]['AttachmentFileName'].split('.')[1];
 
         // Write the binary buffer data to a file
         let pdf = await fs.writeFileSync(
