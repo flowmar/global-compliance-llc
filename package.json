@@ -30,7 +30,7 @@
         "nodejs": "^0.0.0",
         "parsleyjs": "^2.9.2",
         "path": "^0.12.7",
-        "pdfkit": "^0.13.0",
+        "pdfmake": "^0.2.5",
         "pug": "^3.0.2"
     },
     "devDependencies": {

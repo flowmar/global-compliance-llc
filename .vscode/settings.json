@@ -11,7 +11,9 @@
     "IDSQL",
     "JAWSDB",
     "marinerid",
+    "pdfmake",
     "reja",
+    "Roboto",
     "seafoam"
   ],
   "docwriter.style": "Auto-detect",

@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-28 03:50:49
+ * @Last Modified time: 2022-07-29 20:06:00
  */
 
 'use strict';
@@ -24,7 +24,7 @@ const multer = require('multer');
 const fs = require('fs-extra');
 const helmet = require('helmet');
 const https = require('https');
-const pdfkit = require('pdfkit');
+const marinerPrinter = require('./marinerPrinter');
 
 /* Express Setup */
 // Use Express to create the application
@@ -273,6 +273,255 @@ app.get('/view/:id', async (req, res) => {
     });
 });
 
+// Handles request for creating PDF with Mariner Info
+app.post('/info/:id', async (req, res) => {
+    let marinerID = req.params.id;
+
+    let marinerSQL = 'SELECT * FROM Mariners WHERE MarinerID = ?';
+
+    let mariner_query = mysql.format(marinerSQL, [marinerID]);
+
+    let marinerRows = await db.query(mariner_query);
+
+    let marinerInfo = marinerRows[0][0];
+
+    console.log(marinerInfo);
+
+    // Employer ID to Name
+    let employerResults = await db.query(
+        `SELECT EmployerName FROM Employers WHERE EmployerID = ${marinerInfo['EmployerID']}`
+    );
+    let employerName = employerResults[0][0]['EmployerName'];
+
+    // RigID to RigName
+    let rigResults = await db.query(
+        `SELECT RigName FROM Rigs WHERE RigID = ${marinerInfo['RigID']}`
+    );
+    let rigName = rigResults[0][0]['RigName'];
+
+    // CitizenshipID to Country Name
+    let citizenshipResults = await db.query(
+        `SELECT CountryName FROM countries WHERE CountryID = ${marinerInfo['Citizenship']}`
+    );
+    let citizenshipCountry = citizenshipResults[0][0]['CountryName'];
+
+    // BirthCountryID to Country Name
+    let birthCountryResults = await db.query(
+        `SELECT CountryName FROM countries WHERE CountryID = ${marinerInfo['BirthCountry']}`
+    );
+    let birthCountry = birthCountryResults[0][0]['CountryName'];
+
+    // Processing Agent ID to Agent Name
+    let agentResults = await db.query(
+        `SELECT AgentName FROM Agents WHERE AgentID = ${marinerInfo['ProcessingAgent']}`
+    );
+    let agentName = agentResults[0][0]['AgentName'];
+
+    const marinerInfoDefinition = {
+        content: [
+            {
+                text:
+                    'Mariner Information - ' +
+                    marinerInfo['LastName'] +
+                    ', ' +
+                    marinerInfo['FirstName'] +
+                    ' ' +
+                    marinerInfo['MiddleName'] +
+                    '\n\n',
+                style: 'header',
+            },
+            {
+                text: [
+                    { text: 'Mariner ID: ', bold: true },
+                    { text: marinerInfo['MarinerID'] + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Application ID: ', bold: true },
+                    {
+                        text: marinerInfo['ApplicationID'] + '\n\n',
+                        bold: false,
+                    },
+                ],
+            },
+            {
+                text: [
+                    { text: 'First Name: ', bold: true },
+                    { text: marinerInfo['FirstName'] + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Middle Name: ', bold: true },
+                    { text: marinerInfo['MiddleName'] + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Last Name: ', bold: true },
+                    { text: marinerInfo['LastName'] + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Address: ', bold: true },
+                    {
+                        text: marinerInfo['StreetAddress'] + '\n\n',
+                        bold: false,
+                    },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Phone Number: ', bold: true },
+                    { text: marinerInfo['PhoneNumber'] + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Email: ', bold: true },
+                    { text: marinerInfo['Email'] + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Height: ', bold: true },
+                    { text: marinerInfo['Height'] + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Weight: ', bold: true },
+                    { text: marinerInfo['Weight'] + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Hair Color: ', bold: true },
+                    { text: marinerInfo['HairColor'] + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Eye Color: ', bold: true },
+                    { text: marinerInfo['EyeColor'] + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Distinguishing Marks: ', bold: true },
+                    { text: marinerInfo['Marks'] + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Physical Date: ', bold: true },
+                    {
+                        text:
+                            marinerInfo['PhysDate'].toString().slice(0, 15) +
+                            '\n\n',
+                        bold: false,
+                    },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Co. Contact: ', bold: true },
+                    { text: marinerInfo['CoContact'] + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'IMO Number: ', bold: true },
+                    { text: marinerInfo['IMONum'] + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Employer: ', bold: true },
+                    { text: employerName + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Rig: ', bold: true },
+                    { text: rigName + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Mariner Reference Number: ', bold: true },
+                    {
+                        text: marinerInfo['MarinerReferenceNumber'] + '\n\n',
+                        bold: false,
+                    },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Passport Number: ', bold: true },
+                    {
+                        text: marinerInfo['PassportNumber'] + '\n\n',
+                        bold: false,
+                    },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Citizenship: ', bold: true },
+                    { text: citizenshipCountry + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Birth Country: ', bold: true },
+                    { text: birthCountry + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Birth State: ', bold: true },
+                    { text: marinerInfo['BirthState'] + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Birth City: ', bold: true },
+                    { text: marinerInfo['BirthCity'] + '\n\n', bold: false },
+                ],
+            },
+            {
+                text: [
+                    { text: 'BirthDate: ', bold: true },
+                    {
+                        text:
+                            marinerInfo['BirthDate'].toString().slice(0, 15) +
+                            '\n\n',
+                        bold: false,
+                    },
+                ],
+            },
+            {
+                text: [
+                    { text: 'Processing Agent: ', bold: true },
+                    { text: agentName + '\n\n', bold: false },
+                ],
+            },
+        ],
+        styles: {
+            header: {
+                fontSize: 18,
+                bold: true,
+            },
+        },
+    };
+
+    marinerPrinter.createMarinerPdf(marinerInfoDefinition);
+
+    res.send(marinerRows[0][0]);
+});
+
 // Request for '/edit' URL
 app.get('/edit/:id', async (req, res) => {
     let marinerID = req.params.id;
@@ -314,6 +563,12 @@ app.get('/edit/:id', async (req, res) => {
     let attachmentRows = await db.query(attachment_query);
     let attachmentJSON = attachmentRows[0];
 
+    // Get all rigs from database
+    const rigSQL = mysql.format('SELECT * FROM Rigs');
+    let rigRows = await db.query(rigSQL);
+    let rigJSON = rigRows[0];
+    console.log(rigJSON);
+
     // Render the Edit page, sending the Mariner information
     res.render('edit', {
         title: 'Edit',
@@ -323,6 +578,7 @@ app.get('/edit/:id', async (req, res) => {
         countries: countriesJSON,
         activities: activityJSON,
         attachments: attachmentJSON,
+        rigs: rigJSON,
     });
 });
 

@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-03 07:45:53
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-26 11:57:38
+ * @Last Modified time: 2022-07-29 00:42:25
  */
 
 // const errors = require('bluebird/js/release/errors');
@@ -249,7 +249,7 @@ function filterRigs(selection) {
             rigSelect.empty();
             let blankElement = document.createElement('option');
             blankElement.textContent = '';
-            blankElement.value = '';
+            blankElement.value = 0;
             rigSelect.append(blankElement);
             // Loop through the response from the server, attaching rig options
             for (let rig of response.data) {
@@ -258,10 +258,20 @@ function filterRigs(selection) {
                 element.textContent = rig.RigName;
                 rigSelect.append(element);
             }
+            // After Rigs are filtered, select the one that the Mariner was already assigned to.
+            $('#vessel-name').val(marinerObject['RigID']);
+            console.log(marinerObject['RigID']);
         })
         .catch((err) => {
             throw err;
         });
+}
+
+function downloadMarinerPDF() {
+    let url = `/info/${marinerID}`;
+
+    // Send a request to the server
+    axios.post(url).then().catch();
 }
 
 $(document).ready(() => {
@@ -308,6 +318,7 @@ $(document).ready(() => {
     $('#save-mariner-activity-button').on('click', (e) => {
         e.preventDefault();
     });
+
     $('#employer').on('input', function (e) {
         filterRigs(e.target.value);
     });

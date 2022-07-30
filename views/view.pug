@@ -28,7 +28,7 @@ block content
                 button.btn.mx-2#appModalButton(data-mdb-target="#applicationModal" style="background-color: var(--yellow-color);" value="Application")
                   i.bi.bi-file-medical(style="font-size: 1rem;")
                   span   &nbsp;Application
-                button.btn.mx-2(style="background-color: var(--yellow-color);" value="Print")
+                button.btn.mx-2(type="button" style="background-color: var(--yellow-color);" value="Print" onclick="downloadMarinerPDF()")
                   i.bi.bi-printer(style="font-size: 1rem;")
                   span   &nbsp;Print
                 a.btn.mx-1(id="licenses-button" data-mdb-target="#licensesModal" type="button" href='/licenses' style="background-color: var(--yellow-color);" value="Licenses" target="_blank")
@@ -87,11 +87,11 @@ block content
           .row.my-4
               .col-7
                 label.form-label(for="marks") Distinguishing Marks:
-                input.form-control.bg-white(id="marks" name="marks")
+                input.form-control.bg-white(id="marks" name="marks" disabled)
               .col-2
               .col-3
                 label.form-label(for="physDate") Date of Physical:
-                input.form-control.bg-white(id="physDate" name="physDate" data-parsley-required="false" type="date")
+                input.form-control.bg-white(id="physDate" name="physDate" data-parsley-required="false" type="date" disabled)
           .row.my-3
           .row.my-4
             .col-4
@@ -116,10 +116,10 @@ block content
           .row.my-4
               .col-4
                 label.form-label(for="coContact") Co. Contact:
-                input.form-control.bg-white(id="coContact" name="coContact" type="text")
+                input.form-control.bg-white(id="coContact" name="coContact" type="text" disabled)
               .col-4
                 label.form-label(for="imoNumber") IMO Number:
-                input.form-control.bg-white(id="imoNumber" name="imoNumber" data-parsley-type="digits" type="text")
+                input.form-control.bg-white(id="imoNumber" name="imoNumber" data-parsley-type="digits" type="text" disabled)
           .row.my-4
             .col-4
               label.form-label(for="passport-number") Passport Number:

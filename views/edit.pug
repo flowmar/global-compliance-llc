@@ -30,7 +30,7 @@ block content
                   button.btn.mx-2#appModalButton(data-mdb-target="#applicationModal" style="background-color: var(--yellow-color);" value="Application")
                     i.bi.bi-file-medical(style="font-size: 1rem;")
                     span   &nbsp;Application
-                  button.btn.mx-2(style="background-color: var(--yellow-color);" value="Print")
+                  button.btn.mx-2(type="button" style="background-color: var(--yellow-color);" value="Print" onclick="downloadMarinerPDF()")
                     i.bi.bi-printer(style="font-size: 1rem;")
                     span   &nbsp;Print
                 a.btn.mx-1(id="licenses-button" data-mdb-target="#licensesModal" type="button" href='/licenses' style="background-color: var(--yellow-color);" value="Licenses" target="_blank")
@@ -113,8 +113,8 @@ block content
                   option(value)
               .col-4
                 label.form-label(for="vessel-name") Rig:
-                select.form-select.bg-white(id="vessel-name" name="vessel" type="text")
-                  option(value='0')
+                select.form-select.bg-white(id="vessel-name" name="vessel")
+                  //- option(value='0')
               .col-4
                 label.form-label(for="mariner-reference-number") Mariner Reference Number:
                 input.form-control.bg-white(id="mariner-reference-number" name="marinerRefNum" data-parsley-type="digits" type="text")
@@ -254,6 +254,7 @@ block content
     let employersArray = !{JSON.stringify(employers)};
     let activitiesArray = !{JSON.stringify(activities)};
     let attachmentsArray = !{JSON.stringify(attachments)};
+    let rigsArray = !{JSON.stringify(rigs)};
 
     // Get the current User and place into the UI
     let storedUser = window.localStorage.getItem("currentUser");
@@ -334,7 +335,7 @@ block content
     $('#phone-number').val(marinerObject['PhoneNumber']);
     $('#email').val(marinerObject['Email']);
     $('#employer').val(marinerObject['EmployerID']);
-    $('#vessel-name').val(marinerObject['VesselName']);
+
     $('#mariner-reference-number').val(marinerObject['MarinerReferenceNumber']);
     $('#passport-number').val(marinerObject['PassportNumber']);
     $('#citizenship').val(marinerObject['Citizenship']);
@@ -350,7 +351,7 @@ block content
     let physDate = physDateString.slice(0, 10);
     $('#physDate').val(physDate);
     $('#coContact').val(marinerObject['CoContact']);
-    $('#imoNumber').val(marinerObject['IMONumber']);
+    $('#imoNumber').val(marinerObject['IMONum']);
 
     // Convert the birth date to a format that fits in the UI
     let dateString = marinerObject['BirthDate'].toString();
