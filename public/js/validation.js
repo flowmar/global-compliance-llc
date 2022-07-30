@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-03 07:45:53
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-29 00:42:25
+ * @Last Modified time: 2022-07-30 05:32:54
  */
 
 // const errors = require('bluebird/js/release/errors');
@@ -267,11 +267,20 @@ function filterRigs(selection) {
         });
 }
 
+/**
+ * It sends a request to the server to download a PDF file
+ */
 function downloadMarinerPDF() {
-    let url = `/info/${marinerID}`;
+    // let url = '/info/' + marinerID;
 
     // Send a request to the server
-    axios.post(url).then().catch();
+    // axios
+    //     .get(url)
+    //     .then((response) => {
+    //         console.log(response);
+    //     })
+    //     .catch((err) => console.log(err));
+    window.open('/info?marinerID=' + `${marinerID}`);
 }
 
 $(document).ready(() => {

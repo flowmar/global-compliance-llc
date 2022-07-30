@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-29 20:06:00
+ * @Last Modified time: 2022-07-30 05:29:09
  */
 
 'use strict';
@@ -24,7 +24,7 @@ const multer = require('multer');
 const fs = require('fs-extra');
 const helmet = require('helmet');
 const https = require('https');
-const marinerPrinter = require('./marinerPrinter');
+const PdfPrinter = require('pdfmake');
 
 /* Express Setup */
 // Use Express to create the application
@@ -274,8 +274,8 @@ app.get('/view/:id', async (req, res) => {
 });
 
 // Handles request for creating PDF with Mariner Info
-app.post('/info/:id', async (req, res) => {
-    let marinerID = req.params.id;
+app.get('/info', async (req, res) => {
+    let marinerID = req.query.marinerID;
 
     let marinerSQL = 'SELECT * FROM Mariners WHERE MarinerID = ?';
 
@@ -317,6 +317,7 @@ app.post('/info/:id', async (req, res) => {
     );
     let agentName = agentResults[0][0]['AgentName'];
 
+    // Document Definition
     const marinerInfoDefinition = {
         content: [
             {
@@ -505,7 +506,7 @@ app.post('/info/:id', async (req, res) => {
             {
                 text: [
                     { text: 'Processing Agent: ', bold: true },
-                    { text: agentName + '\n\n', bold: false },
+                    { text: agentName, bold: false },
                 ],
             },
         ],
@@ -517,9 +518,47 @@ app.post('/info/:id', async (req, res) => {
         },
     };
 
-    marinerPrinter.createMarinerPdf(marinerInfoDefinition);
+    // Fonts
+    const fonts = {
+        Roboto: {
+            normal: 'public/fonts/roboto/Roboto-Regular.ttf',
+            bold: 'public/fonts/roboto/Roboto-Bold.ttf',
+            italics: 'public/fonts/roboto/Roboto-Italic.ttf',
+            bolditalics: 'public/fonts/roboto/Roboto-BoldItalic.ttf',
+        },
+    };
 
-    res.send(marinerRows[0][0]);
+    // Create new printer
+    let printer = new PdfPrinter(fonts);
+
+    // Crate document using the document definition
+    let pdfDoc = await printer.createPdfKitDocument(marinerInfoDefinition);
+
+    // Create the filename of the temporary file
+    let filename = path.join(
+        './public/downloads/' +
+            marinerInfo['FirstName'] +
+            '-' +
+            +Date.now() +
+            '.pdf'
+    );
+    // console.log(filename);
+
+    // Write the PDF document to the filename
+    pdfDoc.pipe(fs.createWriteStream(filename));
+    // pdfDoc.pipe(res);
+    // console.log(res);
+
+    pdfDoc.on('end', () => {
+        const stream = fs.createReadStream(filename);
+        console.log('PDF GENERATED');
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', 'inline; filename="mariner.pdf"');
+        stream.pipe(res).on('finish', () => {
+            fs.unlinkSync(filename);
+        });
+    });
+    pdfDoc.end();
 });
 
 // Request for '/edit' URL
@@ -1470,7 +1509,7 @@ app.get('/appDownload', async (req, res) => {
 
         // Send the document to the browser for download
         res.download(tempFilePath, fileName, (err) => {
-            // Throw an error is there is an error
+            // Throw an error if there is an error
             if (err) throw err;
             // If the download completes, display a success message
             console.log('Download Complete!');
