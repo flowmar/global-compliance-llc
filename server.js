@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-06 07:44:20
+ * @Last Modified time: 2022-09-06 11:01:31
  */
 
 'use strict';
@@ -894,6 +894,20 @@ app.get('/licenseTypes/:id', async (req, res) => {
     res.send(result[0]);
 });
 
+// Handles license type name and country for summary table
+app.get('/licenseTypes/names/:id', async (req, res) => {
+    let licenseTypeID = req.params.id;
+
+    // SQL for LicenseType info
+    const licenseTypeSQL =
+        'SELECT Type, CountryName FROM LicenseTypes WHERE LicenseTypeID = ? ';
+    const license_query = mysql.format(licenseTypeSQL, [licenseTypeID]);
+
+    const result = await db.query(license_query);
+    console.log(result[0]);
+    res.send(result[0]);
+});
+
 // Route for /form
 app.get('/form', async (_req, res) => {
     // Variables for holding ID numbers
@@ -1301,7 +1315,7 @@ app.delete('/deleteLicense', async (req, res) => {
 // Gets all gc license activities for a given licenseID
 app.get('/licenses/gcactivities/:id', async (req, res) => {
     // Get URL parameter
-    let licenseID = req.params.licenseID;
+    let licenseID = req.params.id;
 
     // SQL for getting all activities for a license
     let licensesSQL = 'SELECT * FROM LicenseActivities WHERE LicenseID = ?';
@@ -1317,7 +1331,7 @@ app.get('/licenses/gcactivities/:id', async (req, res) => {
 // Add a new gc license activity for a given LicenseID
 app.post('/licenses/gcactivities/:id', async (req, res) => {
     // Get URL parameter
-    let licenseID = req.params.licenseID;
+    let licenseID = req.params.id;
 
     let marinerID = req.body.marinerID;
     let activityNote = req.body.activityNote;
@@ -1342,7 +1356,7 @@ app.post('/licenses/gcactivities/:id', async (req, res) => {
 // Gets all govt license activities for a given licenseID
 app.get('/licenses/govtactivities/:id', async (req, res) => {
     // Get URL parameter
-    let licenseID = req.params.licenseID;
+    let licenseID = req.params.id;
 
     // SQL for getting all activities for a license
     let licensesSQL = 'SELECT * FROM LicenseActivities WHERE LicenseID = ?';
@@ -1358,7 +1372,7 @@ app.get('/licenses/govtactivities/:id', async (req, res) => {
 // Inserts a new govt license activity into the database
 app.post('/licenses/govtactivities/:id', async (req, res) => {
     // Get URL parameter
-    let licenseID = req.params.licenseID;
+    let licenseID = req.params.id;
 
     let marinerID = req.body.marinerID;
     let activityNote = req.body.activityNote;

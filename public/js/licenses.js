@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-06 07:42:57
+ * @Last Modified time: 2022-09-06 16:54:56
  */
 
 let licenseID,
@@ -110,23 +110,7 @@ function saveLicenseInformation() {
     }
     // If there IS a license ID, then it is modifying a license, so make a PUT request
     else {
-        axios
-            .put('/licenses/' + marinerID, {
-                licenseID: licenseID,
-                licenseName: licenseName,
-                licenseType: licenseType,
-                licenseCountry: licenseCountry,
-                issueDate: issueDate,
-                expirationDate: expirationDate,
-                gcPending: gcPending,
-                govtPending: govtPending,
-                crNumber: crNumber,
-            })
-            .then((response) => {
-                console.log(response);
-                alert('License Updated!');
-            })
-            .catch((error) => console.log(error));
+        editLicenseInformation();
     }
 }
 /**
@@ -146,10 +130,38 @@ function editLicenseInformation() {
             expirationDate: expirationDate,
             gcPending: gcPending,
             govtPending: govtPending,
+            crNumber: crNumber,
         })
         .then((response) => {
             console.log(response);
             alert('License Updated!');
+            location.reload();
+        })
+        .catch((error) => console.log(error));
+}
+
+function saveNewLicense() {
+    // Check to see if the boxes are checked
+    gcPending = $('#newLicenseGCPending').is(':checked');
+    gcPending ? 1 : 0;
+    govtPending = $('#newLicenseGovtPending').is(':checked');
+    govtPending ? 1 : 0;
+
+    axios
+        .post('/licenses/' + marinerID, {
+            licenseID: '',
+            licenseName: $('#newLicenseName').val(),
+            licenseType: $('#newLicenseType').val(),
+            licenseCountry: $('#newLicenseCountry').val(),
+            issueDate: $('#newLicenseIssueDate').val(),
+            expirationDate: $('#newLicenseExpirationDate').val(),
+            gcPending: gcPending,
+            govtPending: govtPending,
+            crNumber: $('#newLicenseCRNumber').val(),
+        })
+        .then((response) => {
+            console.log(response);
+            alert('License Added!');
             location.reload();
         })
         .catch((error) => console.log(error));
@@ -232,10 +244,54 @@ function deleteLicense() {
 }
 
 function saveGCActivity() {
-    $;
+    // Collect information from the GCActivity box and submit it to the server
+    let formNumber = $('.active form').data('form-number');
+    let activityBox = $('#gcActivityBox' + formNumber);
+    let gcActivity = activityBox.val();
+    let licenseID = $('#licenseID' + formNumber).val();
+    console.log('AGG');
+    console.log(gcActivity);
+    console.log(licenseID);
+
+    axios
+        .post('/licenses/gcactivities/' + licenseID, {
+            activityNote: gcActivity,
+            marinerID: marinerID,
+        })
+        .then((response) => {
+            console.log(response);
+            alert('Global Compliance Activity Uploaded!');
+            location.reload();
+        })
+        .catch((error) => {
+            console.log(error.message);
+        });
 }
 
-function saveGovtActivity() {}
+function saveGovtActivity() {
+    // Collect information from the GCActivity box and submit it to the server
+    let formNumber = $('.active form').data('form-number');
+    let activityBox = $('#govtActivityBox' + formNumber);
+    let govtActivity = activityBox.val();
+    let licenseID = $('#licenseID' + formNumber).val();
+    console.log('AGG');
+    console.log(govtActivity);
+    console.log(licenseID);
+
+    axios
+        .post('/licenses/govtactivities/' + licenseID, {
+            activityNote: govtActivity,
+            marinerID: marinerID,
+        })
+        .then((response) => {
+            console.log(response);
+            alert('Government Activity Uploaded!');
+            location.reload();
+        })
+        .catch((error) => {
+            console.log(error.message);
+        });
+}
 
 function filterTypes(value, text, typeDropdown) {
     console.log(value, text);
@@ -258,9 +314,94 @@ function filterTypes(value, text, typeDropdown) {
     });
 }
 
-$(document).ready(() => {
+$(document).ready(function () {
     // Open the new license modal when the add new license button is clicked
     $('#addLicense').on('click', function (e) {
         licenseModal.show();
+    });
+
+    // Prevent the form from being submitted, instead run the saveNewLicense function
+    $('#newLicenseForm')
+        .parsley()
+        .on('form:submit', function (e) {
+            return false;
+        })
+        .on('form:success', function (e) {
+            saveNewLicense();
+        });
+
+    // When a .nav-link is clicked, and becomes active, get the active form number
+    $('.nav-link').on('click', function (e) {
+        let formNumber = document
+            .querySelector('.active form')
+            .getAttribute('data-form-number');
+
+        let gcActivityTextField = document.getElementById(
+            'gcActivityBox' + formNumber
+        );
+
+        let gcTotalCharacters = gcActivityTextField.value.length;
+
+        let gcCharacterCountMessage = document.getElementById(
+            'gcCharacterCountMessage' + formNumber
+        );
+        // console.log(gcCharacterCountMessage);
+
+        gcActivityTextField.addEventListener('keyup', function () {
+            gcTotalCharacters = gcActivityTextField.value.length;
+            if (gcTotalCharacters < 225) {
+                gcCharacterCountMessage.style = 'color: white;';
+            } else if (gcTotalCharacters > 225) {
+                gcCharacterCountMessage.style = 'color: var(--red-color);';
+            } else if (gcTotalCharacters === 255) {
+                gcCharacterCountMessage.style = 'color: red;';
+            }
+            let gcCharactersRemaining = 255 - gcTotalCharacters;
+            gcCharacterCountMessage.textContent =
+                'Characters remaining: ' + gcCharactersRemaining;
+        });
+
+        // // Listen for key presses on the government activity text field
+        // gcActivityTextField.addEventListener('keyup', function () {
+        //     gcTotalCharacters = gcActivityTextField.value.length;
+        //     if (gcTotalCharacters < 225) {
+        //         gcCharacterCountMessage.style = 'color: white;';
+        //     }
+        //     if (gcTotalCharacters > 225) {
+        //         gcCharacterCountMessage.style = 'color: var(--red-color);';
+        //     }
+        //     if (gcTotalCharacters === 255) {
+        //         gcCharacterCountMessage.style = 'color: red;';
+        //     }
+        //     gcCharactersRemaining = 255 - gcTotalCharacters;
+        //     gcCharacterCountMessage.textContent =
+        //         'Characters remaining: ' + gcCharactersRemaining;
+        // });
+
+        let govtActivityTextField = document.getElementById(
+            'govtActivityBox' + formNumber
+        );
+
+        let govtTotalCharacters = govtActivityTextField.value.length;
+        let govtCharacterCountMessage = document.getElementById(
+            'govtCharacterCountMessage' + formNumber
+        );
+
+        // Listen for key presses on the notes text field
+        govtActivityTextField.addEventListener('keyup', function () {
+            govtTotalCharacters = govtActivityTextField.value.length;
+            if (govtTotalCharacters < 225) {
+                govtCharacterCountMessage.style = 'color: white;';
+            }
+            if (govtTotalCharacters > 225) {
+                govtCharacterCountMessage.style = 'color: var(--red-color);';
+            }
+            if (govtTotalCharacters === 255) {
+                govtCharacterCountMessage.style = 'color: red;';
+            }
+            let govtCharactersRemaining = 255 - govtTotalCharacters;
+            govtCharacterCountMessage.textContent =
+                'Characters remaining: ' + govtCharactersRemaining;
+        });
     });
 });

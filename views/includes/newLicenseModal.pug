@@ -5,7 +5,7 @@
         h5.modal-title#licensesModalLabel New Mariner License
         button.btn-close(data-mdb-dismiss="modal" type="button" aria-label="Close")
       .modal-body(style="background-color: var(--header-bg-color);")
-        form.form-horizontal.d-inline(id="target" method="POST" action=`/licenses/${marinerID}` enctype="multipart/form-data").container
+        form.form-horizontal.d-inline#newLicenseForm(name="newLicenseForm" data-parsley-validate method="POST" enctype="multipart/form-data").container
           .row.ms-1
             .col-4
               label.form-label.text-light(for="marinerIDNumber") Mariner ID:
@@ -14,34 +14,34 @@
           .row.my-4.ms-1
             .col-4
               label.form-label.text-light(for="newLicenseName") License Name:
-              input.form-control.text-dark#newLicenseName(name="newLicenseName" type="text")
+              input.form-control.text-dark#newLicenseName(name="licenseName" data-parsley-required="true" type="text")
           .row.my-4.ms-1
             .col-4
               label.form-label.text-light(for="newLicenseCountry") Country:
-              select.form-select#newLicenseCountry(name="newLicenseCountry")
+              select.form-select#newLicenseCountry(name="country" data-parsley-min="1" data-parsley-required="true")
             .col-4
               label.form-label.text-light(for="newLicenseType") License Type:
-              select.form-select#newLicenseType(name="newLicenseType")
+              select.form-select#newLicenseType(name="licenseType" data-parsley-min="1" data-parsley-required="true")
           .row.my-4.ms-1
             .col-4
               label.form-label.text-light(for="newLicenseCRNumber") CR Number:
-              input.form-control.text-dark#newLicenseCRNumber(name="newLicenseCRNumber" type="number")
+              input.form-control.text-dark#newLicenseCRNumber(name="crNumber" data-parsley-required="true" type="number")
           .row.my-4.ms-1
             .col-4
               label.form-label.text-light(for="newLicenseIssueDate") Issue Date:
-              input.form-control.text-dark#newLicenseIssueDate(name="newLicenseIssueDate" type="date")
+              input.form-control.text-dark#newLicenseIssueDate(name="issueDate" data-parsley-required="true" type="date")
             .col-4
               label.form-label.text-light(for="newLicenseExpirationDate") Expiration Date:
-              input.form-control.text-dark#newLicenseExpirationDate(name="newLicenseExpirationDate" type="date")
+              input.form-control.text-dark#newLicenseExpirationDate(name="expirationDate" data-parsley-required="true" type="date" required)
           .row.my-4.ms-1
             .col
               .form-check
-                input.form-check-input#newLicenseGCPending(name="newLicenseGCPending" type="checkbox")
+                input.form-check-input#newLicenseGCPending(name="gcPending" type="checkbox")
                 label.form-label.text-light Pending Global Compliance
             .col
               .form-check
-                input.form-check-input#newLicenseGovtPending(name="newLicenseGovtPending" type="checkbox")
+                input.form-check-input#newLicenseGovtPending(name="govtPending" type="checkbox")
                 label.form-label.text-light Pending Government
-      .modal-footer(style="background-color: var(--main-bg-color);")
+      .modal-footer(style="background-color: var(--main-bg-color); width: 100%;")
         button.btn.btn-secondary(data-mdb-dismiss="modal" type="button" style="background-color: var(--red-color);") Cancel
-        button.btn.btn-primary(style="background-color: var(--green-color);" onclick="saveNewLicense()") Save
+        button.btn.btn-primary#saveNewLicenseButton(type="submit" style="background-color: var(--green-color);" form="newLicenseForm") Save

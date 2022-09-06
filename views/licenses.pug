@@ -115,9 +115,12 @@ block content
                       .col-6
                         label.form-label Global Compliance Activity:
                         textarea#gcActivityBox.form-control.bg-white.text-dark(data-parsley-maxlength="255" type="text" form="activityForm" maxlength="255")
+                    .row.mt-0.pr-2
+                      .col.d-flex.justify-content-start
+                        span#gcCharacterCountMessage.text-light
                     .row
                       .col-6.d-flex.justify-content-end
-                        button.btn.btn-success(type="button" onclick="saveGCActivity") Save
+                        button.btn.btn-success#saveGCActivity(type="button" onclick="saveGCActivity()") Save
                       hr.mt-5
                     .row
                       h2 Govt Activity
@@ -133,9 +136,12 @@ block content
                       .col-6
                         label.form-label Government Activity:
                         textarea#govtActivityBox.form-control.bg-white.text-dark(data-parsley-maxlength="255" type="text" form="activityForm" maxlength="255")
+                    .row.mt-0.pr-2
+                      .col.d-flex.justify-content-start
+                        span#govtCharacterCountMessage.text-light
                     .row
                       .col-6.d-flex.justify-content-end
-                        button.btn.btn-success(type="button" onclick="saveGovtActivity()") Save
+                        button.btn.btn-success#saveGovtActivity(type="button" onclick="saveGovtActivity()") Save
                       hr.mt-5
                     .row
                       h2 License Attachments
@@ -152,50 +158,6 @@ block content
                       .col-6
                       .col-6.d-flex.justify-content-end
                         button.btn.btn-danger(id="deleteLicenseButton" type="button" value="deleteLicense" onclick="deleteLicense()") Delete
-                    //- .tab-pane.fade.p-3#ex1-tabs-2(role='tabpanel' aria-labelledby='ex1-tab-2') Tab 2 Content
-                  //- .tab-pane.fade.p-3#ex1-tabs-3(role='tabpanel' aria-labelledby='ex1-tab-3') Tab 3 Content
-            //- .row
-            //-   .col
-            //-     <ul class="nav nav-tabs mb-3" id="ex1" role="tablist">
-            //-       <li class="nav-item" role="presentation">
-            //-         <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab" href="#ex1-tabs-1" role="tab" aria-controls="ex1-tabs-1" aria-selected="true">Tab 1</a>
-            //-       </li>
-            //-       <li class="nav-item" role="presentation">
-            //-         <a class="nav-link" id="ex1-tab-2" data-mdb-toggle="tab" href="#ex1-tabs-2" role="tab" aria-controls="ex1-tabs-2" aria-selected="false" >Tab 2</a>
-            //-       </li>
-            //-       <li class="nav-item" role="presentation">
-            //-         <a class="nav-link" id="ex1-tab-3" data-mdb-toggle="tab" href="#ex1-tabs-3" role="tab" aria-controls="ex1-tabs-3" aria-selected="false">Tab 3</a>
-            //-       </li>
-            //-     </ul>
-
-            //-     <div class="tab-content" id="ex1-content">
-            //-       <div class="tab-pane fade show active" id="ex1-tabs-1" role="tabpanel" aria-labelledby="ex1-tab-1"> Tab 1 content </div>
-            //-       <div class="tab-pane fade" id="ex1-tabs-2" role="tabpanel" aria-labelledby="ex1-tab-2"> Tab 2 content </div>
-            //-       <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel" aria-labelledby="ex1-tab-3">Tab 3 content</div>
-            //-     </div>
-                //- <div class="datatable" data-mdb-dark="true" data-mdb-color="blue-grey-dark" data-mdb-border-color="light" data-mdb-full-pagination="true" data-mdb-hover="true" data-mdb-striped="true" data-mdb-selectable="true">
-                //-   table.table
-                //-     thead
-                //-       tr
-                //-         th(scope="col") Date
-                //-         th(scope="col") License Name
-                //-         th(scope="col") Country
-                //-         th(scope="col") Issue Date
-                //-         th(scope="col") Expiration Date
-                //-         th(scope="col") Pending GC
-                //-         th(scope="col") Pending Government
-                //-         th(scope="col") Upload Credential
-                //-     tbody
-                //-       tr
-                //-         td Date
-                //-         td License Name
-                //-         td Country
-                //-         td Issue Date
-                //-         td Expiration Date
-                //-         td Pending GC
-                //-         td Pending Government
-                //-         td Upload Credential
-                //-   </div>
 
             include includes/summaryTableHead
             include includes/newLicenseModal
@@ -207,10 +169,8 @@ block content
     let countriesArray = !{JSON.stringify(countries)};
     let licenseTypesArray = !{JSON.stringify(licenseTypes)};
     let marinerName = !{JSON.stringify(marinerName)};
-    //- console.log(licensesArray);
-    //- console.log(countriesArray);
-    //- console.log(licenseTypesArray);
-    //- console.log(marinerID);
+
+    // Create fullName
     let fullName = marinerName.FirstName + " " + marinerName.MiddleName + " " + marinerName.LastName;
 
     $(document).ready( function() {
@@ -238,6 +198,7 @@ block content
 
       // Place the license types into the licenseForm
       for(let i = 0; i < licenseTypesArray.length; i++) {
+
       // Citizenship input
       let element = document.createElement('option');
       element.value = i + 1;
@@ -261,10 +222,12 @@ block content
       //- $('#editButton').hide();
       //- $('#deleteButton').hide();
 
+      // Show the number of licenses row
       let generateLicensesButton = document.getElementById('generate-licenses-button');
       let licensesModule = $('#licensesModule');
       let licenseForm = document.getElementById('licenseForm');
       numberOfLicensesRow.show();
+
       // When the generate button is clicked...
       generateLicensesButton.addEventListener('click', function(e) {
 
@@ -371,6 +334,7 @@ block content
 
         // Append the navLink to the navItem
         navItem.appendChild(navLink);
+
         // Append the navItem to the tab list
         licensesTabList.append(navItem);
 
@@ -389,9 +353,8 @@ block content
         let formIdName = licenseNamesArray[k].toLowerCase() + ' form';
         let formIdFormatted = formIdName.replace(/\s/g, '-');
 
-        // Set the id of the form clone
+        // Set the id of the form clone to start with 1
         formClone.setAttribute('id', formIdFormatted);
-
         formClone.dataset.formNumber = k + 1;
 
         // Append the clone to the tab pane
@@ -404,6 +367,7 @@ block content
         let suffix = k + 1;
         let selector = '#' + formIdFormatted;
 
+        // Go through each field on the license form and add the form number to the end of the UI element
         let formMarinerID = $("#marinerIDhidden").attr('id');
         $(selector + ' #marinerIDhidden').attr('id', formMarinerID + suffix);
 
@@ -421,12 +385,14 @@ block content
         $(selector + ' #countriesField').attr('id', formCountry + suffix);
         // Select the country dropdown on the current form
         let countryDropdown = $(selector + ' #countriesField' + suffix);
-        console.log(countryDropdown);
+        //- console.log(countryDropdown);
+
         // Set an event listener for change in the input
         countryDropdown.on('input', function(e) {
-          console.log("VALUE:");
-          console.log(e.target.value);
-          console.log(e.target.selectedOptions[0].text);
+          //- console.log("VALUE:");
+          //- console.log(e.target.value);
+          //- console.log(e.target.selectedOptions[0].text);
+
           // If the value is blank, empty the license type dropdown
           if (e.target.value == 0) {
             licenseTypeDropdown.empty();
@@ -462,11 +428,23 @@ block content
         let formGCActivityTable = $('#gcActivityTable').attr('id');
         $(selector +' #gcActivityTable').attr('id', formGCActivityTable + suffix);
 
+        let formGCCharacterCount = $('#gcCharacterCountMessage').attr('id');
+        $(selector + ' #gcCharacterCountMessage').attr('id', formGCCharacterCount + suffix);
+
+        let formGCSaveActivity = $('#saveGCActivity').attr('id');
+        $(selector + ' #saveGCActivity').attr('id', formGCSaveActivity + suffix);
+
         let formGovtActivityBox = $('#govtActivityBox').attr('id');
         $(selector + ' #govtActivityBox').attr('id', formGovtActivityBox + suffix);
 
         let formGovtActivityTable = $('#govtActivityTable').attr('id');
         $(selector + ' #govtActivityTable').attr('id', formGovtActivityTable + suffix);
+
+        let formGovtCharacterCount = $('#govtCharacterCountMessage').attr('id');
+        $(selector + ' #govtCharacterCountMessage').attr('id', formGovtCharacterCount + suffix);
+
+        let formGovtSaveActivity = $('#saveGovtActivity').attr('id');
+        $(selector + ' #saveGovtActivity').attr('id', formGovtSaveActivity + suffix);
 
         }
         // Hide the license names row
@@ -597,6 +575,7 @@ block content
         let suffix = k + 1;
         let selector = '#' + formIdFormatted;
 
+        // Go through each UI element and add the form number to the end of the id
         let formMarinerID = $("#marinerIDhidden").attr('id');
         $(selector + ' #marinerIDhidden').attr('id', formMarinerID + suffix);
 
@@ -615,12 +594,14 @@ block content
         $(selector + ' #countriesField').attr('id', formCountry + suffix);
         // Select the country dropdown on the current form
         let countryDropdown = $(selector + ' #countriesField' + suffix);
-        console.log(countryDropdown);
+        //- console.log(countryDropdown);
+
         // Set an event listener for change in the input
         countryDropdown.on('input', function(e) {
-          console.log("VALUE:");
-          console.log(e.target.value);
-          console.log(e.target.selectedOptions[0].text);
+          //- console.log("VALUE:");
+          //- console.log(e.target.value);
+          //- console.log(e.target.selectedOptions[0].text);
+
           // If the value is blank, empty the license type dropdown
           if (e.target.value == 0) {
             licenseTypeDropdown.empty();
@@ -656,13 +637,26 @@ block content
         let formGCActivityTable = $('#gcActivityTable').attr('id');
         $(selector +' #gcActivityTable').attr('id', formGCActivityTable + suffix);
 
+         let formGCCharacterCount = $('#gcCharacterCountMessage').attr('id');
+        $(selector + ' #gcCharacterCountMessage').attr('id', formGCCharacterCount + suffix);
+
+        let formGCSaveActivity = $('#saveGCActivity').attr('id');
+        $(selector + ' #saveGCActivity').attr('id', formGCSaveActivity + suffix);
+
         let formGovtActivityBox = $('#govtActivityBox').attr('id');
         $(selector + ' #govtActivityBox').attr('id', formGovtActivityBox + suffix);
+
+        let formGovtCharacterCount = $('#govtCharacterCountMessage').attr('id');
+        $(selector + ' #govtCharacterCountMessage').attr('id', formGovtCharacterCount + suffix);
 
         let formGovtActivityTable = $('#govtActivityTable').attr('id');
         $(selector + ' #govtActivityTable').attr('id', formGovtActivityTable + suffix);
 
+        let formGovtSaveActivity = $('#saveGovtActivity').attr('id');
+        $(selector + ' #saveGovtActivity').attr('id', formGovtSaveActivity + suffix);
+
         }
+
         // Hide the license names row
         //- licenseNamesRow.hide();
 
@@ -720,7 +714,7 @@ block content
         // Loop through the licensesArray and put the data into the UI
         for(let n = 0; n < licensesArray.length; n++){
           let license = licensesArray[n];
-          console.log(license);
+          //- console.log(license);
           let licenseName = license.LicenseName;
           let licenseID = license.LicenseID;
           let licenseType = license.LicenseTypeID;
@@ -785,8 +779,9 @@ block content
           let summaryTableRow = document.createElement('tr');
           summaryTableRow.style = 'text-align: center; vertical-align: middle;';
           summaryTableRow.id = 'summaryTableRow' + (n + 1);
-          console.log(summaryTableRow)
+          //- console.log(summaryTableRow)
 
+          // Fill in each cell in the row
           let idCell = document.createElement('td');
           idCell.style = 'text-align: center;'
           idCell.textContent = licenseID;
@@ -799,13 +794,24 @@ block content
           nameCell.style = 'text-align: center;';
           nameCell.textContent = licenseName;
 
+          // License Type Cell and Country Cell
           let typeCell = document.createElement('td');
           typeCell.style = 'text-align: center;';
-          typeCell.textContent = licenseType;
-
           let countryCell = document.createElement('td');
           countryCell.style = 'text-align: center;';
-          countryCell.textContent = licenseCountry;
+
+
+          let typeName;
+          let countryName;
+
+          //Use the license type ID
+          axios.get('/licenseTypes/names/' + licenseType).then((response) => {
+            typeName = response.data[0].Type;
+            countryName = response.data[0].CountryName;
+            typeCell.textContent = typeName;
+            countryCell.textContent = countryName;
+            //- console.log(typeName)
+          }).catch((error) => console.log(error.message));
 
           let issueCell = document.createElement('td');
           issueCell.style = 'text-align: center;';
@@ -815,17 +821,35 @@ block content
           expCell.style = 'text-align: center;';
           expCell.textContent = formattedExpDate;
 
+          // GC Pending Cell
           let gcCell = document.createElement('td');
           gcCell.style = 'text-align: center;';
+
+          if (pendingGC == 0) {
+            pendingGC = "No";
+          }
+          else {
+            pendingGC = "Yes";
+          }
+
           gcCell.textContent = pendingGC;
 
+          // Government Pending Cell
           let govtCell = document.createElement('td');
           govtCell.style = 'text-align: center';
+
+          if (pendingGovt == 0) {
+            pendingGovt = "No";
+          }
+          else {
+            pendingGovt = "Yes";
+          }
+
           govtCell.textContent = pendingGovt;
 
           // Select the table body
           let summaryBody = $('#summaryBody');
-          console.log(summaryBody);
+          //- console.log(summaryBody);
           // Append the table row to it
           summaryBody.append(summaryTableRow);
           // Append the cells to the row
@@ -870,6 +894,7 @@ block content
       newBlankTypeElement.value = 0;
       document.getElementById('newLicenseType').appendChild(newBlankTypeElement);
 
+      // When the country is changed, filter the license types dropdown
       let newLicenseTypeDropdown = $('#newLicenseType');
       $('#newLicenseCountry').on('input', function(e) {
         if(e.target.value == 0) {
@@ -878,13 +903,4 @@ block content
         else {
           filterTypes(e.target.value, e.target.selectedOptions[0].text, newLicenseTypeDropdown);
         }
-      })
-
-      //- // Place the license types into the licenseForm
-      //- for(let i = 0; i < licenseTypesArray.length; i++) {
-      //- // Citizenship input
-      //- let element = document.createElement('option');
-      //- element.value = i + 1;
-      //- element.text = licenseTypesArray[i]['Type'];
-      //- document.getElementById('newLicenseType').appendChild(element);
-      //- }
+      });
