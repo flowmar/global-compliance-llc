@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-03 07:45:53
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-30 05:32:54
+ * @Last Modified time: 2022-09-06 07:22:09
  */
 
 // const errors = require('bluebird/js/release/errors');
@@ -317,6 +317,7 @@ $(document).ready(() => {
     });
 
     // editActivityModal.addEventListener('show.mdb.modal', () => {}
+    // Show the edit mariner activity modal when the edit button is clicked
     $('#edit-mariner-activity-button').on('click', () => {
         editModal.show();
     });
@@ -324,15 +325,24 @@ $(document).ready(() => {
     // $(document).on('submit', '#activityForm', () => {
     //     return false;
     // });
+    // Prevent the default action of the save activity button
     $('#save-mariner-activity-button').on('click', (e) => {
         e.preventDefault();
     });
 
+    // When the input to the employer field changes, update the rigs dropdown
     $('#employer').on('input', function (e) {
-        filterRigs(e.target.value);
+        if (e.target.value == '') {
+            $('#vessel-name').empty();
+        } else {
+            filterRigs(e.target.value);
+        }
     });
 
     if ($('#employer').val() != '') {
         filterRigs($('#employer').val());
     }
+    // if ($('#employer').val() == '') {
+    //     $('#vessel-name').empty();
+    // }
 });

@@ -1,0 +1,47 @@
+.modal.fade#newLicenseModal(aria-hidden="true" aria-labelledby="licensesModalLabel" tabindex="-1")
+  .modal-dialog.text-light.modal-lg
+    .modal-content
+      .modal-header(style="background-color: var(--main-bg-color)")
+        h5.modal-title#licensesModalLabel New Mariner License
+        button.btn-close(data-mdb-dismiss="modal" type="button" aria-label="Close")
+      .modal-body(style="background-color: var(--header-bg-color);")
+        form.form-horizontal.d-inline(id="target" method="POST" action=`/licenses/${marinerID}` enctype="multipart/form-data").container
+          .row.ms-1
+            .col-4
+              label.form-label.text-light(for="marinerIDNumber") Mariner ID:
+              input.form-control(id="marinerIDNumber" name="marinerIDNumber" type="text" value=`${marinerID}` readonly)
+            .col-8
+          .row.my-4.ms-1
+            .col-4
+              label.form-label.text-light(for="newLicenseName") License Name:
+              input.form-control.text-dark#newLicenseName(name="newLicenseName" type="text")
+          .row.my-4.ms-1
+            .col-4
+              label.form-label.text-light(for="newLicenseCountry") Country:
+              select.form-select#newLicenseCountry(name="newLicenseCountry")
+            .col-4
+              label.form-label.text-light(for="newLicenseType") License Type:
+              select.form-select#newLicenseType(name="newLicenseType")
+          .row.my-4.ms-1
+            .col-4
+              label.form-label.text-light(for="newLicenseCRNumber") CR Number:
+              input.form-control.text-dark#newLicenseCRNumber(name="newLicenseCRNumber" type="number")
+          .row.my-4.ms-1
+            .col-4
+              label.form-label.text-light(for="newLicenseIssueDate") Issue Date:
+              input.form-control.text-dark#newLicenseIssueDate(name="newLicenseIssueDate" type="date")
+            .col-4
+              label.form-label.text-light(for="newLicenseExpirationDate") Expiration Date:
+              input.form-control.text-dark#newLicenseExpirationDate(name="newLicenseExpirationDate" type="date")
+          .row.my-4.ms-1
+            .col
+              .form-check
+                input.form-check-input#newLicenseGCPending(name="newLicenseGCPending" type="checkbox")
+                label.form-label.text-light Pending Global Compliance
+            .col
+              .form-check
+                input.form-check-input#newLicenseGovtPending(name="newLicenseGovtPending" type="checkbox")
+                label.form-label.text-light Pending Government
+      .modal-footer(style="background-color: var(--main-bg-color);")
+        button.btn.btn-secondary(data-mdb-dismiss="modal" type="button" style="background-color: var(--red-color);") Cancel
+        button.btn.btn-primary(style="background-color: var(--green-color);" onclick="saveNewLicense()") Save

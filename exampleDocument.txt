@@ -1,15 +1,9 @@
 this is an example
 
-how cool!
-
-Employer Name
-Rig
-Citizenship
-Birth Country
-Processing Agent
-Status
 
 TODO: Make + button functional on licenses page
+
+TODO: Make a modal pop up with the new license form, when saved, refresh page, when cancelled, close out modal
 
 TODO: Make Save activities buttons functional on the licenses page
 

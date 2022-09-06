@@ -80,7 +80,7 @@ block content
                 input.form-control.bg-white(id="birth-city" name="birthCity" type="text")
               .col-3
                 label.form-label(for="birth-state") State of Birth:
-                input.form-control.bg-white(id="birth-state" name="birthState" type="text")
+                input.form-control.bg-white(id="birth-state" name="birthState" type="text" required)
               .col-3
                 label.form-label(for="birth-country") Country of Birth:
                 select.form-select.bg-white(id="birth-country" name="birthCountry" aria-label="Select birth country")
@@ -335,7 +335,7 @@ block content
     $('#phone-number').val(marinerObject['PhoneNumber']);
     $('#email').val(marinerObject['Email']);
     $('#employer').val(marinerObject['EmployerID']);
-
+    //- $('#vessel-name').val(marinerObject['']);
     $('#mariner-reference-number').val(marinerObject['MarinerReferenceNumber']);
     $('#passport-number').val(marinerObject['PassportNumber']);
     $('#citizenship').val(marinerObject['Citizenship']);

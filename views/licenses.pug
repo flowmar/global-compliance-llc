@@ -16,19 +16,22 @@ block style
 block content
   .container-fluid
     .row.mt-5
-      .col-4.display-5.mx-5.page-title Mariner Licenses
-      .col-7
+      .col-11.display-5.mx-5.page-title#title Mariner Licenses
+      .col-1
     .row.bg-dark.m-3.p-1.py-3
       .col.shadow-4-strong.bg-light.bg-opacity-25.p-4.d-flex.justify-content-evenly.m-2.mb-0
         .container#licensesModule
-          .row#numberOfLicensesRow(style="display: none !important")
+          .row#batchActivitiesRow(style="display: none !important;")
+            .col-6.d-flex.justify-content-start
+              button.btn.btn-secondary(id="batchActivitiesButton" type="button" value="batchActivities") Batch Add Activities
+          .row#numberOfLicensesRow(style="display: none !important;")
             .col
               label.form-label(for="numberOfLicenses") Number of Licenses:
               input.form-control(id="numberOfLicenses" type="number")
             .col-3.mt-4.d-flex.align-items-end
               button.btn.btn-warning(id="generate-licenses-button" type="button" value="Generate") Generate
           .row#licenseNamesRow
-          .row.my-4#licensesArea(style="display: none !important")
+          .row.my-4#licensesArea(style="display: none !important;")
             .col.bg-dark.rounded.text-white.border.bg-opacity-75.p-0.shadow-4-strong
               ul.nav.nav-pills.nav-justified.mb-3.ms-0#licensesTabList(role="tablist" style="margin-left: 0;")
                 //- li.nav-item(role="presentation")
@@ -60,11 +63,15 @@ block content
                         input.form-control(id="licenseIDhidden" name="licenseID" type="text" hidden)
                     .row.my-4
                       .col-4
-                        label.form-label License Type:
-                        select.form-select#licenseTypesField(name="licenseType")
-                      .col-4
                         label.form-label Country:
                         select.form-select#countriesField(name="country")
+                      .col-4
+                        label.form-label License Type:
+                        select.form-select#licenseTypesField(name="licenseType")
+                    .row.my-4
+                      .col-4
+                        label.form-label CR Number:
+                        input.form-control(id="crNumber" name="crNumber" type="number")
                     .row.my-4
                       .col-3
                         label.form-label Issue Date:
@@ -83,10 +90,10 @@ block content
                         .form-check
                           label.form-label Pending Government
                           input.form-check-input(id="govtPending" name="govtPending" type="checkbox")
-                    .row
+                    .row#saveLicenseRow
                       .col.d-flex.justify-content-end
                         button.btn.btn-success#saveButton(type="button" onclick="saveLicenseInformation()") Save
-                    .row
+                    .row#editButtonRow(style="display: none;")
                       .col.d-flex.justify-content-end
                         button.btn.btn-info.mx-1#editButton(type="button" onclick="editLicenseInformation()") Edit
                         button.btn.btn-danger.mx-1#deleteButton(type="button" onclick="deleteLicense()") Delete
@@ -98,11 +105,16 @@ block content
                       h2 GC Activity
                     .row.my-4
                       .col-6
-                        p (GC Activity Table)
+                        table.table.table-bordered.table-sm#gcActivityTable
+                          thead.table-dark.bg-white
+                            tr
+                              th.p-3(scope="col" style="text-align: center;") Date
+                              th.p-3(scope="col" style="text-align: center;") Global Compliance Activity
+                          tbody.bg-white.text-dark.table-group.divider.table-divider-color(style="font-size: 1rem; font-weight: bold;")
                     .row.mt-4.mb-2
                       .col-6
                         label.form-label Global Compliance Activity:
-                        textarea.form-control.bg-white.text-dark(data-parsley-maxlength="255" type="text" form="activityForm" maxlength="255")
+                        textarea#gcActivityBox.form-control.bg-white.text-dark(data-parsley-maxlength="255" type="text" form="activityForm" maxlength="255")
                     .row
                       .col-6.d-flex.justify-content-end
                         button.btn.btn-success(type="button" onclick="saveGCActivity") Save
@@ -111,11 +123,16 @@ block content
                       h2 Govt Activity
                     .row.my-4
                       .col-6
-                        p (Govt Activity Table)
+                        table.table.table-bordered.table-sm#govtActivityTable
+                          thead.table-dark.bg-white
+                            tr
+                              th.p-3(scope="col" style="text-align: center;") Date
+                              th.p-3(scope="col" style="text-align: center;") Government Activity
+                          tbody.bg-white.text-dark.table-group.divider.table-divider-color(style="font-size: 1rem; font-weight: bold;")
                     .row.mt-4.mb-2
                       .col-6
                         label.form-label Government Activity:
-                        textarea.form-control.bg-white.text-dark(data-parsley-maxlength="255" type="text" form="activityForm" maxlength="255")
+                        textarea#govtActivityBox.form-control.bg-white.text-dark(data-parsley-maxlength="255" type="text" form="activityForm" maxlength="255")
                     .row
                       .col-6.d-flex.justify-content-end
                         button.btn.btn-success(type="button" onclick="saveGovtActivity()") Save
@@ -131,6 +148,10 @@ block content
                         .input-group#attachment-input-group
                           input.form-control.form-control-file.text-dark(id="attachment-file" name="attachment" type="file")
                           button.input-group-text.btn(id="attachment-upload-button" type="submit" style="background-color: var(--yellow-color); font-weight: bold;" value="Upload") Upload
+                    .row#deleteLicenseRow
+                      .col-6
+                      .col-6.d-flex.justify-content-end
+                        button.btn.btn-danger(id="deleteLicenseButton" type="button" value="deleteLicense" onclick="deleteLicense()") Delete
                     //- .tab-pane.fade.p-3#ex1-tabs-2(role='tabpanel' aria-labelledby='ex1-tab-2') Tab 2 Content
                   //- .tab-pane.fade.p-3#ex1-tabs-3(role='tabpanel' aria-labelledby='ex1-tab-3') Tab 3 Content
             //- .row
@@ -177,6 +198,7 @@ block content
                 //-   </div>
 
             include includes/summaryTableHead
+            include includes/newLicenseModal
 
   script.
     // Get information from server
@@ -184,13 +206,21 @@ block content
     let licensesArray = !{JSON.stringify(licenseInfo)};
     let countriesArray = !{JSON.stringify(countries)};
     let licenseTypesArray = !{JSON.stringify(licenseTypes)};
+    let marinerName = !{JSON.stringify(marinerName)};
     //- console.log(licensesArray);
     //- console.log(countriesArray);
     //- console.log(licenseTypesArray);
     //- console.log(marinerID);
-
+    let fullName = marinerName.FirstName + " " + marinerName.MiddleName + " " + marinerName.LastName;
 
     $(document).ready( function() {
+      // Place the name into the Title
+    $('#title').text("Mariner Licenses -\n\n" + fullName);
+
+      // Place an empty option element into the dropdown for countries
+      let blankElement = document.createElement("option");
+      blankElement.value = 0;
+      document.getElementById('countriesField').appendChild(blankElement);
 
       // Place the countries into the licenseForm
       for(let i = 0; i < countriesArray.length; i++) {
@@ -200,6 +230,11 @@ block content
       element.text = countriesArray[i]['CountryName'];
       document.getElementById('countriesField').appendChild(element);
       }
+
+      // Place an empty option element into the dropdown for license types
+      let blankTypeElement = document.createElement("option");
+      blankTypeElement.value = 0;
+      document.getElementById('licenseTypesField').appendChild(blankTypeElement);
 
       // Place the license types into the licenseForm
       for(let i = 0; i < licenseTypesArray.length; i++) {
@@ -216,7 +251,6 @@ block content
          // Hide the licenses area from view
       //- licensesArea.hide();
 
-      //TODO: Check to see if there are any licenses in the database, if there are, skip the license tab generation part
       let tabContent = $('#tab-content');
       let licensesTabList = $('#licensesTabList');
 
@@ -224,8 +258,8 @@ block content
       if (licensesArray.length < 1) {
 
       // Hide Delete and Edit Buttons
-      $('#editButton').hide();
-      $('#deleteButton').hide();
+      //- $('#editButton').hide();
+      //- $('#deleteButton').hide();
 
       let generateLicensesButton = document.getElementById('generate-licenses-button');
       let licensesModule = $('#licensesModule');
@@ -313,6 +347,8 @@ block content
 
         // Show the licenses area
         $('#licensesArea').show();
+        // Show the batch activities row
+        $('#batchActivitiesRow').show();
 
         // Generate Tabs for each license in the names array
         for (let k = 0; k < licenseNamesArray.length; k++)
@@ -373,11 +409,35 @@ block content
 
         $(selector + ' #licenseIDhidden').attr('id', 'licenseIDhidden' + suffix);
 
+        let formLicenseName = $('#licenseName').attr('id');
+        $(selector + ' #licenseName').attr('id', 'licenseName' + suffix).val(licenseNamesArray[k]);
+
         let formLicenseType = $('#licenseTypesField').attr('id');
         $(selector + ' #licenseTypesField').attr('id', formLicenseType + suffix);
+        let licenseTypeDropdown = $(selector + ' #licenseTypesField' + suffix);
+        //- console.log(licenseTypeDropdown);
 
         let formCountry = $('#countriesField').attr('id');
         $(selector + ' #countriesField').attr('id', formCountry + suffix);
+        // Select the country dropdown on the current form
+        let countryDropdown = $(selector + ' #countriesField' + suffix);
+        console.log(countryDropdown);
+        // Set an event listener for change in the input
+        countryDropdown.on('input', function(e) {
+          console.log("VALUE:");
+          console.log(e.target.value);
+          console.log(e.target.selectedOptions[0].text);
+          // If the value is blank, empty the license type dropdown
+          if (e.target.value == 0) {
+            licenseTypeDropdown.empty();
+          } else {
+            // Otherwise, filter the license types
+            filterTypes(e.target.value, e.target.selectedOptions[0].text, licenseTypeDropdown);
+          }
+        });
+
+        let formCrNumber = $('#crNumber').attr('id');
+        $(selector +' #crNumber').attr('id', formCrNumber + suffix);
 
         let formIssueDate = $('#issueDate').attr('id');
         $(selector + ' #issueDate').attr('id', formIssueDate + suffix);
@@ -390,6 +450,23 @@ block content
 
         let formGovtPending = $('#govtPending').attr('id');
         $(selector + ' #govtPending').attr('id', formGovtPending + suffix);
+
+        let saveButton = $('#saveButton').attr('id');
+        $(selector + ' #saveButton').attr('id', saveButton + suffix);
+
+        $(selector + ' #editButton').attr('id', 'editButton' + suffix);
+
+        let formGCActivityBox = $('#gcActivityBox').attr('id');
+        $(selector + ' #gcActivityBox').attr('id', formGCActivityBox + suffix);
+
+        let formGCActivityTable = $('#gcActivityTable').attr('id');
+        $(selector +' #gcActivityTable').attr('id', formGCActivityTable + suffix);
+
+        let formGovtActivityBox = $('#govtActivityBox').attr('id');
+        $(selector + ' #govtActivityBox').attr('id', formGovtActivityBox + suffix);
+
+        let formGovtActivityTable = $('#govtActivityTable').attr('id');
+        $(selector + ' #govtActivityTable').attr('id', formGovtActivityTable + suffix);
 
         }
         // Hide the license names row
@@ -409,7 +486,7 @@ block content
         navLink.role = 'tab';
         navLink.setAttribute('aria-controls', 'addLicense');
         navLink.setAttribute('aria-selected', 'false');
-        navLink.textContent = '+';
+        navLink.textContent = '+ Add New License';
 
         // Append the navLink to the navItem
         navItem.appendChild(navLink);
@@ -444,10 +521,10 @@ block content
         summaryTabPane.role = 'tabpanel';
         summaryTabPane.setAttribute('aria-labelledby', 'summary');
 
-        //TODO: Create Summary Tab layout and append to pane
 
         // Prepend the summary tab pane to the tab content
         tabContent.prepend(summaryTabPane);
+
 
       });
       });
@@ -455,10 +532,11 @@ block content
       else
       {
         // Hide the save button
-        $('#saveButton').hide();
+        //- $('#saveButton').hide();
         // Show the licenses area
         $('#licensesArea').show();
-
+        // Show the batch activities button
+        $('#batchActivitiesRow').show();
         console.log(licensesArray);
         let licenseNamesArray = [];
 
@@ -530,9 +608,30 @@ block content
 
         let formLicenseType = $('#licenseTypesField').attr('id');
         $(selector + ' #licenseTypesField').attr('id', formLicenseType + suffix);
+        let licenseTypeDropdown = $(selector + ' #licenseTypesField' + suffix);
+        //- console.log(licenseTypeDropdown);
 
         let formCountry = $('#countriesField').attr('id');
         $(selector + ' #countriesField').attr('id', formCountry + suffix);
+        // Select the country dropdown on the current form
+        let countryDropdown = $(selector + ' #countriesField' + suffix);
+        console.log(countryDropdown);
+        // Set an event listener for change in the input
+        countryDropdown.on('input', function(e) {
+          console.log("VALUE:");
+          console.log(e.target.value);
+          console.log(e.target.selectedOptions[0].text);
+          // If the value is blank, empty the license type dropdown
+          if (e.target.value == 0) {
+            licenseTypeDropdown.empty();
+          } else {
+            // Otherwise, filter the license types
+            filterTypes(e.target.value, e.target.selectedOptions[0].text, licenseTypeDropdown);
+          }
+        });
+
+        let formCRNumber = $('#crNumber').attr('id');
+        $(selector + ' #crNumber').attr('id', formCRNumber + suffix);
 
         let formIssueDate = $('#issueDate').attr('id');
         $(selector + ' #issueDate').attr('id', formIssueDate + suffix);
@@ -550,6 +649,18 @@ block content
         $(selector + ' #saveButton').attr('id', saveButton + suffix);
 
         $(selector + ' #editButton').attr('id', 'editButtons' + suffix);
+
+        let formGCActivityBox = $('#gcActivityBox').attr('id');
+        $(selector + ' #gcActivityBox').attr('id', formGCActivityBox + suffix);
+
+        let formGCActivityTable = $('#gcActivityTable').attr('id');
+        $(selector +' #gcActivityTable').attr('id', formGCActivityTable + suffix);
+
+        let formGovtActivityBox = $('#govtActivityBox').attr('id');
+        $(selector + ' #govtActivityBox').attr('id', formGovtActivityBox + suffix);
+
+        let formGovtActivityTable = $('#govtActivityTable').attr('id');
+        $(selector + ' #govtActivityTable').attr('id', formGovtActivityTable + suffix);
 
         }
         // Hide the license names row
@@ -569,8 +680,9 @@ block content
         addNavLink.role = 'tab';
         //- addNavLink.setAttribute('aria-controls', 'addLicense');
         //- addNavLink.setAttribute('aria-selected', 'false');
-        addNavLink.textContent = '+';
-        addNavLink.setAttribute('onclick', 'addNewLicenseForm()');
+        addNavLink.textContent = '+ Add New License';
+        //- addNavLink.setAttribute('onclick', 'addNewLicenseForm()');
+        addNavLink.setAttribute('data-mdb-target', '#licensesModal');
 
         // Append the navLink to the navItem
         addNavItem.appendChild(addNavLink);
@@ -613,6 +725,7 @@ block content
           let licenseID = license.LicenseID;
           let licenseType = license.LicenseTypeID;
           let licenseCountry = license.CountryID;
+          let crNumber = license.CRNumber;
           let issueDate = license.IssueDate;
           let expirationDate = license.ExpirationDate;
           let pendingGC = license.PendingGC;
@@ -638,6 +751,9 @@ block content
           //- console.log($("#licenseTypesField" + suffix));
 
           $("#countriesField" + suffix).val(licenseCountry);
+
+          // CR Number
+          $("#crNumber" + suffix).val(crNumber);
 
           // Convert the date to a format that fits in the UI
           let issueDateString = issueDate.toString();
@@ -729,5 +845,46 @@ block content
 
       }
 
+    //
+
     });
   script(src="/js/licenses.js")
+
+  script.
+    // Place an empty option element into the dropdown for countries
+      let newCountryBlankElement = document.createElement("option");
+      newCountryBlankElement.value = 0;
+      document.getElementById('newLicenseCountry').appendChild(newCountryBlankElement);
+
+      // Place the countries into the licenseForm
+      for(let i = 0; i < countriesArray.length; i++) {
+      // Citizenship input
+      let element = document.createElement('option');
+      element.value = i + 1;
+      element.text = countriesArray[i]['CountryName'];
+      document.getElementById('newLicenseCountry').appendChild(element);
+      }
+
+      // Place an empty option element into the dropdown for license types
+      let newBlankTypeElement = document.createElement("option");
+      newBlankTypeElement.value = 0;
+      document.getElementById('newLicenseType').appendChild(newBlankTypeElement);
+
+      let newLicenseTypeDropdown = $('#newLicenseType');
+      $('#newLicenseCountry').on('input', function(e) {
+        if(e.target.value == 0) {
+          $('#newLicenseCountry').empty();
+        }
+        else {
+          filterTypes(e.target.value, e.target.selectedOptions[0].text, newLicenseTypeDropdown);
+        }
+      })
+
+      //- // Place the license types into the licenseForm
+      //- for(let i = 0; i < licenseTypesArray.length; i++) {
+      //- // Citizenship input
+      //- let element = document.createElement('option');
+      //- element.value = i + 1;
+      //- element.text = licenseTypesArray[i]['Type'];
+      //- document.getElementById('newLicenseType').appendChild(element);
+      //- }

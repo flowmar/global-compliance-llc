@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-30 05:29:09
+ * @Last Modified time: 2022-09-06 07:44:20
  */
 
 'use strict';
@@ -122,7 +122,6 @@ app.get('/search', async (req, res) => {
     // Retrieve all records from database
     const searchSQL = 'SELECT * FROM Mariners';
     const search_query = mysql.format(searchSQL);
-
     const employerSQL =
         'SELECT EmployerName FROM Employers WHERE EmployerID = ?';
     const agentSQL = 'SELECT AgentName FROM Agents WHERE AgentID = ?';
@@ -285,37 +284,61 @@ app.get('/info', async (req, res) => {
 
     let marinerInfo = marinerRows[0][0];
 
-    console.log(marinerInfo);
+    // Change null values to empty string
+    for (let key in marinerInfo) {
+        if (marinerInfo[key] == null) {
+            marinerInfo[key] = '';
+        }
+    }
 
     // Employer ID to Name
-    let employerResults = await db.query(
-        `SELECT EmployerName FROM Employers WHERE EmployerID = ${marinerInfo['EmployerID']}`
-    );
-    let employerName = employerResults[0][0]['EmployerName'];
+    let employerName = ' ';
+    if (marinerInfo['EmployerID'] != '') {
+        let employerResults = await db.query(
+            `SELECT EmployerName FROM Employers WHERE EmployerID = ${marinerInfo['EmployerID']}`
+        );
+        employerName = employerResults[0][0]['EmployerName'];
+    }
 
     // RigID to RigName
-    let rigResults = await db.query(
-        `SELECT RigName FROM Rigs WHERE RigID = ${marinerInfo['RigID']}`
-    );
-    let rigName = rigResults[0][0]['RigName'];
+    let rigName = ' ';
+    if (marinerInfo['RigID'] != '') {
+        let rigResults = await db.query(
+            `SELECT RigName FROM Rigs WHERE RigID = ${marinerInfo['RigID']}`
+        );
+        rigName = rigResults[0][0]['RigName'];
+    }
 
     // CitizenshipID to Country Name
-    let citizenshipResults = await db.query(
-        `SELECT CountryName FROM countries WHERE CountryID = ${marinerInfo['Citizenship']}`
-    );
-    let citizenshipCountry = citizenshipResults[0][0]['CountryName'];
+    let citizenshipCountry = ' ';
+    if (marinerInfo['Citizenship'] != '') {
+        let citizenshipResults = await db.query(
+            `SELECT CountryName FROM countries WHERE CountryID = ${marinerInfo['Citizenship']}`
+        );
+        citizenshipCountry = citizenshipResults[0][0]['CountryName'];
+    }
 
     // BirthCountryID to Country Name
-    let birthCountryResults = await db.query(
-        `SELECT CountryName FROM countries WHERE CountryID = ${marinerInfo['BirthCountry']}`
-    );
-    let birthCountry = birthCountryResults[0][0]['CountryName'];
+    let birthCountry = ' ';
+    if (marinerInfo['BirthCountry'] != '') {
+        let birthCountryResults = await db.query(
+            `SELECT CountryName FROM countries WHERE CountryID = ${marinerInfo['BirthCountry']}`
+        );
+        birthCountry = birthCountryResults[0][0]['CountryName'];
+    }
 
     // Processing Agent ID to Agent Name
     let agentResults = await db.query(
         `SELECT AgentName FROM Agents WHERE AgentID = ${marinerInfo['ProcessingAgent']}`
     );
     let agentName = agentResults[0][0]['AgentName'];
+
+    let activitySQL = `SELECT * FROM MarinerActivities WHERE MarinerID = ${marinerID}`;
+    let activityRows = await db.query(activitySQL);
+
+    let activityData = activityRows[0];
+
+    console.log(activityData);
 
     // Document Definition
     const marinerInfoDefinition = {
@@ -509,6 +532,15 @@ app.get('/info', async (req, res) => {
                     { text: agentName, bold: false },
                 ],
             },
+            {
+                text: [
+                    {
+                        text: 'Activity Date                   Activity\n\n',
+                        bold: true,
+                        fontSize: 16,
+                    },
+                ],
+            },
         ],
         styles: {
             header: {
@@ -518,6 +550,17 @@ app.get('/info', async (req, res) => {
         },
     };
 
+    for (let activity of activityData) {
+        let activityDate = activity.ActivityDate.toString().slice(0, 15);
+        let activityNote = activity.ActivityNote;
+        let activityObject = {
+            text: [
+                { text: activityDate + '                ', bold: true },
+                { text: '     ' + activityNote },
+            ],
+        };
+        marinerInfoDefinition['content'].push(activityObject);
+    }
     // Fonts
     const fonts = {
         Roboto: {
@@ -702,6 +745,12 @@ app.get('/licenses/:id', async (req, res) => {
     // Get the marinerID from the request
     let marinerID = req.params.id;
 
+    // Get the mariner name based on the MarinerID
+    let marinerSQL = `SELECT FirstName, MiddleName, LastName FROM Mariners WHERE MarinerID = ${marinerID}`;
+    let marinerRows = await db.query(marinerSQL);
+    let marinerJSON = marinerRows[0][0];
+    console.log(marinerJSON);
+
     // SQL query to get the Licenses for the mariner
     let licenseSQL = 'SELECT * FROM Licenses WHERE MarinerID = ?';
     let license_query = mysql.format(licenseSQL, [marinerID]);
@@ -711,9 +760,11 @@ app.get('/licenses/:id', async (req, res) => {
     let licenseJSON = licenseRows[0];
     console.log(licenseJSON);
 
-    // Get all Countries
-    const countries_query = mysql.format('SELECT * FROM Countries');
-    const countriesRows = await db.query(countries_query);
+    // Get DISTINCT Countries from License Types Table
+    const countries_query = mysql.format(
+        'SELECT DISTINCT CountryName FROM LicenseTypes'
+    );
+    const licenseCountryRows = await db.query(countries_query);
 
     // Get all license types
     const license_type_query = mysql.format('SELECT * FROM LicenseTypes');
@@ -723,8 +774,9 @@ app.get('/licenses/:id', async (req, res) => {
         title: 'Licenses',
         marinerID: marinerID,
         licenseInfo: licenseJSON,
-        countries: countriesRows[0],
+        countries: licenseCountryRows[0],
         licenseTypes: licenseTypeRows[0],
+        marinerName: marinerJSON,
     });
 });
 
@@ -826,6 +878,18 @@ app.get('/rigs/:id', async (req, res) => {
     const employer_query = mysql.format(employerSQL, [employerID]);
 
     const result = await db.query(employer_query);
+    console.log(result[0]);
+    res.send(result[0]);
+});
+
+// Handles license type filtering
+app.get('/licenseTypes/:id', async (req, res) => {
+    let licenseTypeID = req.params.id;
+    console.log(licenseTypeID);
+    const licenseTypeSQL = 'SELECT * FROM LicenseTypes WHERE CountryName = ?';
+    const license_query = mysql.format(licenseTypeSQL, [licenseTypeID]);
+
+    const result = await db.query(license_query);
     console.log(result[0]);
     res.send(result[0]);
 });
@@ -1016,6 +1080,15 @@ app.post('/edit', async (req, res) => {
     if (vessel == 0) {
         vessel = null;
     }
+    if (birthDate == '') {
+        birthDate = null;
+    }
+    if (physDate == '') {
+        physDate = null;
+    }
+    if (employer == 0) {
+        employer = null;
+    }
 
     // Create SQL Statement
     let updateMarinerSQL =
@@ -1132,6 +1205,7 @@ app.post('/licenses/:id', async (req, res) => {
     let expirationDate = req.body.expirationDate;
     let gcPending = req.body.gcPending;
     let govtPending = req.body.govtPending;
+    let crNumber = req.body.crNumber;
 
     if (licenseID === '') {
         let licenseIDQuery = await db.query(
@@ -1143,7 +1217,7 @@ app.post('/licenses/:id', async (req, res) => {
     console.log(licenseID);
     // SQL Query to add license to database
     let insertSQL =
-        'INSERT INTO Licenses SET LicenseName = ?,LicenseTypeID = ?, CountryID = ?, MarinerID = ?, Timestamp = CURRENT_TIMESTAMP(), IssueDate = ?, ExpirationDate = ?, PendingGC = ?, PendingGovt = ?';
+        'INSERT INTO Licenses SET LicenseName = ?,LicenseTypeID = ?, CountryID = ?, MarinerID = ?, Timestamp = CURRENT_TIMESTAMP(), IssueDate = ?, ExpirationDate = ?, PendingGC = ?, PendingGovt = ?, CRNumber = ?';
     let insert_query = mysql.format(insertSQL, [
         licenseName,
         licenseType,
@@ -1153,6 +1227,7 @@ app.post('/licenses/:id', async (req, res) => {
         expirationDate,
         gcPending,
         govtPending,
+        crNumber,
     ]);
 
     let insertRows = await db.query(insert_query);
@@ -1179,10 +1254,11 @@ app.put('/licenses/:id', async (req, res) => {
     let expirationDate = req.body.expirationDate;
     let gcPending = req.body.gcPending;
     let govtPending = req.body.govtPending;
+    let crNumber = req.body.crNumber;
 
     // SQL Query to update the license
     let updateSQL =
-        'UPDATE Licenses SET LicenseName = ?,LicenseTypeID = ?, CountryID = ?, MarinerID = ?, Timestamp = CURRENT_TIMESTAMP(), IssueDate = ?, ExpirationDate = ?, PendingGC = ?, PendingGovt = ? WHERE LicenseID = ?';
+        'UPDATE Licenses SET LicenseName = ?,LicenseTypeID = ?, CountryID = ?, MarinerID = ?, Timestamp = CURRENT_TIMESTAMP(), IssueDate = ?, ExpirationDate = ?, PendingGC = ?, PendingGovt = ?, CRNumber = ? WHERE LicenseID = ?';
     let update_query = mysql.format(updateSQL, [
         licenseName,
         licenseType,
@@ -1192,6 +1268,7 @@ app.put('/licenses/:id', async (req, res) => {
         expirationDate,
         gcPending,
         govtPending,
+        crNumber,
         licenseID,
     ]);
 
@@ -1204,6 +1281,21 @@ app.put('/licenses/:id', async (req, res) => {
     res.send({
         updateJSON: updateJSON,
     });
+});
+
+app.delete('/deleteLicense', async (req, res) => {
+    let marinerID = req.query.marinerID;
+    let licenseID = req.query.licenseID;
+
+    let deleteGCSQL = `DELETE FROM GCLicenseActivities WHERE LicenseID = ${marinerID}`;
+    let deleteGovtSQL = `DELETE FROM GovtLicenseActivities WHERE MarinerID = ${marinerID}`;
+    let deleteLicenseSQL = `DELETE FROM Licenses WHERE marinerID = ${marinerID}`;
+
+    await db.query(deleteGCSQL);
+    await db.query(deleteGovtSQL);
+    let deleteRows = await db.query(deleteLicenseSQL);
+
+    console.log(deleteRows);
 });
 
 // Gets all gc license activities for a given licenseID

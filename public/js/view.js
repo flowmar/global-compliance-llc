@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-05 01:43:12
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-30 05:32:01
+ * @Last Modified time: 2022-07-30 05:56:22
  */
 
 /* Add Mariner Validation */
@@ -206,7 +206,7 @@ function downloadMarinerPDF() {
     //         console.log(response);
     //     })
     //     .catch((err) => console.log(err));
-    window.open('/info?marinerID=' + `${marinerID}`);
+    window.open('/info?marinerID=' + `${marinerIDNumber}`);
 }
 
 $('#appModalButton').click(function () {
