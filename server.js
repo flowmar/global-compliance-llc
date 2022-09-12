@@ -4,7 +4,7 @@ require('newrelic');
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-12 16:32:09
+ * @Last Modified time: 2022-09-12 16:53:02
  */
 
 ('use strict');
@@ -1355,6 +1355,32 @@ app.post('/licenses/gcactivities/:id', async (req, res) => {
     });
 });
 
+// Updates a gc license activity for a given gcLicenseActivity ID
+app.put('/licenses/gcactivities/:activityId', async (req, res) => {
+    // Get URL parameter activityId
+    let gcLicenseActivityId = req.params.activityId;
+
+    let gcActivityNote = req.body.gcActivityNote;
+
+    // SQL for updating a gc license activity
+    let activitySQL =
+        'UPDATE GCLicenseActivities SET GCActivityNote = ?, GCActivityTimestamp = CURRENT_TIMESTAMP() WHERE GCActivityID = ?';
+
+    // Format the query
+    let activity_query = mysql.format(activitySQL, [
+        gcActivityNote,
+        gcLicenseActivityId,
+    ]);
+
+    // Perform the query
+    let activityUpdateRows = await db.query(activity_query);
+
+    // Send the response to the client
+    res.send({
+        activityRows: activityUpdateRows,
+    });
+});
+
 // Gets all govt license activities for a given licenseID
 app.get('/licenses/govtactivities/:id', async (req, res) => {
     // Get URL parameter
@@ -1393,6 +1419,32 @@ app.post('/licenses/govtactivities/:id', async (req, res) => {
 
     res.send({
         licenseActivitiesJSON: licenseActivityRows[0],
+    });
+});
+
+// Updates a gc license activity for a given govtLicenseActivity ID
+app.put('/licenses/govtactivities/:activityId', async (req, res) => {
+    // Get URL parameter activityId
+    let govtLicenseActivityId = req.params.activityId;
+
+    let govtActivityNote = req.body.govtActivityNote;
+
+    // SQL for updating a gc license activity
+    let activitySQL =
+        'UPDATE GovtLicenseActivities SET GovtActivityNote = ?, GovtActivityTimestamp = CURRENT_TIMESTAMP() WHERE GovtActivityID = ?';
+
+    // Format the query
+    let activity_query = mysql.format(activitySQL, [
+        govtActivityNote,
+        govtLicenseActivityId,
+    ]);
+
+    // Perform the query
+    let activityUpdateRows = await db.query(activity_query);
+
+    // Send the response to the client
+    res.send({
+        activityRows: activityUpdateRows,
     });
 });
 
