@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-06 16:54:56
+ * @Last Modified time: 2022-09-12 16:33:21
  */
 
 let licenseID,
@@ -332,21 +332,27 @@ $(document).ready(function () {
 
     // When a .nav-link is clicked, and becomes active, get the active form number
     $('.nav-link').on('click', function (e) {
+        // Get the form number
         let formNumber = document
             .querySelector('.active form')
             .getAttribute('data-form-number');
 
+        let licenseID = $('#licenseID' + formNumber).val();
+
+        // Get the activity TextField for the selected form
         let gcActivityTextField = document.getElementById(
             'gcActivityBox' + formNumber
         );
 
+        // Total characters in the TextField
         let gcTotalCharacters = gcActivityTextField.value.length;
 
+        // Get the message span
         let gcCharacterCountMessage = document.getElementById(
             'gcCharacterCountMessage' + formNumber
         );
-        // console.log(gcCharacterCountMessage);
 
+        // Listen for key presses on the GCActivity TextField
         gcActivityTextField.addEventListener('keyup', function () {
             gcTotalCharacters = gcActivityTextField.value.length;
             if (gcTotalCharacters < 225) {
@@ -361,28 +367,15 @@ $(document).ready(function () {
                 'Characters remaining: ' + gcCharactersRemaining;
         });
 
-        // // Listen for key presses on the government activity text field
-        // gcActivityTextField.addEventListener('keyup', function () {
-        //     gcTotalCharacters = gcActivityTextField.value.length;
-        //     if (gcTotalCharacters < 225) {
-        //         gcCharacterCountMessage.style = 'color: white;';
-        //     }
-        //     if (gcTotalCharacters > 225) {
-        //         gcCharacterCountMessage.style = 'color: var(--red-color);';
-        //     }
-        //     if (gcTotalCharacters === 255) {
-        //         gcCharacterCountMessage.style = 'color: red;';
-        //     }
-        //     gcCharactersRemaining = 255 - gcTotalCharacters;
-        //     gcCharacterCountMessage.textContent =
-        //         'Characters remaining: ' + gcCharactersRemaining;
-        // });
-
+        // Get the government activity TextField
         let govtActivityTextField = document.getElementById(
             'govtActivityBox' + formNumber
         );
 
+        // The total characters in the government activity TextField
         let govtTotalCharacters = govtActivityTextField.value.length;
+
+        // Get the government character count message span
         let govtCharacterCountMessage = document.getElementById(
             'govtCharacterCountMessage' + formNumber
         );
@@ -403,5 +396,92 @@ $(document).ready(function () {
             govtCharacterCountMessage.textContent =
                 'Characters remaining: ' + govtCharactersRemaining;
         });
+
+        // Get the currently selected license's gc activities to be displayed in the UI
+        axios
+            .get('/licenses/gcactivities/' + licenseID)
+            .then((response) => {
+                console.log(response);
+                console.log(response.data.licenseActivitiesJSON);
+
+                // Display the activities in the GC activities table
+                let gcActivityTableBody = document.getElementById(
+                    'gcActivityTableBody' + formNumber
+                );
+
+                // Loop through the licenseActivitiesJSON array
+                for (activity of response.data.licenseActivitiesJSON) {
+                    console.log(activity);
+                    // Get the date and time from the database
+                    let datetime = activity['GCActivityTimestamp'];
+
+                    // Format the date
+                    let datetimeString = new Date(datetime).toLocaleString();
+                    console.log(datetimeString);
+                    // Create a table row
+                    let tableRow = document.createElement('tr');
+                    tableRow.style = 'text-align: center;';
+
+                    // Set the ID of the tableRow to the ID of the GCActivity
+                    tableRow.id = activity['GCActivityID'];
+
+                    // Add the cells to the row
+                    tableRow.innerHTML =
+                        '<td>' +
+                        datetimeString +
+                        '</td><td>' +
+                        activity['GCActivityNote'] +
+                        '</td>';
+
+                    // Add the row to the table
+                    console.log(tableRow);
+                    gcActivityTableBody.appendChild(tableRow);
+                }
+            })
+            .catch((error) => console.log(error.message));
+
+        // Get the currently selected license's govt activities to be displayed in the UI
+        // Get the currently selected license's gc and govt activities to be displayed in the UI
+        axios
+            .get('/licenses/govtactivities/' + licenseID)
+            .then((response) => {
+                console.log(response);
+                console.log(response.data.licenseActivitiesJSON);
+
+                // Display the activities in the Govt activities table
+                let govtActivityTableBody = document.getElementById(
+                    'govtActivityTableBody' + formNumber
+                );
+
+                // Loop through the licenseActivitiesJSON array
+                for (activity of response.data.licenseActivitiesJSON) {
+                    console.log(activity);
+                    // Get the date and time from the database
+                    let datetime = activity['GovtActivityTimestamp'];
+
+                    // Format the date
+                    let datetimeString = new Date(datetime).toLocaleString();
+                    console.log(datetimeString);
+                    // Create a table row
+                    let tableRow = document.createElement('tr');
+                    tableRow.style = 'text-align: center;';
+
+                    // Set the ID of the tableRow to the ID of the GovtActivity
+                    tableRow.id = activity['GovtActivityID'];
+
+                    // Add the cells to the row
+                    tableRow.innerHTML =
+                        '<td>' +
+                        datetimeString +
+                        '</td><td>' +
+                        activity['GovtActivityNote'] +
+                        '</td>';
+
+                    // Add the row to the table
+                    console.log(tableRow);
+                    govtActivityTableBody.appendChild(tableRow);
+                }
+            })
+            .catch((error) => console.log(error.message));
     });
 });

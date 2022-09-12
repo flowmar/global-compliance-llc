@@ -1,13 +1,6 @@
 this is an example
 
-
-TODO: Make + button functional on licenses page
-
-TODO: Make a modal pop up with the new license form, when saved, refresh page, when cancelled, close out modal
-
-TODO: Make Save activities buttons functional on the licenses page
-
-TODO: Delete Mariner License -- delete corresponding license activities and license attachments with the same license ID
+TODO: Display License activities
 
 TODO: Create Route for getting license attachments
 

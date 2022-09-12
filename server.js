@@ -1,11 +1,13 @@
+require('newrelic');
+
 /*
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-06 11:01:31
+ * @Last Modified time: 2022-09-12 16:32:09
  */
 
-'use strict';
+('use strict');
 
 require('dotenv').config();
 const express = require('express');
@@ -1318,7 +1320,7 @@ app.get('/licenses/gcactivities/:id', async (req, res) => {
     let licenseID = req.params.id;
 
     // SQL for getting all activities for a license
-    let licensesSQL = 'SELECT * FROM LicenseActivities WHERE LicenseID = ?';
+    let licensesSQL = 'SELECT * FROM GCLicenseActivities WHERE LicenseID = ?';
     let licenses_query = mysql.format(licensesSQL, [licenseID]);
 
     let licenseActivityRows = await db.query(licenses_query);
@@ -1359,7 +1361,7 @@ app.get('/licenses/govtactivities/:id', async (req, res) => {
     let licenseID = req.params.id;
 
     // SQL for getting all activities for a license
-    let licensesSQL = 'SELECT * FROM LicenseActivities WHERE LicenseID = ?';
+    let licensesSQL = 'SELECT * FROM GovtLicenseActivities WHERE LicenseID = ?';
     let licenses_query = mysql.format(licensesSQL, [licenseID]);
 
     let licenseActivityRows = await db.query(licenses_query);

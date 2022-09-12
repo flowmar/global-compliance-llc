@@ -104,13 +104,13 @@ block content
                     .row
                       h2 GC Activity
                     .row.my-4
-                      .col-6
+                      .col-12
                         table.table.table-bordered.table-sm#gcActivityTable
                           thead.table-dark.bg-white
                             tr
-                              th.p-3(scope="col" style="text-align: center;") Date
+                              th.p-3(scope="col" style="text-align: center;") Logged At
                               th.p-3(scope="col" style="text-align: center;") Global Compliance Activity
-                          tbody.bg-white.text-dark.table-group.divider.table-divider-color(style="font-size: 1rem; font-weight: bold;")
+                          tbody.bg-white.text-dark.table-group.divider.table-divider-color#gcActivityTableBody(style="font-size: 1rem; font-weight: bold;")
                     .row.mt-4.mb-2
                       .col-6
                         label.form-label Global Compliance Activity:
@@ -125,13 +125,13 @@ block content
                     .row
                       h2 Govt Activity
                     .row.my-4
-                      .col-6
+                      .col-12
                         table.table.table-bordered.table-sm#govtActivityTable
                           thead.table-dark.bg-white
                             tr
-                              th.p-3(scope="col" style="text-align: center;") Date
+                              th.p-3(scope="col" style="text-align: center;") Logged At
                               th.p-3(scope="col" style="text-align: center;") Government Activity
-                          tbody.bg-white.text-dark.table-group.divider.table-divider-color(style="font-size: 1rem; font-weight: bold;")
+                          tbody.bg-white.text-dark.table-group.divider.table-divider-color#govtActivityTableBody(style="font-size: 1rem; font-weight: bold;")
                     .row.mt-4.mb-2
                       .col-6
                         label.form-label Government Activity:
@@ -428,6 +428,9 @@ block content
         let formGCActivityTable = $('#gcActivityTable').attr('id');
         $(selector +' #gcActivityTable').attr('id', formGCActivityTable + suffix);
 
+        let formGCActivityTableBody = $('#gcActivityTableBody').attr('id');
+        $(selector +' #gcActivityTableBody').attr('id', formGCActivityTableBody + suffix);
+
         let formGCCharacterCount = $('#gcCharacterCountMessage').attr('id');
         $(selector + ' #gcCharacterCountMessage').attr('id', formGCCharacterCount + suffix);
 
@@ -439,6 +442,9 @@ block content
 
         let formGovtActivityTable = $('#govtActivityTable').attr('id');
         $(selector + ' #govtActivityTable').attr('id', formGovtActivityTable + suffix);
+
+        let formGovtActivityTableBody = $('#govtActivityTableBody').attr('id');
+        $(selector +' #govtActivityTableBody').attr('id', formGovtActivityTableBody + suffix);
 
         let formGovtCharacterCount = $('#govtCharacterCountMessage').attr('id');
         $(selector + ' #govtCharacterCountMessage').attr('id', formGovtCharacterCount + suffix);
@@ -637,6 +643,9 @@ block content
         let formGCActivityTable = $('#gcActivityTable').attr('id');
         $(selector +' #gcActivityTable').attr('id', formGCActivityTable + suffix);
 
+         let formGCActivityTableBody = $('#gcActivityTableBody').attr('id');
+        $(selector +' #gcActivityTableBody').attr('id', formGCActivityTableBody + suffix);
+
          let formGCCharacterCount = $('#gcCharacterCountMessage').attr('id');
         $(selector + ' #gcCharacterCountMessage').attr('id', formGCCharacterCount + suffix);
 
@@ -651,6 +660,9 @@ block content
 
         let formGovtActivityTable = $('#govtActivityTable').attr('id');
         $(selector + ' #govtActivityTable').attr('id', formGovtActivityTable + suffix);
+
+        let formGovtActivityTableBody = $('#govtActivityTableBody').attr('id');
+        $(selector +' #govtActivityTableBody').attr('id', formGovtActivityTableBody + suffix);
 
         let formGovtSaveActivity = $('#saveGovtActivity').attr('id');
         $(selector + ' #saveGovtActivity').attr('id', formGovtSaveActivity + suffix);
