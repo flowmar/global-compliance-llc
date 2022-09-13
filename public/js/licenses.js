@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-12 20:41:08
+ * @Last Modified time: 2022-09-12 20:49:37
  */
 
 let licenseID,
@@ -307,6 +307,14 @@ function saveGovtActivity() {
         });
 }
 
+function editGCActivity() {}
+
+function deleteGCActivity() {}
+
+function editGovtActivity() {}
+
+function deleteGovtActivity() {}
+
 /**
  * When the user selects a country, send a request to the server to retrieve the
  * license types for that country, then populate the license type dropdown with the
@@ -337,9 +345,11 @@ function filterTypes(value, text, typeDropdown) {
     });
 }
 
-function uploadLicenseAttachment() {
-    axios.post('//');
-}
+function uploadLicenseAttachment() {}
+
+function downloadLicenseAttachment() {}
+
+function deleteLicenseAttachment() {}
 
 /**
  * It gets the activities for the currently selected license and displays them in

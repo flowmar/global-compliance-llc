@@ -115,6 +115,10 @@ block content
                     .row
                       .col-6.d-flex.justify-content-end
                         button.btn.btn-success#saveGCActivity(type="button" onclick="saveGCActivity()") Save
+                    .row
+                      .col-6.d-flex.justify-content-end
+                        button.btn.btn-info#editGCActivity(type="button" onclick="editGCActivity()" style="display: none;")
+                        button.btn.btn-danger#deleteGCActivity(type="button" onclick="deleteGCActivity()" style="disply: none;")
                       hr.mt-5
                     .row
                       h2 Govt Activity
@@ -136,6 +140,10 @@ block content
                     .row
                       .col-6.d-flex.justify-content-end
                         button.btn.btn-success#saveGovtActivity(type="button" onclick="saveGovtActivity()") Save
+                    .row
+                      .col-6.d-flex.justify-content-end
+                        button.btn.btn-info#editGovtActivity(type="button" onclick="editGovtActivity()" style="display: none;")
+                        button.btn.btn-danger#deleteGovtActivity(type="button" onclick="deleteGovtActivity()" style="display: none;")
                       hr.mt-5
                     .row
                       h2 License Attachments
