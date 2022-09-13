@@ -34,12 +34,6 @@ block content
           .row.my-4#licensesArea(style="display: none !important;")
             .col.bg-dark.rounded.text-white.border.bg-opacity-75.p-0.shadow-4-strong
               ul.nav.nav-pills.nav-justified.mb-3.ms-0#licensesTabList(role="tablist" style="margin-left: 0;")
-                //- li.nav-item(role="presentation")
-                //-   a.link-light.nav-link.active#ex1-tab-1.bg-dark.bg-opacity-50(data-mdb-toggle='pill' href='#ex1-tabs-1' role='tab' aria-controls='ex1-tabs-1' aria-selected='true') Tab 1
-                //- li.nav-item(role="presentation")
-                //-   a.nav-link#ex1-tab-2(data-mdb-toggle='tab' href='#ex1-tabs-2' role='tab' aria-controls='ex1-tabs-2' aria-selected='false') Tab 2
-                //- li.nav-item(role="presentation")
-                //-   a.nav-link#ex1-tab-3(data-mdb-toggle='tab' href='#ex1-tabs-3' role='tab' aria-controls='ex1-tabs-3' aria-selected='false') Tab 3
               .tab-content#tab-content
                 .tab-pane.fade.p-3#license-tabs-0(role='tabpanel' aria-labelledby='ex1-tab-1')
                   form(id="licenseForm" action="/license" method='POST').container
@@ -110,7 +104,7 @@ block content
                             tr
                               th.p-3(scope="col" style="text-align: center;") Logged At
                               th.p-3(scope="col" style="text-align: center;") Global Compliance Activity
-                          tbody.bg-white.text-dark.table-group.divider.table-divider-color#gcActivityTableBody(style="font-size: 1rem; font-weight: bold;")
+                          tbody.bg-white.text-dark.table-group-divider.table-divider-color#gcActivityTableBody(style="font-size: 1rem; font-weight: bold;")
                     .row.mt-4.mb-2
                       .col-6
                         label.form-label Global Compliance Activity:
@@ -131,7 +125,7 @@ block content
                             tr
                               th.p-3(scope="col" style="text-align: center;") Logged At
                               th.p-3(scope="col" style="text-align: center;") Government Activity
-                          tbody.bg-white.text-dark.table-group.divider.table-divider-color#govtActivityTableBody(style="font-size: 1rem; font-weight: bold;")
+                          tbody.bg-white.text-dark.table-group-divider.table-divider-color#govtActivityTableBody(style="font-size: 1rem; font-weight: bold;")
                     .row.mt-4.mb-2
                       .col-6
                         label.form-label Government Activity:
@@ -146,14 +140,19 @@ block content
                     .row
                       h2 License Attachments
                     .row.my-4
-                      .col-6
-                        p (License Attachment Table)
+                      .col-12
+                        table.table.table-bordered.table-sm#licenseAttachmentTable
+                          thead.table-dark.bg-white
+                            tr
+                              th.p-3(scope="col" style="text-align: center;")
+                              th.p-3(scope="col" style="text-align: center;")
+                          tbody.bg-white.text-dark.table-group-divider#licenseAttachmentTableBody(style="font-size: 1rem; font-weight: bold;")
                     .row.my-4
                       .col-6
                         label.form-label License Attachments:
                         .input-group#attachment-input-group
                           input.form-control.form-control-file.text-dark(id="attachment-file" name="attachment" type="file")
-                          button.input-group-text.btn(id="attachment-upload-button" type="submit" style="background-color: var(--yellow-color); font-weight: bold;" value="Upload") Upload
+                          button.input-group-text.btn(id="attachment-upload-button" type="button" style="background-color: var(--yellow-color); font-weight: bold;" onclick="uploadLicenseAttachment()" value="Upload") Upload
                     .row#deleteLicenseRow
                       .col-6
                       .col-6.d-flex.justify-content-end
@@ -521,7 +520,7 @@ block content
         $('#licensesArea').show();
         // Show the batch activities button
         $('#batchActivitiesRow').show();
-        console.log(licensesArray);
+        //- console.log(licensesArray);
         let licenseNamesArray = [];
 
         for(let j = 0; j < licensesArray.length; j++) {
@@ -643,10 +642,10 @@ block content
         let formGCActivityTable = $('#gcActivityTable').attr('id');
         $(selector +' #gcActivityTable').attr('id', formGCActivityTable + suffix);
 
-         let formGCActivityTableBody = $('#gcActivityTableBody').attr('id');
+        let formGCActivityTableBody = $('#gcActivityTableBody').attr('id');
         $(selector +' #gcActivityTableBody').attr('id', formGCActivityTableBody + suffix);
 
-         let formGCCharacterCount = $('#gcCharacterCountMessage').attr('id');
+        let formGCCharacterCount = $('#gcCharacterCountMessage').attr('id');
         $(selector + ' #gcCharacterCountMessage').attr('id', formGCCharacterCount + suffix);
 
         let formGCSaveActivity = $('#saveGCActivity').attr('id');
@@ -880,8 +879,6 @@ block content
         tabContent.prepend(summaryTabPane);
 
       }
-
-    //
 
     });
   script(src="/js/licenses.js")

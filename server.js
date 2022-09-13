@@ -4,7 +4,7 @@ require('newrelic');
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-12 16:53:02
+ * @Last Modified time: 2022-09-12 20:42:48
  */
 
 ('use strict');
@@ -1446,6 +1446,11 @@ app.put('/licenses/govtactivities/:activityId', async (req, res) => {
     res.send({
         activityRows: activityUpdateRows,
     });
+});
+
+// Uploads a new license attachment to the database
+app.post('/licenses/attachments/:licenseId', async (req, res) => {
+    let licenseID = req.params.licenseId;
 });
 
 /**
