@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-12 20:49:37
+ * @Last Modified time: 2022-09-18 12:42:04
  */
 
 let licenseID,
@@ -17,6 +17,7 @@ let licenseID,
     formNumber;
 
 const licenseModal = new mdb.Modal(newLicenseModal);
+const attachmentModal = new mdb.Modal(licenseAttachmentModal);
 
 /**
  * The function collects the information from the form that is currently active and
@@ -307,13 +308,21 @@ function saveGovtActivity() {
         });
 }
 
-function editGCActivity() {}
+function editGCActivity() {
+    // TODO: Edit GC Activity
+}
 
-function deleteGCActivity() {}
+function deleteGCActivity() {
+    // TODO: Delete GC Activity
+}
 
-function editGovtActivity() {}
+function editGovtActivity() {
+    // TODO: Edit GovtActivity
+}
 
-function deleteGovtActivity() {}
+function deleteGovtActivity() {
+    // TODO: Delete Govt Activity
+}
 
 /**
  * When the user selects a country, send a request to the server to retrieve the
@@ -345,11 +354,13 @@ function filterTypes(value, text, typeDropdown) {
     });
 }
 
-function uploadLicenseAttachment() {}
+function downloadLicenseAttachment() {
+    // TODO: Download License Attachment
+}
 
-function downloadLicenseAttachment() {}
-
-function deleteLicenseAttachment() {}
+function deleteLicenseAttachment() {
+    // TODO: Delete License Attachment
+}
 
 /**
  * It gets the activities for the currently selected license and displays them in
@@ -430,8 +441,13 @@ function changeForm() {
         'govtActivityTableBody' + formNumber
     );
 
+    let licenseAttachmentTableBody = document.getElementById(
+        'licenseAttachmentTableBody' + formNumber
+    );
+
     gcActivityTableBody.innerHTML = '';
     govtActivityTableBody.innerHTML = '';
+    licenseAttachmentTableBody.innerHTML = '';
 
     // Get the currently selected license's gc activities to be displayed in the UI
     axios
@@ -494,7 +510,6 @@ function changeForm() {
         .catch((error) => console.log(error.message));
 
     // Get the currently selected license's govt activities to be displayed in the UI
-    // Get the currently selected license's gc and govt activities to be displayed in the UI
     axios
         .get('/licenses/govtactivities/' + licenseID)
         .then((response) => {
@@ -551,14 +566,158 @@ function changeForm() {
                     console.log(selectedRow);
                 });
             }
+
+            // When a form is changed, change the license ID in the upload license attachment modal
+            $('#modalLicenseIDhidden').val(licenseID);
+            $('#modalMarinerIDhidden').val(marinerID);
+
+            // Change the action URL of the upload license attachment modal
+            $('#newLicenseAttachmentForm').attr(
+                'action',
+                '/licenses/attachments/' + licenseID
+            );
+
+            // When a form is changed, add an event listener to show the license attachment upload modal
+            let buttonID = '#license-attachment-button' + formNumber;
+            $(buttonID).on('click', function () {
+                attachmentModal.show();
+            });
         })
         .catch((error) => console.log(error.message));
+
+    // Get the currently selected license's attachments and display in the UI
+    axios
+        .get('/licenses/attachments/' + licenseID)
+        .then((response) => {
+            console.log(response);
+            console.log(response.data);
+            console.log(response.data.licenseJSON);
+
+            // Loop through the response from the server and display the attachments in the UI
+            for (licenseAttachment of response.data.licenseJSON) {
+                console.log(licenseAttachment);
+                // Get the date of the attachment
+                let datetime = licenseAttachment['LicenseAttachmentDate'];
+                console.log(datetime);
+                // Format the datetime for display in the table
+                let datetimeString = new Date(datetime).toLocaleString();
+                console.log(datetimeString);
+                // Get the name of the License Attachment
+                let name = licenseAttachment['LicenseAttachmentName'];
+                console.log(name);
+                // Create a table row
+                let tableRow = document.createElement('tr');
+                tableRow.style = 'text-align: center;';
+
+                // Set the ID of the tableRow to the ID of the License Attachment
+                tableRow.id = licenseAttachment['LicenseAttachmentID'];
+                tableRow.classList = 'notHeader';
+
+                // Add the cells to the row
+                tableRow.innerHTML =
+                    '<td>' + datetimeString + '</td><td>' + name + '</td>';
+
+                // Add the row to the table
+                console.log(tableRow);
+                licenseAttachmentTableBody.appendChild(tableRow);
+
+                let tableRowString =
+                    '#licenseAttachmentTableBody' +
+                    formNumber +
+                    ' tr.notHeader';
+                console.log(tableRowString);
+                // Make table rows selectable
+                $(tableRowString).on('click', function (e) {
+                    // Show buttons
+                    // Remove active class from anything previously selected
+                    $(
+                        '#licenseAttachmentTableBody' + formNumber + ' tr'
+                    ).removeClass('table-active');
+
+                    // Add active class to the newly selected row
+                    $(this).addClass('table-active');
+
+                    selectedRow = $(this);
+
+                    console.log(selectedRow);
+                });
+            }
+        })
+        .catch((err) => console.error(err.message));
 }
+
+// function getGCActivities( licenseID, formNumber )
+// {
+//     // Get the currently selected license's gc activities to be displayed in the UI
+//     axios
+//         .get('/licenses/gcactivities/' + licenseID)
+//         .then((response) => {
+//             console.log(response);
+//             console.log(response.data.licenseActivitiesJSON);
+
+//             // Display the activities in the GC activities table
+
+//             // Loop through the licenseActivitiesJSON array
+//             for (activity of response.data.licenseActivitiesJSON) {
+//                 console.log(activity);
+//                 // Get the date and time from the database
+//                 let datetime = activity['GCActivityTimestamp'];
+
+//                 // Format the date
+//                 let datetimeString = new Date(datetime).toLocaleString();
+//                 console.log(datetimeString);
+//                 // Create a table row
+//                 let tableRow = document.createElement('tr');
+//                 tableRow.style = 'text-align: center;';
+
+//                 // Set the ID of the tableRow to the ID of the GCActivity
+//                 tableRow.id = activity['GCActivityID'];
+//                 tableRow.classList = 'notHeader';
+
+//                 // Add the cells to the row
+//                 tableRow.innerHTML =
+//                     '<td>' +
+//                     datetimeString +
+//                     '</td><td>' +
+//                     activity['GCActivityNote'] +
+//                     '</td>';
+
+//                 // Add the row to the table
+//                 console.log(tableRow);
+//                 gcActivityTableBody.appendChild(tableRow);
+
+//                 let tableRowString =
+//                     '#gcActivityTableBody' + formNumber + ' tr';
+//                 console.log(tableRowString);
+//                 // Make table rows selectable
+//                 $('tr.notHeader').on('click', function (e) {
+//                     // Show buttons
+//                     // Remove active class from anything previously selected
+//                     $('#gcActivityTableBody' + formNumber + ' tr').removeClass(
+//                         'table-active'
+//                     );
+
+//                     // Add active class to the newly selected row
+//                     $(this).addClass('table-active');
+
+//                     selectedRow = $(this);
+
+//                     console.log(selectedRow);
+//                 });
+//             }
+//         })
+//         .catch((error) => console.log(error.message));
+// }
 
 $(document).ready(function () {
     // Open the new license modal when the add new license button is clicked
     $('#addLicense').on('click', function (e) {
         licenseModal.show();
+    });
+
+    // Open the new license attachment modal when the upload license attachment button is clicked
+    $('#license-attachment-button').on('click', function (e) {
+        attachmentModal.show();
     });
 
     // Prevent the form from being submitted, instead run the saveNewLicense function

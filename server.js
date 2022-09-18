@@ -4,7 +4,7 @@ require('newrelic');
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-12 20:42:48
+ * @Last Modified time: 2022-09-18 12:30:45
  */
 
 ('use strict');
@@ -32,7 +32,7 @@ const PdfPrinter = require('pdfmake');
 // Use Express to create the application
 const app = express();
 
-// Helmet for security
+/* --------------------------- Helmet for security -------------------------- */
 app.use(helmet.hidePoweredBy());
 app.use(helmet.noSniff());
 app.use(
@@ -48,14 +48,14 @@ app.use(
 );
 app.use(helmet.hsts());
 
-// Logger Set Up
+/* ------------------------------ Logger Set Up ----------------------------- */
 if (process.env.MACHINE == 'local') {
     const logger = require('morgan'); // Logger
     // Set up Logger
     app.use(logger('dev'));
 }
 
-// Set views
+/* ------------------------ Set Views and Middleware ------------------------ */
 app.set('views', path.join(__dirname, 'views'));
 
 // Set the view engine to use Pug
@@ -99,9 +99,9 @@ let upload = multer({
 //     return countriesRows[0];
 // }
 
-/**
- * Routing
- * */
+/* -------------------------------------------------------------------------- */
+/*                                   Routing                                  */
+/* -------------------------------------------------------------------------- */
 
 // Request for root URL
 app.get('/', async (_req, res) => {
@@ -782,9 +782,9 @@ app.get('/licenses/:id', async (req, res) => {
     });
 });
 
-/**
- * User Creation and Authentication
- */
+/* -------------------------------------------------------------------------- */
+/*                      User Creation and Authentication                      */
+/* -------------------------------------------------------------------------- */
 
 // Route for user creation
 app.post('/createUser', async (req, res) => {
@@ -868,10 +868,11 @@ app.get('/logout', async (_req, res) => {
     res.redirect('/');
 });
 
-/**
- * Data Routes
- */
+/* -------------------------------------------------------------------------- */
+/*                                 Data Routes                                */
+/* -------------------------------------------------------------------------- */
 
+/* -------------------------------- Filtering ------------------------------- */
 // Handles rig filtering
 app.get('/rigs/:id', async (req, res) => {
     let employerID = req.params.id;
@@ -896,6 +897,7 @@ app.get('/licenseTypes/:id', async (req, res) => {
     res.send(result[0]);
 });
 
+/* ---------------------------------- Forms --------------------------------- */
 // Handles license type name and country for summary table
 app.get('/licenseTypes/names/:id', async (req, res) => {
     let licenseTypeID = req.params.id;
@@ -980,6 +982,7 @@ app.get('/form', async (_req, res) => {
     });
 });
 
+/* --------------------------- Add/Edit/Delete a Mariner --------------------------- */
 // Route for adding a Mariner
 app.post('/add', async (req, res) => {
     console.log(req.body);
@@ -1145,6 +1148,22 @@ app.post('/edit', async (req, res) => {
     res.redirect('/search');
 });
 
+// Route for deleting a Mariner
+app.delete('/delete/:id', async (req, res) => {
+    let marinerID = req.params.id;
+
+    let deleteSQL = 'DELETE FROM Mariners WHERE MarinerID = ?';
+    let delete_query = mysql.format(deleteSQL, [marinerID]);
+
+    let deleteRows = await db.query(delete_query);
+    let deleteJSON = JSON.parse(JSON.stringify(deleteRows));
+
+    console.log(deleteJSON);
+
+    res.send('Mariner Deleted!');
+});
+
+/* --------------------------- Mariner Activities --------------------------- */
 // Route for MarinerActivities
 app.post('/activity', async (req, res) => {
     console.log(req.body);
@@ -1209,6 +1228,12 @@ app.post('/activity/edit', async (req, res) => {
         editJSON: editJSON,
     });
 });
+
+/* -------------------------------------------------------------------------- */
+/*                                  Licenses                                  */
+/* -------------------------------------------------------------------------- */
+
+/* ------------------------ Add/Edit/Delete Licenses ------------------------ */
 
 // Handles creating a new license
 app.post('/licenses/:id', async (req, res) => {
@@ -1313,6 +1338,8 @@ app.delete('/deleteLicense', async (req, res) => {
 
     console.log(deleteRows);
 });
+
+/* --------------------------- License Activities --------------------------- */
 
 // Gets all gc license activities for a given licenseID
 app.get('/licenses/gcactivities/:id', async (req, res) => {
@@ -1448,14 +1475,83 @@ app.put('/licenses/govtactivities/:activityId', async (req, res) => {
     });
 });
 
-// Uploads a new license attachment to the database
-app.post('/licenses/attachments/:licenseId', async (req, res) => {
+/* --------------------------- License Attachments -------------------------- */
+
+// Get License Attachments for a given LicenseID
+app.get('/licenses/attachments/:licenseId', async (req, res) => {
+    // Get the licenseID from the request URL
     let licenseID = req.params.licenseId;
+
+    // SQL for getting attachments for a given license ID
+    let licenseSQL = 'SELECT * FROM LicenseAttachments WHERE LicenseID = ?';
+    let license_query = mysql.format(licenseSQL, [licenseID]);
+    let licenseRows = await db.query(license_query);
+
+    let licenseJSON = licenseRows[0];
+    console.log(licenseJSON);
+    res.send({
+        licenseJSON: licenseJSON,
+    });
 });
 
-/**
- * Routes relating to applications
- */
+// Uploads a new license attachment to the database
+app.post(
+    '/licenses/attachments/:licenseId',
+    upload.single('attachment'),
+    async (req, res) => {
+        if (!req.file) {
+            return res
+                .status(400)
+                .send({ message: 'Please select a file to upload.' });
+        }
+        // Get the file from the request
+        let file = req.file;
+
+        // Read the file as a buffer
+        const file_buffer = fs.readFileSync('public/uploads/' + file.filename);
+        console.log(file);
+        console.log(file.filename);
+
+        let licenseID = req.params.licenseId;
+
+        let marinerID = req.body.marinerID;
+        let licenseAttachmentName = req.body.licenseAttachmentName;
+
+        // Query for inserting a license attachment into the database
+        let attachmentSQL =
+            'INSERT INTO LicenseAttachments VALUES (0, ?, ?, ?, ?, CURRENT_TIMESTAMP(), ?)';
+        let attachment_query = mysql.format(attachmentSQL, [
+            file_buffer,
+            file.filename,
+            licenseAttachmentName,
+            licenseID,
+            marinerID,
+        ]);
+
+        // Upload attachment to database
+        let attachmentRows = await db.query(attachment_query);
+
+        // Delete the uploaded file from memory after insertion into the db
+        let uploadedFile = 'public/uploads/' + file.filename;
+        fs.unlinkSync(uploadedFile);
+        console.log('File Uploaded!');
+
+        // Log information about the attachment insert to the console
+        console.log(attachmentRows);
+        let attachmentJSON = JSON.parse(JSON.stringify(attachmentRows));
+        console.log(attachmentJSON);
+        attachmentID = attachmentJSON[0]['insertId'];
+        console.log('attachment ID: ' + attachmentID);
+
+        res.send({
+            attachmentUploaded: true,
+            attachmentFilename: file.filename,
+            attachmentID: attachmentID,
+        });
+    }
+);
+
+/* ------------------------------ Applications ------------------------------ */
 
 // Check if application exists for a Mariner
 app.get('/getApp', async (req, res) => {
@@ -1626,10 +1722,7 @@ app.post('/appUpload', upload.single('application'), async (req, res) => {
     });
 });
 
-/**
- *  Route for downloading an application document
- */
-
+/* -------------------------- Download Application -------------------------- */
 app.get('/appDownload', async (req, res) => {
     // Get the MarinerID from the request body
     let marinerID = req.query.marinerID;
@@ -1684,6 +1777,7 @@ app.get('/appDownload', async (req, res) => {
     });
 });
 
+/* --------------------------- Delete Application --------------------------- */
 // Route for Deleting an application Document from the database
 app.delete('/application', async (req, res) => {
     // Get ID from request parameters
@@ -1707,11 +1801,14 @@ app.delete('/application', async (req, res) => {
     res.send('Application successfully deleted');
 });
 
+/* --------------------------- Mariner Attachments -------------------------- */
 // Route for uploading a Mariner attachment
 app.post('/attachment', upload.single('attachment'), async (req, res) => {
     // Error handling
     if (!req.file) {
-        return res.status(400).send({ message: 'Please upload a file.' });
+        return res
+            .status(400)
+            .send({ message: 'Please select  a file to upload.' });
     }
 
     let attachmentID;
@@ -1845,9 +1942,10 @@ app.delete('/attachment', async (req, res) => {
         deleteJSON: deleteJSON,
     });
 });
-/**
- * Routes Relating to Search
- */
+
+/* -------------------------------------------------------------------------- */
+/*                                   Search                                   */
+/* -------------------------------------------------------------------------- */
 
 // Search the database
 app.post('/search', async (_req, res) => {
@@ -2003,21 +2101,6 @@ app.post('/search', async (_req, res) => {
         searchText: searchText,
         searchCategory: category,
     });
-});
-
-// Route for deleting a Mariner
-app.delete('/delete/:id', async (req, res) => {
-    let marinerID = req.params.id;
-
-    let deleteSQL = 'DELETE FROM Mariners WHERE MarinerID = ?';
-    let delete_query = mysql.format(deleteSQL, [marinerID]);
-
-    let deleteRows = await db.query(delete_query);
-    let deleteJSON = JSON.parse(JSON.stringify(deleteRows));
-
-    console.log(deleteJSON);
-
-    res.send('Mariner Deleted!');
 });
 
 // Error Handling

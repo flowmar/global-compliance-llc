@@ -118,7 +118,7 @@ block content
                     .row
                       .col-6.d-flex.justify-content-end
                         button.btn.btn-info#editGCActivity(type="button" onclick="editGCActivity()" style="display: none;")
-                        button.btn.btn-danger#deleteGCActivity(type="button" onclick="deleteGCActivity()" style="disply: none;")
+                        button.btn.btn-danger#deleteGCActivity(type="button" onclick="deleteGCActivity()" style="display: none;")
                       hr.mt-5
                     .row
                       h2 Govt Activity
@@ -152,22 +152,27 @@ block content
                         table.table.table-bordered.table-sm#licenseAttachmentTable
                           thead.table-dark.bg-white
                             tr
-                              th.p-3(scope="col" style="text-align: center;")
-                              th.p-3(scope="col" style="text-align: center;")
+                              th.p-3(scope="col" style="text-align: center;") Uploaded At
+                              th.p-3(scope="col" style="text-align: center;") Attachment Name
                           tbody.bg-white.text-dark.table-group-divider#licenseAttachmentTableBody(style="font-size: 1rem; font-weight: bold;")
-                    .row.my-4
-                      .col-6
-                        label.form-label License Attachments:
-                        .input-group#attachment-input-group
-                          input.form-control.form-control-file.text-dark(id="attachment-file" name="attachment" type="file")
-                          button.input-group-text.btn(id="attachment-upload-button" type="button" style="background-color: var(--yellow-color); font-weight: bold;" onclick="uploadLicenseAttachment()" value="Upload") Upload
+                    //- .row.my-4
+                    //-   .col-6
+                    //-     label.form-label License Attachment Name:
+                    //-     input.form-control#licenseAttachmentName(name="licenseAttachmentName" type="text")
+                    //-   .col-6
+                    //-     label.form-label License Attachment:
+                    //-     .input-group#attachment-input-group
+                    //-       input.form-control.form-control-file.text-dark(id="attachment-file" name="attachment" type="file")
+                    //-       button.input-group-text.btn(id="attachment-upload-button" type="button" style="background-color: var(--yellow-color); font-weight: bold;" value="Upload") Upload
                     .row#deleteLicenseRow
-                      .col-6
+                      .col-6.d-flex.justify-content-start
+                        button.btn.btn-warning(id="license-attachment-button" data-mdb-target="#licenseAttachmentModal" type="button" value="Attachment")  Upload License Attachment
                       .col-6.d-flex.justify-content-end
-                        button.btn.btn-danger(id="deleteLicenseButton" type="button" value="deleteLicense" onclick="deleteLicense()") Delete
+                        button.btn.btn-danger(id="deleteLicenseButton" type="button" value="deleteLicense" onclick="deleteLicense()") Delete License
 
             include includes/summaryTableHead
             include includes/newLicenseModal
+            include includes/licenseAttachmentModal
 
   script.
     // Get information from server
@@ -459,6 +464,15 @@ block content
         let formGovtSaveActivity = $('#saveGovtActivity').attr('id');
         $(selector + ' #saveGovtActivity').attr('id', formGovtSaveActivity + suffix);
 
+        let formLicenseAttachmentTable = $('#licenseAttachmentTable').attr('id');
+        $(selector + ' #licenseAttachmentTable').attr('id', formLicenseAttachmentTable + suffix);
+
+        let formLicenseAttachmentTableBody = $('#licenseAttachmentTableBody').attr('id');
+        $(selector + ' #licenseAttachmentTableBody').attr('id', formLicenseAttachmentTableBody + suffix);
+
+        let uploadLicenseAttachmentButton = $('#license-attachment-button').attr('id');
+        $(selector + ' #license-attachment-button').attr('id', uploadLicenseAttachmentButton + suffix);
+
         }
         // Hide the license names row
         licenseNamesRow.hide();
@@ -529,6 +543,8 @@ block content
         // Show the batch activities button
         $('#batchActivitiesRow').show();
         //- console.log(licensesArray);
+
+        //---------------------- Display Licenses ----------------------------//
         let licenseNamesArray = [];
 
         for(let j = 0; j < licensesArray.length; j++) {
@@ -674,6 +690,14 @@ block content
         let formGovtSaveActivity = $('#saveGovtActivity').attr('id');
         $(selector + ' #saveGovtActivity').attr('id', formGovtSaveActivity + suffix);
 
+        let formLicenseAttachmentTable = $('#licenseAttachmentTable').attr('id');
+        $(selector + ' #licenseAttachmentTable').attr('id', formLicenseAttachmentTable + suffix);
+
+        let formLicenseAttachmentTableBody = $('#licenseAttachmentTableBody').attr('id');
+        $(selector + ' #licenseAttachmentTableBody').attr('id', formLicenseAttachmentTableBody + suffix);
+
+        let uploadLicenseAttachmentButton = $('#license-attachment-button').attr('id');
+        $(selector + ' #license-attachment-button').attr('id', uploadLicenseAttachmentButton + suffix);
         }
 
         // Hide the license names row
@@ -892,6 +916,7 @@ block content
   script(src="/js/licenses.js")
 
   script.
+  //- ----------------- New License Country and License Type ----------------- -//
     // Place an empty option element into the dropdown for countries
       let newCountryBlankElement = document.createElement("option");
       newCountryBlankElement.value = 0;

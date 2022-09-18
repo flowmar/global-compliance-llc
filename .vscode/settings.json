@@ -9,6 +9,7 @@
     "dropdowns",
     "eyvqcfxf",
     "fieldname",
+    "GCSQL",
     "IDSQL",
     "JAWSDB",
     "marinerid",
@@ -20,5 +21,8 @@
   "docwriter.style": "JSDoc",
   "docwriter.progress.trackFunctions": true,
   "docwriter.progress.trackMethods": true,
-  "docwriter.progress.trackClasses": false
+  "docwriter.progress.trackClasses": false,
+  "marquee.widgets.npm-stats.packageNames": [
+    "global-compliance-llc"
+  ]
 }
