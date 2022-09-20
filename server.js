@@ -4,7 +4,7 @@ require('newrelic');
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-18 13:22:20
+ * @Last Modified time: 2022-09-20 01:01:22
  */
 
 ('use strict');
@@ -1465,10 +1465,11 @@ app.put('/licenses/govtactivities/:activityId', async (req, res) => {
         govtActivityNote,
         govtLicenseActivityId,
     ]);
-
+    console.log(activity_query);
     // Perform the query
     let activityUpdateRows = await db.query(activity_query);
 
+    console.log(activityUpdateRows);
     // Send the response to the client
     res.send({
         activityRows: activityUpdateRows,

@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-20 00:04:02
+ * @Last Modified time: 2022-09-20 01:12:24
  */
 
 let licenseID,
@@ -14,7 +14,9 @@ let licenseID,
     gcPending,
     govtPending,
     crNumber,
-    formNumber;
+    formNumber,
+    gcActivityNumber,
+    govtActivityNumber;
 
 const licenseModal = new mdb.Modal(newLicenseModal);
 const attachmentModal = new mdb.Modal(licenseAttachmentModal);
@@ -396,6 +398,11 @@ function changeForm() {
 
     // Open the edit gcActivity modal when the button is clicked
     $('#edit-GC-activity-button' + formNumber).on('click', function (e) {
+        // Get the ID number of the selected activity
+        gcActivityNumber = $(
+            '#gcActivityTableBody' + formNumber + ' tr.table-active'
+        ).attr('id');
+        // console.log(gcActivityNumber);
         // Get the selected item in the GC activity table
         gcActivity = $(
             '#gcActivityTableBody' +
@@ -405,11 +412,16 @@ function changeForm() {
 
         // Fill it into the edit GC activity modal box
         $('#editGCActivityModalTextBox').val(gcActivity);
+        $('#gcLicenseActivityIDhidden').val(gcActivityNumber);
         editGCActivityModal.show();
     });
 
     // Open the edit gcActivity modal when the button is clicked
     $('#edit-govt-activity-button' + formNumber).on('click', function (e) {
+        // Get the ID number of the selected activity
+        govtActivityNumber = $(
+            '#govtActivityTableBody' + formNumber + ' tr.table-active'
+        ).attr('id');
         // Get the selected item in the Govt Activity table
         govtActivity = $(
             '#govtActivityTableBody' +
@@ -419,6 +431,7 @@ function changeForm() {
 
         // Fill it into the edit Govt activity modal box
         $('#editGovtActivityModalTextBox').val(govtActivity);
+        $('#govtLicenseActivityIDhidden').val(govtActivityNumber);
 
         editGovtActivityModal.show();
     });
@@ -703,10 +716,53 @@ function changeForm() {
 }
 
 function confirmAndSaveEditedGCLicenseActivity() {
-    // Get the activity number
+    // Confirm the edit of the activity
+    if (confirm('Save edited Global Compliance License Activity?')) {
+        // Get the activity number
+        let activityNumber = $('#gcLicenseActivityIDhidden').val();
+        // Get the edited activity
+        let editedActivity = $('#editGCActivityModalTextBox').val();
+
+        console.log(activityNumber);
+        console.log(editedActivity);
+
+        // Send a put request that updates the activity
+        axios
+            .put('/licenses/gcactivities/' + activityNumber, {
+                gcActivityNote: editedActivity,
+            })
+            .then((response) => {
+                console.log(response);
+                alert('Activity Updated!');
+                location.reload();
+            })
+            .catch((err) => console.error(err.message));
+    }
 }
 
-function confirmAndSaveEditedGovtLicenseActivity() {}
+function confirmAndSaveEditedGovtLicenseActivity() {
+    // Confirm edit of activity
+    if (confirm('Save edited Government License Activity?')) {
+        // Get the activity number
+        let activityNumber = $('#govtLicenseActivityIDhidden').val();
+        // Get the edited activity
+        let editedActivity = $('#editGovtActivityModalTextBox').val();
+
+        console.log(activityNumber);
+        console.log(editedActivity);
+        // Send a put request that updates the activity
+        axios
+            .put('/licenses/govtactivities/' + activityNumber, {
+                govtActivityNote: editedActivity,
+            })
+            .then((response) => {
+                console.log(response);
+                alert('Activity Updated!');
+                location.reload();
+            })
+            .catch((err) => console.error(err.message));
+    }
+}
 
 // function getGCActivities( licenseID, formNumber )
 // {
@@ -772,9 +828,6 @@ function confirmAndSaveEditedGovtLicenseActivity() {}
 // }
 
 $(document).ready(function () {
-    // Get the form number
-    // formNumber = ('div.active form').dataset.('form-number');
-
     // Open the new license modal when the add new license button is clicked
     $('#addLicense').on('click', function (e) {
         licenseModal.show();
