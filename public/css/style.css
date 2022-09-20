@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 23:08:11
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-08-31 01:11:34
+ * @Last Modified time: 2022-09-18 13:44:01
  */
 
 :root {
@@ -36,10 +36,6 @@ header {
 .page-title {
     font-weight: bold;
 }
-
-/* .form-label {
-  color: black;
-} */
 
 .bg-indigo {
     background-color: var(--indigo-color) !important;

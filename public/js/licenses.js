@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-18 12:42:04
+ * @Last Modified time: 2022-09-20 00:04:02
  */
 
 let licenseID,
@@ -18,6 +18,8 @@ let licenseID,
 
 const licenseModal = new mdb.Modal(newLicenseModal);
 const attachmentModal = new mdb.Modal(licenseAttachmentModal);
+const editGCActivityModal = new mdb.Modal(editGCLicenseActivityModal);
+const editGovtActivityModal = new mdb.Modal(editGovtLicenseActivityModal);
 
 /**
  * The function collects the information from the form that is currently active and
@@ -238,7 +240,7 @@ function deleteLicense() {
     if (
         confirm(
             'WARNING: ' +
-                'Are you sure you want to delete this license? This action cannot be undone!'
+                'Are you sure you want to delete this license? All License activities and attachments will also be deleted. This action cannot be undone!'
         )
     ) {
         axios
@@ -308,11 +310,27 @@ function saveGovtActivity() {
         });
 }
 
+function saveLicenseAttachment(formData) {
+    let formNumber = $('.active form').data('form-number');
+
+    axios
+        .post('/licenses/attachments/' + licenseID, {
+            licenseAttachmentName: $('#licenseAttachmentName').val(),
+            marinerID: marinerID,
+            data: formData,
+        })
+        .then((response) => {
+            console.log(response);
+            location.reload();
+        })
+        .catch((e) => console.error(e.message));
+}
+
 function editGCActivity() {
     // TODO: Edit GC Activity
 }
 
-function deleteGCActivity() {
+function confirmAndDeleteGCActivity() {
     // TODO: Delete GC Activity
 }
 
@@ -320,7 +338,7 @@ function editGovtActivity() {
     // TODO: Edit GovtActivity
 }
 
-function deleteGovtActivity() {
+function confirmAndDeleteGovtActivity() {
     // TODO: Delete Govt Activity
 }
 
@@ -373,6 +391,42 @@ function changeForm() {
         .getAttribute('data-form-number');
 
     let licenseID = $('#licenseID' + formNumber).val();
+    let gcActivity;
+    let govtActivity;
+
+    // Open the edit gcActivity modal when the button is clicked
+    $('#edit-GC-activity-button' + formNumber).on('click', function (e) {
+        // Get the selected item in the GC activity table
+        gcActivity = $(
+            '#gcActivityTableBody' +
+                formNumber +
+                ' tr.table-active>td:nth-child(2)'
+        ).text();
+
+        // Fill it into the edit GC activity modal box
+        $('#editGCActivityModalTextBox').val(gcActivity);
+        editGCActivityModal.show();
+    });
+
+    // Open the edit gcActivity modal when the button is clicked
+    $('#edit-govt-activity-button' + formNumber).on('click', function (e) {
+        // Get the selected item in the Govt Activity table
+        govtActivity = $(
+            '#govtActivityTableBody' +
+                formNumber +
+                ' tr.table-active>td:nth-child(2)'
+        ).text();
+
+        // Fill it into the edit Govt activity modal box
+        $('#editGovtActivityModalTextBox').val(govtActivity);
+
+        editGovtActivityModal.show();
+    });
+
+    // Hide the gc, govt and attachment edit and delete buttons
+    $('.gc-buttons').hide();
+    $('.govt-buttons').hide();
+    $('.attachment-buttons').hide();
 
     // Get the activity TextField for the selected form
     let gcActivityTextField = document.getElementById(
@@ -493,6 +547,7 @@ function changeForm() {
                 // Make table rows selectable
                 $('tr.notHeader').on('click', function (e) {
                     // Show buttons
+                    $('.gc-buttons').show();
                     // Remove active class from anything previously selected
                     $('#gcActivityTableBody' + formNumber + ' tr').removeClass(
                         'table-active'
@@ -553,6 +608,7 @@ function changeForm() {
                 // Make table rows selectable
                 $(tableRowString).on('click', function (e) {
                     // Show buttons
+                    $('.govt-buttons').show();
                     // Remove active class from anything previously selected
                     $(
                         '#govtActivityTableBody' + formNumber + ' tr'
@@ -646,6 +702,12 @@ function changeForm() {
         .catch((err) => console.error(err.message));
 }
 
+function confirmAndSaveEditedGCLicenseActivity() {
+    // Get the activity number
+}
+
+function confirmAndSaveEditedGovtLicenseActivity() {}
+
 // function getGCActivities( licenseID, formNumber )
 // {
 //     // Get the currently selected license's gc activities to be displayed in the UI
@@ -710,6 +772,9 @@ function changeForm() {
 // }
 
 $(document).ready(function () {
+    // Get the form number
+    // formNumber = ('div.active form').dataset.('form-number');
+
     // Open the new license modal when the add new license button is clicked
     $('#addLicense').on('click', function (e) {
         licenseModal.show();
@@ -728,6 +793,17 @@ $(document).ready(function () {
         })
         .on('form:success', function (e) {
             saveNewLicense();
+        });
+
+    // After the License Attachment form is submitted, reload the page
+    $('#newLicenseAttachmentForm')
+        .parsley()
+        .on('form:submit', function (event) {
+            return false;
+        })
+        .on('form:success', function (event) {
+            let formData = new FormData(this);
+            saveLicenseAttachment(formData);
         });
 
     // When a .nav-link is clicked, and becomes active, get the active form number

@@ -4,7 +4,7 @@ require('newrelic');
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-18 12:30:45
+ * @Last Modified time: 2022-09-18 13:22:20
  */
 
 ('use strict');
@@ -1543,11 +1543,7 @@ app.post(
         attachmentID = attachmentJSON[0]['insertId'];
         console.log('attachment ID: ' + attachmentID);
 
-        res.send({
-            attachmentUploaded: true,
-            attachmentFilename: file.filename,
-            attachmentID: attachmentID,
-        });
+        res.redirect('/licenses/' + marinerID);
     }
 );
 

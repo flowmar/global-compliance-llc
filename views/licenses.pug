@@ -87,10 +87,10 @@ block content
                     .row#saveLicenseRow
                       .col.d-flex.justify-content-end
                         button.btn.btn-success#saveButton(type="button" onclick="saveLicenseInformation()") Save
-                    .row#editButtonRow(style="display: none;")
-                      .col.d-flex.justify-content-end
-                        button.btn.btn-info.mx-1#editButton(type="button" onclick="editLicenseInformation()") Edit
-                        button.btn.btn-danger.mx-1#deleteButton(type="button" onclick="deleteLicense()") Delete
+                    //- .row#editButtonRow(style="display: none;")
+                    //-   .col.d-flex.justify-content-end
+                    //-     button.btn.btn-info.mx-1#editButton(type="button" onclick="editLicenseInformation()") Edit
+                    //-     button.btn.btn-danger.mx-1#deleteButton(type="button" onclick="deleteLicense()") Delete
                     .row
                       .col-6.p-0
                         .display-5.fw-bold License Activity
@@ -105,6 +105,14 @@ block content
                               th.p-3(scope="col" style="text-align: center;") Logged At
                               th.p-3(scope="col" style="text-align: center;") Global Compliance Activity
                           tbody.bg-white.text-dark.table-group-divider.table-divider-color#gcActivityTableBody(style="font-size: 1rem; font-weight: bold;")
+                    .row
+                      .col.d-flex.justify-content-end
+                        button.btn.btn-info.m-2.gc-buttons(id="edit-GC-activity-button" data-mdb-target="#editGCLicenseActivityModal" type="button")
+                          i.bi.bi-pencil-square.text-dark
+                          span.text-dark   &nbsp;Edit
+                        button.btn.m-2.gc-buttons(id="delete-GC-activity-button" type="button" onclick="confirmAndDeleteGCActivity()" style="background-color: var(--red-color);")
+                          i.bi.bi-x-circle-fill.text-dark
+                          span.text-dark   &nbsp;Delete
                     .row.mt-4.mb-2
                       .col-6
                         label.form-label Global Compliance Activity:
@@ -115,11 +123,12 @@ block content
                     .row
                       .col-6.d-flex.justify-content-end
                         button.btn.btn-success#saveGCActivity(type="button" onclick="saveGCActivity()") Save
-                    .row
-                      .col-6.d-flex.justify-content-end
-                        button.btn.btn-info#editGCActivity(type="button" onclick="editGCActivity()" style="display: none;")
-                        button.btn.btn-danger#deleteGCActivity(type="button" onclick="deleteGCActivity()" style="display: none;")
-                      hr.mt-5
+                    //- .row
+                    //-   .col-6.d-flex.justify-content-end
+                    //-     button.btn.btn-info#editGCActivity(type="button" onclick="editGCActivity()" style="display: none;")
+                    //-     button.btn.btn-danger#deleteGCActivity(type="button" onclick="deleteGCActivity()" style="display: none;")
+                      //- hr.mt-5
+                    hr.mt-5.mb-3
                     .row
                       h2 Govt Activity
                     .row.my-4
@@ -130,6 +139,14 @@ block content
                               th.p-3(scope="col" style="text-align: center;") Logged At
                               th.p-3(scope="col" style="text-align: center;") Government Activity
                           tbody.bg-white.text-dark.table-group-divider.table-divider-color#govtActivityTableBody(style="font-size: 1rem; font-weight: bold;")
+                    .row
+                      .col.d-flex.justify-content-end
+                        button.btn.btn-info.m-2.govt-buttons(id="edit-govt-activity-button" data-mdb-target="#editGovtActivityModal" type="button")
+                          i.bi.bi-pencil-square.text-dark
+                          span.text-dark   &nbsp;Edit
+                        button.btn.m-2.govt-buttons(id="delete-govt-activity-button" type="button" onclick="confirmAndDeleteGovtActivity()" style="background-color: var(--red-color);")
+                          i.bi.bi-x-circle-fill.text-dark
+                          span.text-dark   &nbsp;Delete
                     .row.mt-4.mb-2
                       .col-6
                         label.form-label Government Activity:
@@ -140,11 +157,12 @@ block content
                     .row
                       .col-6.d-flex.justify-content-end
                         button.btn.btn-success#saveGovtActivity(type="button" onclick="saveGovtActivity()") Save
-                    .row
-                      .col-6.d-flex.justify-content-end
-                        button.btn.btn-info#editGovtActivity(type="button" onclick="editGovtActivity()" style="display: none;")
-                        button.btn.btn-danger#deleteGovtActivity(type="button" onclick="deleteGovtActivity()" style="display: none;")
+                    //- .row
+                    //-   .col-6.d-flex.justify-content-end
+                    //-     button.btn.btn-info#editGovtActivity(type="button" onclick="editGovtActivity()" style="display: none;")
+                    //-     button.btn.btn-danger#deleteGovtActivity(type="button" onclick="deleteGovtActivity()" style="display: none;")
                       hr.mt-5
+                    hr.mt-5.mb-3
                     .row
                       h2 License Attachments
                     .row.my-4
@@ -155,6 +173,14 @@ block content
                               th.p-3(scope="col" style="text-align: center;") Uploaded At
                               th.p-3(scope="col" style="text-align: center;") Attachment Name
                           tbody.bg-white.text-dark.table-group-divider#licenseAttachmentTableBody(style="font-size: 1rem; font-weight: bold;")
+                    .row
+                      .col.d-flex.justify-content-end
+                        button.btn.btn-info.m-2.attachment-buttons(id="download-license-attachment-button")
+                          i.bi.bi-pencil-square.text-dark
+                          span.text-dark   &nbsp;Download
+                        button.btn.m-2.attachment-buttons(id="delete-license-attachment-button" type="button" onclick="confirmAndDeleteLicenseAttachment()" style="background-color: var(--red-color);")
+                          i.bi.bi-x-circle-fill.text-dark
+                          span.text-dark   &nbsp;Delete
                     //- .row.my-4
                     //-   .col-6
                     //-     label.form-label License Attachment Name:
@@ -164,15 +190,21 @@ block content
                     //-     .input-group#attachment-input-group
                     //-       input.form-control.form-control-file.text-dark(id="attachment-file" name="attachment" type="file")
                     //-       button.input-group-text.btn(id="attachment-upload-button" type="button" style="background-color: var(--yellow-color); font-weight: bold;" value="Upload") Upload
-                    .row#deleteLicenseRow
+                    .row#deleteLicenseRow.mt-4
                       .col-6.d-flex.justify-content-start
-                        button.btn.btn-warning(id="license-attachment-button" data-mdb-target="#licenseAttachmentModal" type="button" value="Attachment")  Upload License Attachment
+                        button.btn.btn-warning.text-dark(id="license-attachment-button" data-mdb-target="#licenseAttachmentModal" type="button" value="Attachment")
+                          i.bi.bi-file-medical(style="font-size: 1rem;")
+                          span &nbsp; Upload License Attachment
                       .col-6.d-flex.justify-content-end
-                        button.btn.btn-danger(id="deleteLicenseButton" type="button" value="deleteLicense" onclick="deleteLicense()") Delete License
+                        button.btn.btn-danger.text-dark(id="deleteLicenseButton" type="button" value="deleteLicense" onclick="deleteLicense()")
+                          i.bi.bi-x-circle-fill.text-dark
+                          span.text-dark   &nbsp; Delete License
 
             include includes/summaryTableHead
             include includes/newLicenseModal
             include includes/licenseAttachmentModal
+            include includes/editGCLicenseActivityModal
+            include includes/editGovtLicenseActivityModal
 
   script.
     // Get information from server
@@ -434,6 +466,7 @@ block content
 
         $(selector + ' #editButton').attr('id', 'editButton' + suffix);
 
+        // Change GC activity form number
         let formGCActivityBox = $('#gcActivityBox').attr('id');
         $(selector + ' #gcActivityBox').attr('id', formGCActivityBox + suffix);
 
@@ -446,9 +479,13 @@ block content
         let formGCCharacterCount = $('#gcCharacterCountMessage').attr('id');
         $(selector + ' #gcCharacterCountMessage').attr('id', formGCCharacterCount + suffix);
 
+        let formGCEditActivity = $('#edit-gc-activity-button').attr('id');
+        $(selector + ' #edit-gc-activity-button').attr('id', formGCEditActivity + suffix);
+
         let formGCSaveActivity = $('#saveGCActivity').attr('id');
         $(selector + ' #saveGCActivity').attr('id', formGCSaveActivity + suffix);
 
+        // Change Govt Activity form number
         let formGovtActivityBox = $('#govtActivityBox').attr('id');
         $(selector + ' #govtActivityBox').attr('id', formGovtActivityBox + suffix);
 
@@ -460,6 +497,9 @@ block content
 
         let formGovtCharacterCount = $('#govtCharacterCountMessage').attr('id');
         $(selector + ' #govtCharacterCountMessage').attr('id', formGovtCharacterCount + suffix);
+
+        let formGovtEditActivity = $('#edit-govt-activity-button').attr('id');
+        $(selector + ' #edit-govt-activity-button').attr('id', formGovtEditActivity + suffix);
 
         let formGovtSaveActivity = $('#saveGovtActivity').attr('id');
         $(selector + ' #saveGovtActivity').attr('id', formGovtSaveActivity + suffix);
@@ -672,6 +712,12 @@ block content
         let formGCCharacterCount = $('#gcCharacterCountMessage').attr('id');
         $(selector + ' #gcCharacterCountMessage').attr('id', formGCCharacterCount + suffix);
 
+        let formGCEditActivity = $('#edit-GC-activity-button').attr('id');
+        $(selector + ' #edit-GC-activity-button').attr('id',formGCEditActivity + suffix);
+
+        let formGCDeleteActivity = $('#delete-GC-activity-button').attr('id');
+        $(selector + ' #delete-GC-activity-button').attr('id', formGCDeleteActivity + suffix);
+
         let formGCSaveActivity = $('#saveGCActivity').attr('id');
         $(selector + ' #saveGCActivity').attr('id', formGCSaveActivity + suffix);
 
@@ -680,6 +726,12 @@ block content
 
         let formGovtCharacterCount = $('#govtCharacterCountMessage').attr('id');
         $(selector + ' #govtCharacterCountMessage').attr('id', formGovtCharacterCount + suffix);
+
+        let formGovtEditActivity = $('#edit-govt-activity-button').attr('id');
+        $(selector + ' #edit-govt-activity-button').attr('id', formGovtEditActivity + suffix);
+
+        let formGovtDeleteActivity = $('#delete-govt-activity-button').attr('id');
+        $(selector + ' #delete-govt-activity-button').attr('id', formGovtDeleteActivity + suffix);
 
         let formGovtActivityTable = $('#govtActivityTable').attr('id');
         $(selector + ' #govtActivityTable').attr('id', formGovtActivityTable + suffix);
@@ -698,6 +750,7 @@ block content
 
         let uploadLicenseAttachmentButton = $('#license-attachment-button').attr('id');
         $(selector + ' #license-attachment-button').attr('id', uploadLicenseAttachmentButton + suffix);
+
         }
 
         // Hide the license names row
@@ -911,6 +964,7 @@ block content
         tabContent.prepend(summaryTabPane);
 
       }
+
 
     });
   script(src="/js/licenses.js")

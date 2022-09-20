@@ -41,3 +41,10 @@ TODO: Create Route for deleting license attachments
         //-       label.form-label.text-dark(for="first-name") Birth Date:
         //-       input.form-control.bg-white(type="date" id="first-name" name="firstName" data-parsley-required="true")
         //-     .col-4
+
+
+ let formGovtEditActivity = $('#edit-govt-activity-button').attr('id');
+        $(selector + ' #edit-govt-activity-button').attr('id', formGovtEditActivity + suffix);
+
+        let formGCEditActivity = $('#edit-gc-activity-button').attr('id');
+        $(selector + ' #edit-gc-activity-button').attr('id', formGCEditActivity + suffix);

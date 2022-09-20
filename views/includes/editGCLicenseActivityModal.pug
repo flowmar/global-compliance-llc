@@ -1,18 +1,17 @@
-.modal.fade#editActivityModal(aria-hidden="true" aria-labelledby="licensesModalLabel" tabindex="-1")
+.modal.fade#editGCLicenseActivityModal(aria-hidden="true" aria-labelledby="licensesModalLabel" tabindex="-3")
   .modal-dialog.text-dark.modal-lg
     .modal-content
       .modal-header(style="background-color: var(--main-bg-color);")
-        h5.modal-title#licensesModalLabel.text-light Edit Mariner Activity
+        h5.modal-title#licensesModalLabel.text-light Edit GC Activity
         button.btn-close(data-mdb-dismiss="modal" type="button" aria-label="Close")
       .modal-body.text-center(style="background-color: var(--header-bg-color);")
         .container
           input(id="marinerIDNumber" name="marinerIDNumber" type="text" hidden value="marinerID")
-          input.form-control(id="editModalTextBox" data-parsley-maxlength="255" type="text")
+          input.form-control(id="editGCActivityModalTextBox" data-parsley-maxlength="255" type="text")
       .modal-footer(style="background-color: var(--main-bg-color);")
-        button.btn.m-2.text-white(id="save-edited-activity-button" style="background-color: var(--green-color); color:#4f4f4f;" value="Save" onclick="confirmAndSaveEditedActivity()")
+        button.btn.m-2.text-white(id="save-edited-activity-button" style="background-color: var(--green-color); color:#4f4f4f;" value="Save" onclick="confirmAndSaveEditedGCLicenseActivity()")
           i.bi.bi-save(style="font-size: .9rem;")
           span   &nbsp;Save
         button.btn.text-light(id="closeEditModal" data-mdb-dismiss="modal" type="button" style="background-color: var(--red-color);")
           i.bi.bi-x-square(style="font-size: .9rem;")
           span &nbsp;Close
-        //- button.btn.btn-primary Save

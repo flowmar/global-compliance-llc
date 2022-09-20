@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-08 07:05:56
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-06 12:13:42
+ * @Last Modified time: 2022-09-18 13:50:31
  */
 
 /**
@@ -158,11 +158,13 @@ $(document).ready(() => {
     let selectedRow;
     if (!selectedRow) {
         $('.buttons').hide();
+        // document.querySelector('.buttons').style.display = none;
     }
 
     // Make table rows selectable
     $('#activityTableBody tr').on('click', function () {
         $('.buttons').show();
+        // document.querySelector('.buttons').style.display = block;
         // Remove active class from anything previously selected
         $('#activityTableBody tr').removeClass('table-active');
 

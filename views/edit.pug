@@ -173,7 +173,7 @@ block content
                 button.btn.btn-info.m-2.buttons(id="edit-mariner-activity-button" data-mdb-target="#editActivityModal")
                   i.bi.bi-pencil-square.text-dark
                   span.text-dark   &nbsp;Edit
-                button.btn.btn-danger.m-2.buttons(id="delete-mariner-activity-button" type="button" onclick="confirmAndDeleteActivity()")
+                button.btn.m-2.buttons(id="delete-mariner-activity-button" type="button" onclick="confirmAndDeleteActivity()" style="background-color: var(--red-color);")
                   i.bi.bi-x-circle-fill.text-dark
                   span.text-dark   &nbsp;Delete
           form(id="activityForm" action="/activity" method="POST")
