@@ -3,7 +3,7 @@
     .modal-content
       .modal-header(style="background-color: var(--main-bg-color);")
         h5.modal-title.text-light#licenseAttachmentModalLabel New License Attachment
-        button.btn-close(data-mdb-dismiss="modal" type="button" aria-label="Close")
+        button.btn-close.btn-close-white(data-mdb-dismiss="modal" type="button" aria-label="Close")
       .modal-body.pb-3(style="background-color: var(--header-bg-color);").px-4
         form.form-horizontal.d-inline(id="newLicenseAttachmentForm" data-parsley-validate method="POST" action="/licenses/attachments/" enctype="multipart/form-data").container
           .row

@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-21 04:02:46
+ * @Last Modified time: 2022-09-21 04:53:52
  */
 
 let licenseID,
@@ -242,7 +242,7 @@ function deleteLicense() {
     if (
         confirm(
             'WARNING: ' +
-                'Are you sure you want to delete this license? All License activities and attachments will also be deleted. This action cannot be undone!'
+                'You are about to completely erase this license and all associated data.\n This includes all license activities and license attachments!\n THIS ACTION CANNOT BE UNDONE!\n Are you sure you wish to delete this license?'
         )
     ) {
         axios
@@ -312,6 +312,10 @@ function saveGovtActivity() {
         });
 }
 
+/**
+ * It takes the form data, and sends it to the server
+ * @param formData - the file that is being uploaded
+ */
 function saveLicenseAttachment(formData) {
     let formNumber = $('.active form').data('form-number');
 
@@ -328,6 +332,9 @@ function saveLicenseAttachment(formData) {
         .catch((e) => console.error(e.message));
 }
 
+/**
+ * It gets the ID of the selected GC Activity, then deletes it from the database
+ */
 function confirmAndDeleteGCActivity() {
     // Get the currently selected GC Activity
     let activityText = $(
@@ -355,6 +362,9 @@ function confirmAndDeleteGCActivity() {
     }
 }
 
+/**
+ * It gets the ID of the selected row, and then deletes the row from the database
+ */
 function confirmAndDeleteGovtActivity() {
     // Get the currently selected GC Activity
     let activityText = $(
@@ -755,6 +765,11 @@ function changeForm() {
         .catch((err) => console.error(err.message));
 }
 
+/**
+ * The function confirms the edit of the activity, gets the activity number and
+ * edited activity, sends a put request that updates the activity, and then reloads
+ * the page.
+ */
 function confirmAndSaveEditedGCLicenseActivity() {
     // Confirm the edit of the activity
     if (confirm('Save edited Global Compliance License Activity?')) {
@@ -780,6 +795,11 @@ function confirmAndSaveEditedGCLicenseActivity() {
     }
 }
 
+/**
+ * The function confirms the edit of the activity, gets the activity number and the
+ * edited activity, sends a put request that updates the activity, and then reloads
+ * the page.
+ */
 function confirmAndSaveEditedGovtLicenseActivity() {
     // Confirm edit of activity
     if (confirm('Save edited Government License Activity?')) {

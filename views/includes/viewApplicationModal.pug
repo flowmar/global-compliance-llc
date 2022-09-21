@@ -1,10 +1,10 @@
-.modal.fade#applicationModal(tabindex="-1" aria-labelledby="licensesModalLabel" aria-hidden="true")
+.modal.fade#applicationModal(aria-hidden="true" aria-labelledby="licensesModalLabel" tabindex="-1")
   .modal-dialog.text-dark.modal-lg
-    .modal-content
-      .modal-header
-        h5.modal-title#licensesModalLabel Mariner Application
-        button.btn-close(type="button" data-mdb-dismiss="modal" aria-label="Close")
-      .modal-body.text-center
+    .modal-content.border.border-light
+      .modal-header(style="background-color: var(--main-bg-color);")
+        h5.modal-title.text-light#licensesModalLabel Mariner Application
+        button.btn-close.btn-close-white(data-mdb-dismiss="modal" type="button" aria-label="Close")
+      .modal-body.text-center.text-light(style="background-color: var(--header-bg-color);")
         //- form.form-horizontal.d-inline(method="POST" action="/appUpload" enctype="multipart/form-data" id="target")
         //-   input(type="text" hidden id="marinerIDNumber" name="marinerIDNumber" value="marinerID")
         //-   label(for="file-input-group") Application File:
@@ -12,8 +12,8 @@
         //-       input.form-control.form-control-file.text-dark(type="file" id="application-file" name="application")
         //-       button.input-group-text.btn(style="background-color: var(--yellow-color); font-weight: bold;" onclick="uploadApp()" id="app-upload-button" value="Upload" type="submit") Upload
         #appArea.text-center.mt-4
-      .modal-footer
-        button.btn.btn-secondary(type="button" data-mdb-dismiss="modal" id="closeApplicationModal")
-          i.bi.bi-x(style="font-size: .9rem;")
-          span Close
+      .modal-footer(style="background-color: var(--main-bg-color)")
+        button.btn.btn-secondary(id="closeApplicationModal" data-mdb-dismiss="modal" type="button" style="background-color: var(--red-color);")
+          i.bi.bi-x-square(style="font-size: .9rem;")
+          span &nbsp; Close
         //- button.btn.btn-primary Save

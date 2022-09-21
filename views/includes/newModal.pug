@@ -1,53 +1,50 @@
-.modal.fade#newApplicationModal(tabindex="-1" aria-labelledby="newApplicationModalLabel" aria-hidden="true")
+.modal.fade#newApplicationModal(aria-hidden="true" aria-labelledby="newApplicationModalLabel" tabindex="-1")
   .modal-dialog.text-dark.modal-lg
-    .modal-content
-      .modal-header.bg-dark
+    .modal-content.border.border-light
+      .modal-header(style="background-color: var(--main-bg-color);")
         h5.text-white.modal-title#licensesModalLabel Mariner Application
-        button.btn-close(type="button" data-mdb-dismiss="modal" aria-label="Close")
-      .modal-body
-        form.form-horizontal.d-inline.container(method="POST" action="/newAppUpload" enctype="multipart/form-data" id="newAppUploadForm" data-parsley-validate)
+        button.btn-close.btn-close-white(data-mdb-dismiss="modal" type="button" aria-label="Close")
+      .modal-body.text-light(style="background-color: var(--header-bg-color);")
+        form.form-horizontal.d-inline.container(id="newAppUploadForm" data-parsley-validate method="POST" action="/newAppUpload" enctype="multipart/form-data")
           .row
             .col-3
-              input.form-control(type="text" hidden id="marinerIDNumber" name="marinerIDNumber" value=`${next}`)
-              input.form-control(type="text" hidden id="applicationIDNumber" name="applicationIDNumber" value=`${nextAppID}`)
-              label.form-label(for="mariner-id")  &nbsp;Mariner ID:
-              input.form-control(style="background-color: var(--highlight-bg-color);" type="text" id="mariner-id" name="marinerID" value=`${next}` required disabled)
+              input.form-control.text-light(id="marinerIDNumber" name="marinerIDNumber" type="text" hidden value=`${next}`)
+              input.form-control(id="applicationIDNumber" name="applicationIDNumber" type="text" hidden value=`${nextAppID}`)
+              label.form-label.text-light(for="mariner-id")  &nbsp;Mariner ID:
+              input.form-control(id="mariner-id" name="marinerID" type="text" style="background-color: var(--highlight-bg-color);" value=`${next}` required disabled)
             .col-6
             .col-3
-              label.form-label(for="application-id") Application ID:
-              input.form-control(style="background-color: var(--highlight-bg-color);" type="text" id="application-id" name="applicationID" value=`${nextAppID}` required disabled)
+              label.form-label.text-light(for="application-id") Application ID:
+              input.form-control(id="application-id" name="applicationID" type="text" style="background-color: var(--highlight-bg-color);" value=`${nextAppID}` required disabled)
           .row.mt-4
             .col-3
-              label.form-label(for="first-name")  &nbsp;First Name:
-              input.form-control.bg-white(type="text" id="first-name" name="firstName" data-parsley-required="true")
+              label.form-label.text-light(for="first-name")  &nbsp;First Name:
+              input.form-control.bg-white(id="first-name" name="firstName" data-parsley-required="true" type="text")
             .col-3
-              label.form-label(for="middle-name") &nbsp; Middle Name:
-              input.form-control.bg-white(type="text" id="middle-name" name="middleName")
+              label.form-label.text-light(for="middle-name") &nbsp; Middle Name:
+              input.form-control.bg-white(id="middle-name" name="middleName" type="text")
             .col-3
-              label.form-label(for="last-name")  &nbsp;Last Name:
-              input.form-control.bg-white(type="text" id="last-name" name="lastName" data-parsley-required="true")
+              label.form-label.text-light(for="last-name")  &nbsp;Last Name:
+              input.form-control.bg-white(id="last-name" name="lastName" data-parsley-required="true" type="text")
           .row.mt-4
             .col-6
-              label.form-label(for="birth-date")  &nbsp; Date of Birth:
-              input.form-control.bg-white(type="date" id="birth-date" name="birthDate" data-parsley-required="true")
+              label.form-label.text-light(for="birth-date")  &nbsp; Date of Birth:
+              input.form-control.bg-white(id="birth-date" name="birthDate" data-parsley-required="true" type="date")
           //- .row.mt-4
           //-   .col-6
           //-     label.form-label(for="processing-agent") Processing Agent
           //-       select.form-select.bg-white.text-dark(id="processing-agent")
           .row.mt-4
             .col-7
-              label(for="file-input-group") &nbsp; Application File:
+              label.text-light(for="file-input-group") &nbsp; Application File:
                 .input-group.mt-2#file-input-group
-                  input.form-control.form-control-file.text-dark(type="file" id="application-file" name="application" data-parsley-required="true")
+                  input.form-control.form-control-file.text-dark(id="application-file" name="application" data-parsley-required="true" type="file")
                   //- button.input-group-text.btn(style="background-color: var(--yellow-color); font-weight: bold;" onclick="uploadApp()" id="app-upload-button" value="Upload" type="submit") Upload
             .col-5
-              label.form-label(for="processing-agent") &nbsp;Processing Agent:
+              label.form-label.text-light(for="processing-agent") &nbsp;Processing Agent:
               select.form-select.bg-white(id="processing-agent" name="processingAgent" data-parsley-required="true")
+      .modal-footer.container-fluid(style="background-color: var(--main-bg-color);")
           .row.mt-4
             .col.d-flex.justify-content-end
-              button.btn.btn-secondary.mx-3(type="button" data-mdb-dismiss="modal" id="newModalClose") Cancel
-              button.btn.btn-primary(type="submit" onclick="appOnlyUpload()" id="app-only-save-button" value="Save") Save
-        //- #appArea.text-center.mt-4
-      //- .modal-footer
-      //-   button.btn.btn-secondary(type="button" data-mdb-dismiss="modal" id="newModalClose") Cancel
-      //-   button.btn.btn-primary() Save
+              button.btn.mx-3.text-light(id="newModalClose" data-mdb-dismiss="modal" type="button" style="background-color: var(--red-color);") Cancel
+              button.btn.text-light(id="app-only-save-button" type="submit" onclick="appOnlyUpload()" value="Save" style="background-color: var(--green-color);") Save
