@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-20 01:12:24
+ * @Last Modified time: 2022-09-21 04:02:46
  */
 
 let licenseID,
@@ -328,20 +328,60 @@ function saveLicenseAttachment(formData) {
         .catch((e) => console.error(e.message));
 }
 
-function editGCActivity() {
-    // TODO: Edit GC Activity
-}
-
 function confirmAndDeleteGCActivity() {
-    // TODO: Delete GC Activity
-}
+    // Get the currently selected GC Activity
+    let activityText = $(
+        '#gcActivityTableBody' + formNumber + ' tr.table-active>td:nth-child(2)'
+    ).text();
+    // Get the ID number of the selected gc activity
+    let activityID = $(
+        '#gcActivityTableBody' + formNumber + ' tr.table-active'
+    ).attr('id');
 
-function editGovtActivity() {
-    // TODO: Edit GovtActivity
+    if (
+        confirm(
+            'Are you sure you want to delete the GC License Activity:\n "' +
+                activityText +
+                '"?'
+        )
+    ) {
+        axios
+            .delete('/licenses/gcactivities/' + activityID)
+            .then((response) => {
+                alert('Activity Deleted!');
+                location.reload();
+            })
+            .catch((err) => console.error(err.message));
+    }
 }
 
 function confirmAndDeleteGovtActivity() {
-    // TODO: Delete Govt Activity
+    // Get the currently selected GC Activity
+    let activityText = $(
+        '#govtActivityTableBody' +
+            formNumber +
+            ' tr.table-active>td:nth-child(2)'
+    ).text();
+    // Get the ID number of the selected gc activity
+    let activityID = $(
+        '#govtActivityTableBody' + formNumber + ' tr.table-active'
+    ).attr('id');
+
+    if (
+        confirm(
+            'Are you sure you want to delete the Government License Activity:\n "' +
+                activityText +
+                '"?'
+        )
+    ) {
+        axios
+            .delete('/licenses/govtactivities/' + activityID)
+            .then((response) => {
+                alert('Activity Deleted!');
+                location.reload();
+            })
+            .catch((err) => console.error(err.message));
+    }
 }
 
 /**

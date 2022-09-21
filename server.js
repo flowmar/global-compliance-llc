@@ -4,7 +4,7 @@ require('newrelic');
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-20 01:01:22
+ * @Last Modified time: 2022-09-20 01:55:48
  */
 
 ('use strict');
@@ -1408,6 +1408,22 @@ app.put('/licenses/gcactivities/:activityId', async (req, res) => {
     });
 });
 
+// Delete a gc license activity for the given ID
+app.delete('/licenses/gcactivities/:id', async (req, res) => {
+    let activityID = req.params.id;
+
+    // SQL for deleting the requested activity
+    let deleteSQL = 'DELETE FROM GCLicenseActivities WHERE GCActivityID = ?';
+    let delete_query = mysql.format(deleteSQL, [activityID]);
+
+    let deleteRows = await db.query(delete_query);
+    let deleteJSON = deleteRows[0];
+
+    res.send({
+        deleteJSON: deleteJSON,
+    });
+});
+
 // Gets all govt license activities for a given licenseID
 app.get('/licenses/govtactivities/:id', async (req, res) => {
     // Get URL parameter
@@ -1476,6 +1492,22 @@ app.put('/licenses/govtactivities/:activityId', async (req, res) => {
     });
 });
 
+// Delete a govt license activity for the given ID
+app.delete('/licenses/govtactivities/:id', async (req, res) => {
+    let activityID = req.params.id;
+
+    // SQL for deleting the requested activity
+    let deleteSQL =
+        'DELETE FROM GovtLicenseActivities WHERE GovtActivityID = ?';
+    let delete_query = mysql.format(deleteSQL, [activityID]);
+
+    let deleteRows = await db.query(delete_query);
+    let deleteJSON = deleteRows[0];
+
+    res.send({
+        deleteJSON: deleteJSON,
+    });
+});
 /* --------------------------- License Attachments -------------------------- */
 
 // Get License Attachments for a given LicenseID
