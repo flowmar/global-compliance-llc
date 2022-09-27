@@ -47,4 +47,6 @@
           .row.mt-4
             .col.d-flex.justify-content-end
               button.btn.mx-3.text-light(id="newModalClose" data-mdb-dismiss="modal" type="button" style="background-color: var(--red-color);") Cancel
-              button.btn.text-light(id="app-only-save-button" type="submit" onclick="appOnlyUpload()" value="Save" style="background-color: var(--green-color);") Save
+              button.btn.text-light(id="app-only-save-button" type="submit" value="Save" onclick="appOnlyUpload()" style="background-color: var(--green-color);" form="newAppUploadForm")
+                i.bi.bi-sd-card(style="font-size: .9rem;")
+                span &nbsp; Save

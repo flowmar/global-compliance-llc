@@ -1,0 +1,53 @@
+form(id="licenseForm" data-parsley-validate action="/license" method='POST').container
+                    .row
+                      .col
+                        .display-5.fw-bold License Information
+                        hr.mt-1
+                    .row
+                      .col-3
+                        label.form-label MarinerID:
+                        input.form-control(type="text" value=`${marinerID}` readonly)
+                        input.form-control(id="marinerIDhidden" name="marinerID" type="text" value=`${marinerID}` hidden)
+                      .col-1
+                      .col-4
+                        label.form-label License Name:
+                        input.form-control#licenseName(name="licenseName" data-parsley-required="true" type="text")
+                      .col-1
+                      .col-3
+                        label.form-label LicenseID:
+                        input.form-control#licenseID(type="text" readonly)
+                        input.form-control(id="licenseIDhidden" name="licenseID" type="text" hidden)
+                    .row.my-4
+                      .col-4
+                        label.form-label Country:
+                        select.form-select#countriesField(name="country")
+                      .col-4
+                        label.form-label License Type:
+                        select.form-select#licenseTypesField(name="licenseType")
+                    .row.my-4
+                      .col-4
+                        label.form-label CR Number:
+                        input.form-control(id="crNumber" name="crNumber" type="number")
+                    .row.my-4
+                      .col-3
+                        label.form-label Issue Date:
+                        input.form-control(id="issueDate" name="issueDate" type="date")
+                      .col-1
+                      .col-3
+                        label.form-label Expiration Date:
+                        input.form-control(id="expirationDate" name="expirationDate" type="date")
+                      .col
+                    .row.my-5
+                      .col
+                        .form-check
+                          input.form-check-input(id="gcPending" name="gcPending" type="checkbox")
+                          label.form-label Pending Global Compliance
+                      .col
+                        .form-check
+                          label.form-label Pending Government
+                          input.form-check-input(id="govtPending" name="govtPending" type="checkbox")
+                    .row#saveLicenseRow
+                      .col.d-flex.justify-content-end
+                        button.btn.btn-success#saveButton(type="submit" form="licenseForm")
+                          i.bi.bi-sd-card(style="font-size: .9rem;")
+                          span &nbsp; Save

@@ -24,5 +24,6 @@
   "docwriter.progress.trackClasses": false,
   "marquee.widgets.npm-stats.packageNames": [
     "global-compliance-llc"
-  ]
+  ],
+  "dotenv.enableAutocloaking": true
 }

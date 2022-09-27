@@ -24,6 +24,10 @@ block content
           .row#batchActivitiesRow(style="display: none !important;")
             .col-6.d-flex.justify-content-start
               button.btn.btn-secondary(id="batchActivitiesButton" type="button" value="batchActivities") Batch Add Activities
+            .col-6.d-flex.justify-content-end
+              button.btn(id="deleteLicenseButton" type="button" style="background-color: #dd0303;" value="deleteLicense" onclick="deleteLicense()")
+                  i.bi.bi-fire.text-white
+                  span.text-white   &nbsp; Delete License
           .row#numberOfLicensesRow(style="display: none !important;")
             .col
               label.form-label(for="numberOfLicenses") Number of Licenses:
@@ -36,7 +40,7 @@ block content
               ul.nav.nav-pills.nav-justified.mb-3.ms-0#licensesTabList(role="tablist" style="margin-left: 0;")
               .tab-content#tab-content
                 .tab-pane.fade.p-3#license-tabs-0(role='tabpanel' aria-labelledby='ex1-tab-1')
-                  form(id="licenseForm" action="/license" method='POST').container
+                  form(id="licenseForm" data-parsley-validate action="/license" method='POST').container
                     .row
                       .col
                         .display-5.fw-bold License Information
@@ -49,12 +53,12 @@ block content
                       .col-1
                       .col-4
                         label.form-label License Name:
-                        input.form-control#licenseName(name="licenseName" type="text")
+                        input.form-control#licenseName(name="licenseName" data-parsley-required="true" type="text")
                       .col-1
                       .col-3
                         label.form-label LicenseID:
-                        input.form-control#licenseID(type="text" readonly)
-                        input.form-control(id="licenseIDhidden" name="licenseID" type="text" hidden)
+                        input.form-control#licenseID(type="text" disabled)
+                        //- input.form-control(id="licenseIDhidden" name="licenseID" type="text" hidden)
                     .row.my-4
                       .col-4
                         label.form-label Country:
@@ -86,7 +90,9 @@ block content
                           input.form-check-input(id="govtPending" name="govtPending" type="checkbox")
                     .row#saveLicenseRow
                       .col.d-flex.justify-content-end
-                        button.btn.btn-success#saveButton(type="button" onclick="saveLicenseInformation()") Save
+                        button.btn.btn-success#saveButton(type="button" onclick="saveLicenseInformation()")
+                          i.bi.bi-sd-card(style="font-size: .9rem;")
+                          span &nbsp; Save
                     //- .row#editButtonRow(style="display: none;")
                     //-   .col.d-flex.justify-content-end
                     //-     button.btn.btn-info.mx-1#editButton(type="button" onclick="editLicenseInformation()") Edit
@@ -111,7 +117,7 @@ block content
                           i.bi.bi-pencil-square.text-dark
                           span.text-dark   &nbsp;Edit
                         button.btn.m-2.gc-buttons(id="delete-GC-activity-button" type="button" onclick="confirmAndDeleteGCActivity()" style="background-color: var(--red-color);")
-                          i.bi.bi-x-circle-fill.text-dark
+                          i.bi.bi-x-square-fill.text-dark
                           span.text-dark   &nbsp;Delete
                     .row.mt-4.mb-2
                       .col-6
@@ -122,7 +128,9 @@ block content
                         span#gcCharacterCountMessage.text-light
                     .row
                       .col-6.d-flex.justify-content-end
-                        button.btn.btn-success#saveGCActivity(type="button" onclick="saveGCActivity()") Save
+                        button.btn.btn-success#saveGCActivity(type="button" onclick="saveGCActivity()")
+                          i.bi.bi-sd-card(style="font-size: .9rem;")
+                          span &nbsp; Save
                     //- .row
                     //-   .col-6.d-flex.justify-content-end
                     //-     button.btn.btn-info#editGCActivity(type="button" onclick="editGCActivity()" style="display: none;")
@@ -145,7 +153,7 @@ block content
                           i.bi.bi-pencil-square.text-dark
                           span.text-dark   &nbsp;Edit
                         button.btn.m-2.govt-buttons(id="delete-govt-activity-button" type="button" onclick="confirmAndDeleteGovtActivity()" style="background-color: var(--red-color);")
-                          i.bi.bi-x-circle-fill.text-dark
+                          i.bi.bi-x-square-fill.text-dark
                           span.text-dark   &nbsp;Delete
                     .row.mt-4.mb-2
                       .col-6
@@ -156,7 +164,9 @@ block content
                         span#govtCharacterCountMessage.text-light
                     .row
                       .col-6.d-flex.justify-content-end
-                        button.btn.btn-success#saveGovtActivity(type="button" onclick="saveGovtActivity()") Save
+                        button.btn.btn-success#saveGovtActivity(type="button" onclick="saveGovtActivity()")
+                          i.bi.bi-sd-card(style="font-size: .9rem;")
+                          span &nbsp; Save
                     //- .row
                     //-   .col-6.d-flex.justify-content-end
                     //-     button.btn.btn-info#editGovtActivity(type="button" onclick="editGovtActivity()" style="display: none;")
@@ -175,11 +185,11 @@ block content
                           tbody.bg-white.text-dark.table-group-divider#licenseAttachmentTableBody(style="font-size: 1rem; font-weight: bold;")
                     .row
                       .col.d-flex.justify-content-end
-                        button.btn.btn-info.m-2.attachment-buttons(id="download-license-attachment-button")
+                        button.btn.btn-info.m-2.attachment-buttons(id="download-license-attachment-button" type="button" onclick="downloadLicenseAttachment()")
                           i.bi.bi-pencil-square.text-dark
                           span.text-dark   &nbsp;Download
                         button.btn.m-2.attachment-buttons(id="delete-license-attachment-button" type="button" onclick="confirmAndDeleteLicenseAttachment()" style="background-color: var(--red-color);")
-                          i.bi.bi-x-circle-fill.text-dark
+                          i.bi.bi-x-square-fill.text-dark
                           span.text-dark   &nbsp;Delete
                     //- .row.my-4
                     //-   .col-6
@@ -191,14 +201,14 @@ block content
                     //-       input.form-control.form-control-file.text-dark(id="attachment-file" name="attachment" type="file")
                     //-       button.input-group-text.btn(id="attachment-upload-button" type="button" style="background-color: var(--yellow-color); font-weight: bold;" value="Upload") Upload
                     .row#deleteLicenseRow.mt-4
-                      .col-6.d-flex.justify-content-start
+                      .col-12.d-flex.justify-content-end
                         button.btn.btn-warning.text-dark(id="license-attachment-button" data-mdb-target="#licenseAttachmentModal" type="button" value="Attachment")
                           i.bi.bi-file-medical(style="font-size: 1rem;")
                           span &nbsp; Upload License Attachment
-                      .col-6.d-flex.justify-content-end
-                        button.btn.btn-danger.text-dark(id="deleteLicenseButton" type="button" value="deleteLicense" onclick="deleteLicense()")
-                          i.bi.bi-x-circle-fill.text-dark
-                          span.text-dark   &nbsp; Delete License
+                      //- .col-6.d-flex.justify-content-end
+                        //- button.btn.btn-danger.text-dark(id="deleteLicenseButton" type="button" value="deleteLicense" onclick="deleteLicense()")
+                        //-   i.bi.bi-x-circle-fill.text-dark
+                        //-   span.text-dark   &nbsp; Delete License
 
             include includes/summaryTableHead
             include includes/newLicenseModal
@@ -213,6 +223,9 @@ block content
     let countriesArray = !{JSON.stringify(countries)};
     let licenseTypesArray = !{JSON.stringify(licenseTypes)};
     let marinerName = !{JSON.stringify(marinerName)};
+    let counter = 0;
+    let numberOfLicenses;
+
 
     // Create fullName
     let fullName = marinerName.FirstName + " " + marinerName.MiddleName + " " + marinerName.LastName;
@@ -259,6 +272,7 @@ block content
       let tabContent = $('#tab-content');
       let licensesTabList = $('#licensesTabList');
 
+      console.log(licensesArray);
       // If there is no license data in the database...
       if (licensesArray.length < 1) {
 
@@ -276,7 +290,7 @@ block content
       generateLicensesButton.addEventListener('click', function(e) {
 
         // Get the value in the input field
-        let numberOfLicenses = parseInt($('#numberOfLicenses').val());
+        numberOfLicenses = parseInt($('#numberOfLicenses').val());
 
         // Select the license Names row
         let licenseNamesRow = $('#licenseNamesRow');
@@ -355,7 +369,7 @@ block content
         // Show the licenses area
         $('#licensesArea').show();
         // Show the batch activities row
-        $('#batchActivitiesRow').show();
+        //- $('#batchActivitiesRow').show();
 
         // Generate Tabs for each license in the names array
         for (let k = 0; k < licenseNamesArray.length; k++)
@@ -416,6 +430,7 @@ block content
         $(selector + ' #marinerIDhidden').attr('id', formMarinerID + suffix);
 
         $(selector + ' #licenseIDhidden').attr('id', 'licenseIDhidden' + suffix);
+        $(selector + ' #licenseID').attr('id', 'licenseID' + suffix);
 
         let formLicenseName = $('#licenseName').attr('id');
         $(selector + ' #licenseName').attr('id', 'licenseName' + suffix).val(licenseNamesArray[k]);
@@ -536,7 +551,7 @@ block content
         // Append the navLink to the navItem
         navItem.appendChild(navLink);
         // Append the navItem to the tab list
-        licensesTabList.append(navItem);
+        //- licensesTabList.append(navItem);
 
         let summaryItem = document.createElement('li');
         summaryItem.classList = 'nav-item';
@@ -551,13 +566,14 @@ block content
         summaryLink.role = 'tab';
         summaryLink.setAttribute('aria-controls', 'summary');
         summaryLink.setAttribute('aria-selected', 'false');
+        summaryLink.setAttribute('disabled', 'true');
         summaryLink.textContent = 'Summary';
 
         // Append the summary link to the summaryItem
         summaryItem.appendChild(summaryLink);
 
         // Prepend the summary tab to the licenses tab list
-        licensesTabList.prepend(summaryItem);
+        //- licensesTabList.prepend(summaryItem);
 
         // Create HTML for the summary tab content
         let summaryTabPane = document.createElement('div');
@@ -844,7 +860,11 @@ block content
 
           // CR Number
           $("#crNumber" + suffix).val(crNumber);
-
+          console.log("AGA");
+          console.log(issueDate);
+          if (issueDate == null){
+            issueDate = '';
+          }
           // Convert the date to a format that fits in the UI
           let issueDateString = issueDate.toString();
           //- console.log(issueDateString);
@@ -853,6 +873,7 @@ block content
           let formattedIssueDate = issueDateString.slice(0, 10);
           $('#issueDate' + suffix).val(formattedIssueDate);
 
+          if(expirationDate == null) expirationDate = '';
           // Convert the date to a format that fits in the UI
           let expirationDateString = expirationDate.toString();
           let formattedExpDate = expirationDateString.slice(0, 10);
@@ -908,14 +929,23 @@ block content
             countryCell.textContent = countryName;
             //- console.log(typeName)
           }).catch((error) => console.log(error.message));
-
           let issueCell = document.createElement('td');
           issueCell.style = 'text-align: center;';
+
+          if (formattedIssueDate != null && formattedIssueDate != '') {
           issueCell.textContent = formattedIssueDate;
+          } else {
+            issueCell.textContent = ' ';
+          }
 
           let expCell = document.createElement('td');
           expCell.style = 'text-align: center;';
+
+          if (formattedExpDate != null) {
           expCell.textContent = formattedExpDate;
+          } else {
+            expCell.textContent = ' ';
+          }
 
           // GC Pending Cell
           let gcCell = document.createElement('td');

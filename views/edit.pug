@@ -189,7 +189,7 @@ block content
             .row
               .col
               .col-3.d-flex.justify-content-end#saveMarinerActivity
-                button.form-control.btn.m-2.text-dark(id="save-mariner-activity-button" type='submit' style="background-color: var(--green-color); color:#4f4f4f;" value="Save" onclick="saveMarinerActivity()")
+                button.form-control.btn.m-2.text-dark(id="save-mariner-activity-button" type='submit' style="background-color: var(--green-color); color:#4f4f4f;" value="Save" form="editMarinerForm" onclick="saveMarinerActivity()")
                   i.bi.bi-save(style="font-size=1rem")
                   span    &nbsp;Save
           br
@@ -347,16 +347,16 @@ block content
     $('#hairColor').val(marinerObject['HairColor']);
     $('#eyeColor').val(marinerObject['EyeColor']);
     $('#marks').val(marinerObject['Marks']);
-    let physDateString = marinerObject['PhysDate'].toString();
+    let physDateString = new Date(marinerObject['PhysDate']).toISOString();
     let physDate = physDateString.slice(0, 10);
     $('#physDate').val(physDate);
     $('#coContact').val(marinerObject['CoContact']);
     $('#imoNumber').val(marinerObject['IMONum']);
 
     // Convert the birth date to a format that fits in the UI
-    let dateString = marinerObject['BirthDate'].toString();
-    //- console.log(dateString);
-    //- console.log(dateString.slice(0, 10));
+    let dateString = new Date(marinerObject['BirthDate']).toISOString();
+    console.log(dateString);
+    console.log(dateString.slice(0, 10));
     let birthDate = dateString.slice(0, 10);
     $('#birth-date').val(birthDate);
     $('#processing-agent').val(marinerObject['ProcessingAgent']);

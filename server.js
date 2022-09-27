@@ -4,7 +4,7 @@ require('newrelic');
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-20 01:55:48
+ * @Last Modified time: 2022-09-26 18:50:41
  */
 
 ('use strict');
@@ -1254,6 +1254,10 @@ app.post('/licenses/:id', async (req, res) => {
         );
         licenseID = licenseIDQuery[0]['MAX(LicenseID)'];
     }
+    crNumber == '' ? (crNumber = null) : console.log('is defined');
+
+    issueDate == '' ? (issueDate = null) : console.log('is defined');
+    expirationDate == '' ? (expirationDate = null) : console.log('is defined');
 
     console.log(licenseID);
     // SQL Query to add license to database
@@ -1297,6 +1301,11 @@ app.put('/licenses/:id', async (req, res) => {
     let govtPending = req.body.govtPending;
     let crNumber = req.body.crNumber;
 
+    crNumber == '' ? (crNumber = null) : console.log('is defined');
+
+    issueDate == '' ? (issueDate = null) : console.log('is defined');
+    expirationDate == '' ? (expirationDate = null) : console.log('is defined');
+
     // SQL Query to update the license
     let updateSQL =
         'UPDATE Licenses SET LicenseName = ?,LicenseTypeID = ?, CountryID = ?, MarinerID = ?, Timestamp = CURRENT_TIMESTAMP(), IssueDate = ?, ExpirationDate = ?, PendingGC = ?, PendingGovt = ?, CRNumber = ? WHERE LicenseID = ?';
@@ -1328,15 +1337,16 @@ app.delete('/deleteLicense', async (req, res) => {
     let marinerID = req.query.marinerID;
     let licenseID = req.query.licenseID;
 
-    let deleteGCSQL = `DELETE FROM GCLicenseActivities WHERE LicenseID = ${marinerID}`;
+    let deleteGCSQL = `DELETE FROM GCLicenseActivities WHERE MarinerID = ${marinerID}`;
     let deleteGovtSQL = `DELETE FROM GovtLicenseActivities WHERE MarinerID = ${marinerID}`;
-    let deleteLicenseSQL = `DELETE FROM Licenses WHERE marinerID = ${marinerID}`;
+    let deleteLicenseSQL = `DELETE FROM Licenses WHERE LicenseID = ${licenseID}`;
 
     await db.query(deleteGCSQL);
     await db.query(deleteGovtSQL);
     let deleteRows = await db.query(deleteLicenseSQL);
 
     console.log(deleteRows);
+    res.send(deleteRows);
 });
 
 /* --------------------------- License Activities --------------------------- */
@@ -1521,7 +1531,7 @@ app.get('/licenses/attachments/:licenseId', async (req, res) => {
     let licenseRows = await db.query(license_query);
 
     let licenseJSON = licenseRows[0];
-    console.log(licenseJSON);
+    // console.log(licenseJSON);
     res.send({
         licenseJSON: licenseJSON,
     });
@@ -1580,6 +1590,56 @@ app.post(
     }
 );
 
+// Download the license attachment for the given attachment ID
+app.get('/licenses/attachments/download/:attachmentId', async (req, res) => {
+    // Get requested attachment ID from the URL
+    let attachmentID = req.params.attachmentId;
+
+    // Get the marinerID from the request body
+    let marinerID = req.body.marinerID;
+
+    // Query to obtain attachment from the database
+    let attachmentSQL =
+        'SELECT * FROM LicenseAttachments WHERE LicenseAttachmentID = ?';
+    let attachment_query = mysql.format(attachmentSQL, [attachmentID]);
+
+    db.pool.query(attachment_query, async (err, response) => {
+        if (err) throw err;
+
+        console.log(response[0]);
+        console.log(response[0]['LicenseAttachment']);
+
+        let buff = await new Buffer.from(response[0]['LicenseAttachment'], {
+            type: 'application/pdf',
+        });
+        console.log(buff);
+
+        let pdf = await fs.writeFileSync(
+            'public/downloads/' + 'attach.pdf',
+            buff
+        );
+    });
+
+    res.download('public/downloads/attach.pdf', (err) => {
+        if (err) console.error(err.message);
+        fs.unlinkSync('public/downloads/attach.pdf');
+    });
+});
+
+app.delete('/licenses/attachments/:attachmentID', async (req, res) => {
+    let attachmentID = req.params.attachmentID;
+
+    // Query to delete a license attachment
+    let attachmentSQL =
+        'DELETE FROM LicenseAttachments WHERE LicenseAttachmentID = ?';
+    let attachment_query = mysql.format(attachmentSQL, [attachmentID]);
+
+    // Run the query
+    let deleteResult = await db.query(attachment_query);
+
+    res.send('License Attachment Deleted!');
+});
+
 /* ------------------------------ Applications ------------------------------ */
 
 // Check if application exists for a Mariner
@@ -1628,15 +1688,14 @@ app.post('/newAppUpload', upload.single('application'), async (req, res) => {
     // console.log(file.filename);
 
     // Get all the parameters for the new Mariner from the request body
-    let requestJSON = JSON.parse(JSON.stringify(req.body));
-    // console.log(requestJSON);
-    let marinerID = requestJSON.marinerIDNumber;
-    let applicationID = requestJSON.applicationIDNumber;
-    let processingAgent = requestJSON.processingAgent;
-    let firstName = requestJSON.firstName;
-    let middleName = requestJSON.middleName;
-    let lastName = requestJSON.lastName;
-    let birthDate = requestJSON.birthDate;
+    console.log(req.body);
+    let marinerID = req.body.marinerIDNumber;
+    let applicationID = req.body.applicationIDNumber;
+    let processingAgent = req.body.processingAgent;
+    let firstName = req.body.firstName;
+    let middleName = req.body.middleName;
+    let lastName = req.body.lastName;
+    let birthDate = req.body.birthDate;
 
     // SQL for inserting new Mariner along with application file
     const insertMarinerSQL =

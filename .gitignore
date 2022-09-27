@@ -10,3 +10,8 @@ build
 .config.codekit3
 localhost-key.pem
 localhost.pem
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
