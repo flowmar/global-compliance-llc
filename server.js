@@ -4,7 +4,7 @@ require('newrelic');
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-26 18:50:41
+ * @Last Modified time: 2022-09-30 23:03:35
  */
 
 ('use strict');
@@ -1149,9 +1149,56 @@ app.post('/edit', async (req, res) => {
 });
 
 // Route for deleting a Mariner
+// Deletes all licenses - GCActivities, GovtActivities, Attachments, Licenses
+// Deletes all Mariner Activities and Attachments and Mariner Information
 app.delete('/delete/:id', async (req, res) => {
     let marinerID = req.params.id;
 
+    // SQL Queries for deleting all attributes of a Mariner
+    // GcLicense Activities
+    let gcLicenseActivitySQL =
+        'DELETE FROM GCLicenseActivities WHERE MarinerID = ?';
+    let gc_license_activity_query = mysql.format(gcLicenseActivitySQL, [
+        marinerID,
+    ]);
+    await db.query(gc_license_activity_query);
+
+    // GovtLicenseActivities
+    let govtLicenseActivitySQL =
+        'DELETE FROM GovtLicenseActivities WHERE MarinerID = ?';
+    let govt_license_activity_query = mysql.format(govtLicenseActivitySQL, [
+        marinerID,
+    ]);
+    await db.query(govt_license_activity_query);
+
+    // License Attachments
+    let licenseAttachmentSQL =
+        'DELETE FROM LicenseAttachments WHERE MarinerID = ?';
+    let license_attachment_query = mysql.format(licenseAttachmentSQL, [
+        marinerID,
+    ]);
+    await db.query(license_attachment_query);
+
+    // License Information
+    let licenseSQL = 'DELETE FROM Licenses WHERE MarinerID = ?';
+    let license_query = mysql.format(licenseSQL, [marinerID]);
+    await db.query(license_query);
+
+    // Mariner Activities
+    let marinerActivitySQL =
+        'DELETE FROM MarinerActivities WHERE MarinerID = ?';
+    let mariner_activity_query = mysql.format(marinerActivitySQL, [marinerID]);
+    await db.query(mariner_activity_query);
+
+    // Mariner Attachments
+    let marinerAttachmentSQL =
+        'DELETE FROM MarinerAttachments WHERE MarinerID = ?';
+    let mariner_attachment_query = mysql.format(marinerAttachmentSQL, [
+        marinerID,
+    ]);
+    await db.query(mariner_attachment_query);
+
+    // Mariner Information
     let deleteSQL = 'DELETE FROM Mariners WHERE MarinerID = ?';
     let delete_query = mysql.format(deleteSQL, [marinerID]);
 
@@ -1333,17 +1380,32 @@ app.put('/licenses/:id', async (req, res) => {
     });
 });
 
+// Deletes all GC and Govt Activities, attachments and license Information for a given License ID
 app.delete('/deleteLicense', async (req, res) => {
     let marinerID = req.query.marinerID;
     let licenseID = req.query.licenseID;
 
-    let deleteGCSQL = `DELETE FROM GCLicenseActivities WHERE MarinerID = ${marinerID}`;
-    let deleteGovtSQL = `DELETE FROM GovtLicenseActivities WHERE MarinerID = ${marinerID}`;
-    let deleteLicenseSQL = `DELETE FROM Licenses WHERE LicenseID = ${licenseID}`;
+    // Delete GCActivities for License
+    let deleteGCSQL = `DELETE FROM GCLicenseActivities WHERE LicenseID = ?`;
+    let delete_gc_query = mysql.format(deleteGCSQL, [licenseID]);
+    await db.query(delete_gc_query);
 
-    await db.query(deleteGCSQL);
-    await db.query(deleteGovtSQL);
-    let deleteRows = await db.query(deleteLicenseSQL);
+    // Delete GovtActivities for License
+    let deleteGovtSQL = `DELETE FROM GovtLicenseActivities WHERE LicenseID = ?`;
+    let delete_govt_query = mysql.format(deleteGovtSQL, [licenseID]);
+    await db.query(delete_govt_query);
+
+    // Delete Attachments for License
+    let deleteAttachmentSQL = `DELETE FROM LicenseAttachments WHERE LicenseID = ?`;
+    let delete_attachment_query = mysql.format(deleteAttachmentSQL, [
+        licenseID,
+    ]);
+    await db.query(delete_attachment_query);
+
+    // Delete License Information
+    let deleteLicenseSQL = `DELETE FROM Licenses WHERE LicenseID = ?`;
+    let delete_license_query = mysql.format(deleteLicenseSQL, [licenseID]);
+    let deleteRows = await db.query(delete_license_query);
 
     console.log(deleteRows);
     res.send(deleteRows);
