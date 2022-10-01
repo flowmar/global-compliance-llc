@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-26 19:12:11
+ * @Last Modified time: 2022-10-01 00:09:28
  */
 
 let licenseID,
@@ -153,7 +153,6 @@ function editLicenseInformation() {
         .then((response) => {
             console.log(response);
             alert('License Updated!');
-            // location.reload();
         })
         .catch((error) => console.log(error));
 }
@@ -185,7 +184,6 @@ function saveNewLicense() {
         .then((response) => {
             console.log(response);
             alert('License Added!');
-            // location.reload();
         })
         .catch((error) => console.log(error));
 }
@@ -297,7 +295,24 @@ function saveGCActivity() {
         .then((response) => {
             console.log(response);
             alert('Global Compliance Activity Uploaded!');
-            location.reload();
+            // Clear out the text field
+            activityBox.val('');
+            // Create a new table row on the GCActivity Table
+            let gcActivityTable = $('#gcActivityTableBody' + formNumber);
+            let newRow = document.createElement('tr');
+            newRow.classList = 'notHeader';
+            newRow.style.textAlign = 'center';
+            newRow.id = response.data.licenseActivitiesJSON.insertId;
+            // Create the cells and add them to the table row
+            let dateCell = document.createElement('td');
+            let date = new Date().toLocaleString();
+            dateCell.textContent = date;
+            newRow.appendChild(dateCell);
+            let noteCell = document.createElement('td');
+            noteCell.textContent = gcActivity;
+            newRow.appendChild(noteCell);
+            // Add the table row to the table
+            gcActivityTable.append(newRow);
         })
         .catch((error) => {
             console.log(error.message);
@@ -325,7 +340,24 @@ function saveGovtActivity() {
         .then((response) => {
             console.log(response);
             alert('Government Activity Uploaded!');
-            location.reload();
+            // Clear out the text field
+            activityBox.val('');
+            // Create a new table row on the GCActivity Table
+            let govtActivityTable = $('#govtActivityTableBody' + formNumber);
+            let newRow = document.createElement('tr');
+            newRow.classList = 'notHeader';
+            newRow.style.textAlign = 'center';
+            newRow.id = response.data.licenseActivitiesJSON.insertId;
+            // Create the cells and add them to the table row
+            let dateCell = document.createElement('td');
+            let date = new Date().toLocaleString();
+            dateCell.textContent = date;
+            newRow.appendChild(dateCell);
+            let noteCell = document.createElement('td');
+            noteCell.textContent = govtActivity;
+            newRow.appendChild(noteCell);
+            // Add the table row to the table
+            govtActivityTable.append(newRow);
         })
         .catch((error) => {
             console.log(error.message);

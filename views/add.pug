@@ -121,9 +121,10 @@ block content
             .col-4
               label.form-label(for="status") Status:
               select.form-select.bg-white.text-dark(id="status" name="status")
-                option(value="1") Pending
-                option(value="2") Submitted
-                option(value="3") Completed
+                option(value=null)
+                option(value="Pending") Pending
+                option(value="Submitted") Submitted
+                option(value="Completed") Completed
           .row.my-4
             .col.d-flex.justify-content-end
               a.btn.btn-lg.m-2.text-dark(id="cancel-edit-mariner-button" href="/search" style="background-color: var(--red-color); color:#4f4f4f;" value="Cancel")

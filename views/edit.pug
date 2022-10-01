@@ -141,9 +141,9 @@ block content
                 label.form-label(for="status") Status:
                 select.form-select.bg-white.text-dark(id="status" name="status")
                   option(value="0")
-                  option(value="1") Pending
-                  option(value="2") Submitted
-                  option(value="3") Completed
+                  option(value="Pending") Pending
+                  option(value="Submitted") Submitted
+                  option(value="Completed") Completed
             .row.my-4
               .col
               .col.d-flex.justify-content-end
@@ -151,7 +151,7 @@ block content
                   i.bi.bi-x-square
                   span    &nbsp;Cancel
                 button.btn.m-2.text-dark(id="save-edited-mariner" style="background-color: var(--green-color); color:#4f4f4f;" value="Save")
-                  i.bi.bi-save
+                  i.bi.bi-sd-card
                   span    &nbsp;Save
           br
           .container-fluid.p-0
@@ -190,7 +190,7 @@ block content
               .col
               .col-3.d-flex.justify-content-end#saveMarinerActivity
                 button.form-control.btn.m-2.text-dark(id="save-mariner-activity-button" type='submit' style="background-color: var(--green-color); color:#4f4f4f;" value="Save" form="editMarinerForm" onclick="saveMarinerActivity()")
-                  i.bi.bi-save(style="font-size=1rem")
+                  i.bi.bi-sd-card(style="font-size=1rem")
                   span    &nbsp;Save
           br
           .container-fluid.p-0

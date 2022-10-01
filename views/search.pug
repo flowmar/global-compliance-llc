@@ -186,6 +186,8 @@ block content
         break;
 
         case 'Status':
+        // Array with all statuses
+        let statuses = ["Pending", "Submitted", "Completed"];
         // Create a select element
         element = document.createElement('select');
         element.classList = 'form-select bg-white'
@@ -195,8 +197,8 @@ block content
         // Place statuses into UI
         for (let x = 0; x < 3; x++) {
         let option = document.createElement('option');
-        option.value = parseInt(x) + 1;
-        option.text = parseInt(x) + 1;
+        option.value = statuses[x];
+        option.text = statuses[x];
         let statusSelect = $('#statusSelect');
         statusSelect.append(option);
         }

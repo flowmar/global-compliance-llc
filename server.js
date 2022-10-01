@@ -4,7 +4,7 @@ require('newrelic');
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-30 23:03:35
+ * @Last Modified time: 2022-09-30 23:56:00
  */
 
 ('use strict');
@@ -2135,6 +2135,10 @@ app.post('/search', async (_req, res) => {
         case 'Employer':
             sqlStatement =
                 'SELECT MarinerID, FirstName, MiddleName, LastName, BirthDate, EmployerID, ProcessingAgent, Status FROM Mariners WHERE EmployerID = ?';
+            break;
+        case 'Status':
+            sqlStatement =
+                'SELECT MarinerID, FirstName, MiddleName, LastName, BirthDate, EmployerID, ProcessingAgent, Status FROM Mariners WHERE Status = ?';
             break;
 
         default:
