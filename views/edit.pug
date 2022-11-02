@@ -96,25 +96,53 @@ block content
                 label.form-label(for="physDate") Date of Physical:
                 input.form-control.bg-white(id="physDate" name="physDate" data-parsley-required="false" type="date")
             .row.my-3
+            hr
             .row.my-4
-              .col-4
-                label.form-label(for="address") Address:
+              .col-7
+                label.form-label(for="address") Street Address:
                 input.form-control.bg-white(id="address" name="address" type="text")
-              .col-4
-                label.form-label(for="phone-number") Phone Number:
+            .row.my-4
+              .col-3
+                label.form-label(for="city") City:
+                input.form-control.bg-white(id="city" name="city" type="text")
+              .col-1
+              .col-3
+                label.form-label(for="state") State:
+                input.form-control.bg-white(id="state" name="state" type="text")
+              .col-1
+              .col-3
+                label.form-label(for="zip-code") Zip Code:
+                input.form-control.bg-white(id="zip-code" name="zipCode" type="text")
+            .row.my-4
+              .col-3
+                label.form-label(for="phone-number") Mobile Number:
                 input.form-control.bg-white(id="phone-number" name="phone" type="tel" onkeydown="phoneNumberFormatter()")
+              .col-1
+              .col-3
+                label.form-label(for="home-phone") Home Number:
+                input.form-control.bg-white(id="home-phone" name="homePhone" type="tel" onkeydown="homePhoneNumberFormatter()")
+              .col-1
               .col-4
                 label.form-label(for="email") Email:
                 input.form-control.bg-white(id="email" name="email" data-parsley-required="false" type="email")
             .row.my-4
+              .col-4
+                label.form-label(for="passport-number") Passport Number:
+                input.form-control.bg-white(id="passport-number" name="passportNumber" data-parsley-type="digits" type="text")
+              .col-4
+                label.form-label(for="citizenship") Citizenship:
+                select.form-select.bg-white(id="citizenship" name="citizenship" aria-label="Select citizenship")
+            hr.my-4.mt-5
+            .row.mb-2
               .col-4
                 label.form-label(for="employer") Employer:
                 select.form-select.bg-white(id="employer" name="employer")
                   option(value)
               .col-4
                 label.form-label(for="vessel-name") Rig:
-                select.form-select.bg-white(id="vessel-name" name="vessel")
-                  //- option(value='0')
+                select.form-select.bg-white(id="vessel-name" name="vessel" type="text")
+                  option(value)
+            .row.my-4
               .col-4
                 label.form-label(for="mariner-reference-number") Mariner Reference Number:
                 input.form-control.bg-white(id="mariner-reference-number" name="marinerRefNum" data-parsley-type="digits" type="text")
@@ -125,13 +153,6 @@ block content
               .col-4
                 label.form-label(for="imoNumber") IMO Number:
                 input.form-control.bg-white(id="imoNumber" name="imoNumber" data-parsley-type="digits" type="text")
-            .row.my-4
-              .col-4
-                label.form-label(for="passport-number") Passport Number:
-                input.form-control.bg-white(id="passport-number" name="passportNumber" data-parsley-type="digits" type="text")
-              .col-4
-                label.form-label(for="citizenship") Citizenship:
-                select.form-select.bg-white(id="citizenship" name="citizenship" aria-label="Select citizenship")
             .row.my-4
               .col-4
                 label.form-label(for="processing-agent") Processing Agent:

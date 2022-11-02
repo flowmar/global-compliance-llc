@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-03 07:45:53
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-06 07:22:09
+ * @Last Modified time: 2022-11-02 11:34:21
  */
 
 // const errors = require('bluebird/js/release/errors');
@@ -54,6 +54,17 @@ function formatPhoneNumber(value) {
 function phoneNumberFormatter() {
     // Get input field
     const inputField = document.getElementById('phone-number');
+    // Format input
+    const formattedInputValue = formatPhoneNumber(inputField.value);
+    // Set value to formatted input
+    inputField.value = formattedInputValue;
+}
+
+// Home Phone Number formatter
+
+function homePhoneNumberFormatter() {
+    // Get input field
+    const inputField = document.getElementById('home-phone');
     // Format input
     const formattedInputValue = formatPhoneNumber(inputField.value);
     // Set value to formatted input

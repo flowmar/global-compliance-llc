@@ -38,7 +38,7 @@ block content
           .row
             .col
               .display-5.fw-bold Mariner Information
-          hr
+          hr.mt-1
           .row.my-4
             .col-3
               label.form-label(for="mariner-id") Mariner ID:
@@ -93,23 +93,52 @@ block content
                 label.form-label(for="physDate") Date of Physical:
                 input.form-control.bg-white(id="physDate" name="physDate" data-parsley-required="false" type="date" disabled)
           .row.my-3
+          hr
           .row.my-4
-            .col-4
-              label.form-label(for="address") Address:
-              input.form-control.bg-white(id="address" name="address" type="text" disabled)
-            .col-4
-              label.form-label(for="phone-number") Phone Number:
-              input.form-control.bg-white(id="phone-number" name="phone" type="tel" onkeydown="phoneNumberFormatter()" disabled)
-            .col-4
-              label.form-label(for="email") Email:
-              input.form-control.bg-white(id="email" name="email" data-parsley-required="false" type="email" disabled)
+            .col-7
+                label.form-label(for="address") Street Address:
+                input.form-control.bg-white(id="address" name="address" type="text" disabled)
+            .row.my-4
+              .col-3
+                label.form-label(for="city") City:
+                input.form-control.bg-white(id="city" name="city" type="text" disabled)
+              .col-1
+              .col-3
+                label.form-label(for="state") State:
+                input.form-control.bg-white(id="state" name="state" type="text" disabled)
+              .col-1
+              .col-3
+                label.form-label(for="zip-code") Zip Code:
+                input.form-control.bg-white(id="zip-code" name="zipCode" type="text" disabled)
+            .row.my-4
+              .col-3
+                label.form-label(for="phone-number") Mobile Number:
+                input.form-control.bg-white(id="phone-number" name="phone" type="tel" onkeydown="phoneNumberFormatter()" disabled)
+              .col-1
+              .col-3
+                label.form-label(for="home-phone") Home Number:
+                input.form-control.bg-white(id="home-phone" name="homePhone" type="tel" onkeydown="homePhoneNumberFormatter()" disabled)
+              .col-1
+              .col-4
+                label.form-label(for="email") Email:
+                input.form-control.bg-white(id="email" name="email" data-parsley-required="false" type="email" disabled)
+            .row.my-4
+              .col-4
+                label.form-label(for="passport-number") Passport Number:
+                input.form-control.bg-white(id="passport-number" name="passportNumber" data-parsley-type="digits" type="text" disabled)
+              .col-4
+                label.form-label(for="citizenship") Citizenship:
+                select.form-select.bg-white(id="citizenship" name="citizenship" aria-label="Select citizenship" disabled)
+            hr.my-4.mt-5
+            .row.mb-2
+              .col-4
+                label.form-label(for="employer") Employer:
+                select.form-select.bg-white(id="employer" name="employer" disabled)
+                  option(value)
+              .col-4
+                label.form-label(for="vessel-name") Rig:
+                input.form-control.bg-white(id="vessel-name" name="vessel" type="text" disabled)
           .row.my-4
-            .col-4
-              label.form-label(for="employer") Employer:
-              select.form-select.bg-white(id="employer" name="employer" disabled)
-            .col-4
-              label.form-label(for="vessel-name") Rig:
-              input.form-control.bg-white(id="vessel-name" name="vessel" type="text" disabled)
             .col-4
               label.form-label(for="mariner-reference-number") Mariner Reference Number:
               input.form-control.bg-white(id="mariner-reference-number" name="marinerRefNum" data-parsley-type="digits" type="text" disabled)
