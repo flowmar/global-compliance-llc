@@ -4,7 +4,7 @@ require('newrelic');
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-11-11 12:05:51
+ * @Last Modified time: 2022-11-11 15:33:53
  */
 
 ('use strict');
@@ -116,7 +116,7 @@ app.get('/search', async (req, res) => {
     let marinerData = [];
     let mariners = [];
     let user = req.query.user;
-    console.log('USER: ', user);
+    'USER: ', user;
     if (!user) {
         user = 'admin';
     }
@@ -133,7 +133,7 @@ app.get('/search', async (req, res) => {
     const allEmployersJSON = allEmployersRows[0];
 
     await db.query(search_query).then((result) => {
-        // console.log(result[0]);
+        // (result[0]);
         marinerData = result[0];
     });
 
@@ -160,7 +160,7 @@ app.get('/search', async (req, res) => {
         const employerRows = await db.query(employer_query);
         // Parse the result and place the employerName into the object
         let employerJSON = JSON.parse(JSON.stringify(employerRows[0]));
-        // console.log(employerJSON);
+        // (employerJSON);
         if (employerJSON[0]) {
             employerName = employerJSON[0]['EmployerName'];
             formatted['employer'] = employerName;
@@ -176,7 +176,7 @@ app.get('/search', async (req, res) => {
         const agentRows = await db.query(agent_query);
         // Parse the result and place the AgentName into the Object
         let agentJSON = JSON.parse(JSON.stringify(agentRows[0]));
-        // console.log(agentJSON);
+        // (agentJSON);
         if (agentJSON[0]) {
             agentName = agentJSON[0]['AgentName'];
             formatted['processingAgent'] = agentName;
@@ -216,7 +216,7 @@ app.get('/search', async (req, res) => {
         },
         (err, html) => {
             if (err) throw err;
-            console.log(user);
+            user;
             res.send(html);
         }
     );
@@ -231,25 +231,25 @@ app.get('/view/:id', async (req, res) => {
     const view_query = mysql.format(viewSQL, [marinerID]);
     const viewRows = await db.query(view_query);
     const viewJSON = viewRows[0][0];
-    console.log(viewJSON);
+    viewJSON;
 
     // Get employers from database
     const all_employers_query = mysql.format('SELECT * FROM Employers');
     const allEmployerRows = await db.query(all_employers_query);
     const allEmployersJSON = allEmployerRows[0];
-    // console.log(allEmployersJSON);
+    // (allEmployersJSON);
 
     // Get agents from database
     const agents_query = mysql.format('SELECT * FROM Agents');
     const agentsRows = await db.query(agents_query);
     const agentsJSON = agentsRows[0];
-    // console.log(agentsJSON);
+    // (agentsJSON);
 
     // Get countries from database
     const countries_query = mysql.format('SELECT * FROM Countries');
     const countriesRows = await db.query(countries_query);
     const countriesJSON = countriesRows[0];
-    // console.log(countriesJSON);
+    // (countriesJSON);
 
     // Get all activities for the selected Mariner
     let activitySQL = 'SELECT * FROM MarinerActivities WHERE MarinerID = ?';
@@ -261,7 +261,7 @@ app.get('/view/:id', async (req, res) => {
     const rigSQL = mysql.format('SELECT * FROM Rigs');
     let rigRows = await db.query(rigSQL);
     let rigJSON = rigRows[0];
-    console.log(rigJSON);
+    rigJSON;
 
     res.render('view', {
         title: 'View',
@@ -340,7 +340,7 @@ app.get('/info', async (req, res) => {
 
     let activityData = activityRows[0];
 
-    console.log(activityData);
+    activityData;
 
     // Document Definition
     const marinerInfoDefinition = {
@@ -587,16 +587,16 @@ app.get('/info', async (req, res) => {
             +Date.now() +
             '.pdf'
     );
-    // console.log(filename);
+    // (filename);
 
     // Write the PDF document to the filename
     pdfDoc.pipe(fs.createWriteStream(filename));
     // pdfDoc.pipe(res);
-    // console.log(res);
+    // (res);
 
     pdfDoc.on('end', () => {
         const stream = fs.createReadStream(filename);
-        console.log('PDF GENERATED');
+        ('PDF GENERATED');
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', 'inline; filename="mariner.pdf"');
         stream.pipe(res).on('finish', () => {
@@ -615,25 +615,25 @@ app.get('/edit/:id', async (req, res) => {
     const view_query = mysql.format(viewSQL, [marinerID]);
     const viewRows = await db.query(view_query);
     const viewJSON = viewRows[0][0];
-    console.log(viewJSON);
+    viewJSON;
 
     // Get all employers
     const all_employers_query = mysql.format('SELECT * FROM Employers');
     const allEmployerRows = await db.query(all_employers_query);
     const allEmployersJSON = allEmployerRows[0];
-    // console.log(allEmployersJSON);
+    // (allEmployersJSON);
 
     // Get all Agents
     const agents_query = mysql.format('SELECT * FROM Agents');
     const agentsRows = await db.query(agents_query);
     const agentsJSON = agentsRows[0];
-    // console.log(agentsJSON);
+    // (agentsJSON);
 
     // Get all Countries
     const countries_query = mysql.format('SELECT * FROM Countries');
     const countriesRows = await db.query(countries_query);
     const countriesJSON = countriesRows[0];
-    // console.log(countriesJSON);
+    // (countriesJSON);
 
     // Get all activities for the selected Mariner
     let activitySQL = 'SELECT * FROM MarinerActivities WHERE MarinerID = ?';
@@ -651,7 +651,7 @@ app.get('/edit/:id', async (req, res) => {
     const rigSQL = mysql.format('SELECT * FROM Rigs');
     let rigRows = await db.query(rigSQL);
     let rigJSON = rigRows[0];
-    console.log(rigJSON);
+    rigJSON;
 
     // Render the Edit page, sending the Mariner information
     res.render('edit', {
@@ -700,7 +700,7 @@ app.get('/new', async (_req, res) => {
     for (let agentObject of agentObjects) {
         processingAgents.push(agentObject['AgentName']);
     }
-    console.log(processingAgents);
+    processingAgents;
 
     // Obtain Mariner ID number
     let lastMarinerID;
@@ -711,9 +711,9 @@ app.get('/new', async (_req, res) => {
 
     // Sets the MarinerID to the next number
     db.query(id_query).then((result) => {
-        console.log(result[0]);
+        result[0];
         lastMarinerID = result[0][0]['MAX(MarinerID)'];
-        console.log(lastMarinerID);
+        lastMarinerID;
         if (lastMarinerID != null) {
             nextMarinerID = parseInt(lastMarinerID) + 1;
         } else {
@@ -751,7 +751,7 @@ app.get('/licenses/:id', async (req, res) => {
     let marinerSQL = `SELECT FirstName, MiddleName, LastName FROM Mariners WHERE MarinerID = ${marinerID}`;
     let marinerRows = await db.query(marinerSQL);
     let marinerJSON = marinerRows[0][0];
-    console.log(marinerJSON);
+    marinerJSON;
 
     // SQL query to get the Licenses for the mariner
     let licenseSQL = 'SELECT * FROM Licenses WHERE MarinerID = ?';
@@ -760,14 +760,14 @@ app.get('/licenses/:id', async (req, res) => {
     // Query the database
     let licenseRows = await db.query(license_query);
     let licenseJSON = licenseRows[0];
-    console.log(licenseJSON);
+    licenseJSON;
 
     // Get DISTINCT Countries from License Types Table
     const countries_query = mysql.format(
         'SELECT DISTINCT CountryName, CountryID FROM LicenseTypes'
     );
     const licenseCountryRows = await db.query(countries_query);
-    console.log(licenseCountryRows[0]);
+    licenseCountryRows[0];
     // Get all license types
     const license_type_query = mysql.format('SELECT * FROM LicenseTypes');
     const licenseTypeRows = await db.query(license_type_query);
@@ -808,19 +808,19 @@ app.post('/createUser', async (req, res) => {
         // Show error if it fails
         if (err) throw err;
 
-        console.log('--------> Search Results');
-        console.log(result.length);
+        ('--------> Search Results');
+        result.length;
 
         // If the result exists, the user exists
         if (result.length != 0) {
-            console.log('------> User already exists!');
+            ('------> User already exists!');
             res.sendStatus(409);
         } else {
             // Otherwise insert the new user into the database
             db.pool.query(insert_query, async (_err, _result) => {
                 if (_err) throw _err;
-                console.log('------> Created new User!');
-                console.log(_result.insertId);
+                ('------> Created new User!');
+                _result.insertId;
                 res.sendStatus(201);
             });
         }
@@ -843,7 +843,7 @@ app.post('/authenticate', async (req, res) => {
 
         // If no results, user does not exist
         if (result.length == 0) {
-            console.log('The user does not exist.');
+            ('The user does not exist.');
             res.sendStatus(404);
         } else {
             // Otherwise get the hashedPassword
@@ -851,12 +851,12 @@ app.post('/authenticate', async (req, res) => {
 
             // Compare the passwords using bcrypt
             if (await bcrypt.compare(password, hashedPassword)) {
-                console.log('Success!');
+                ('Success!');
                 // res.send(`${user}` + ' has successfully logged in!');
 
                 res.redirect('/search');
             } else {
-                console.log('Password Incorrect!');
+                ('Password Incorrect!');
                 res.send('Your password was incorrect.');
             }
         }
@@ -876,24 +876,24 @@ app.get('/logout', async (_req, res) => {
 // Handles rig filtering
 app.get('/rigs/:id', async (req, res) => {
     let employerID = req.params.id;
-    console.log(employerID);
+    employerID;
     const employerSQL = 'SELECT * FROM Rigs WHERE EmployerID = ?';
     const employer_query = mysql.format(employerSQL, [employerID]);
 
     const result = await db.query(employer_query);
-    console.log(result[0]);
+    result[0];
     res.send(result[0]);
 });
 
 // Handles license type filtering
 app.get('/licenseTypes/:id', async (req, res) => {
     let licenseTypeID = req.params.id;
-    console.log(licenseTypeID);
+    licenseTypeID;
     const licenseTypeSQL = 'SELECT * FROM LicenseTypes WHERE CountryName = ?';
     const license_query = mysql.format(licenseTypeSQL, [licenseTypeID]);
 
     const result = await db.query(license_query);
-    console.log(result[0]);
+    result[0];
     res.send(result[0]);
 });
 
@@ -908,7 +908,7 @@ app.get('/licenseTypes/names/:id', async (req, res) => {
     const license_query = mysql.format(licenseTypeSQL, [licenseTypeID]);
 
     const result = await db.query(license_query);
-    console.log(result[0]);
+    result[0];
     res.send(result[0]);
 });
 
@@ -939,18 +939,18 @@ app.get('/form', async (_req, res) => {
     // DB Access
     // Sets the MarinerID to the next number
     db.query(id_query).then((result) => {
-        console.log(result[0]);
+        result[0];
         lastMarinerID = result[0][0]['MAX(MarinerID)'];
-        console.log(lastMarinerID);
+        lastMarinerID;
         nextMarinerID = parseInt(lastMarinerID) + 1;
     });
     // Sets the applicationID to the next number
     db.query(applicationID_query).then((result) => {
-        console.log(result[0]);
+        result[0];
         lastAppID = result[0][0]['MAX(applicationID)'];
-        console.log(lastAppID);
+        lastAppID;
         nextAppID = parseInt(lastAppID) + 1;
-        console.log(nextAppID);
+        nextAppID;
     });
     // Gets the country list from the database
     db.query(country_query).then((countryResult) => {
@@ -962,11 +962,11 @@ app.get('/form', async (_req, res) => {
 
         // Gets the agent list from the database
         db.query(agent_query).then((agentResult) => {
-            console.log(agentResult[0]);
+            agentResult[0];
             let agents = agentResult[0];
             // Gets the employer list from the database
             db.query(employer_query).then((employerResult) => {
-                console.log(employerResult[0]);
+                employerResult[0];
                 let employers = employerResult[0];
                 // Pass the variables to the page to be rendered
                 res.render('add', {
@@ -985,7 +985,7 @@ app.get('/form', async (_req, res) => {
 /* --------------------------- Add/Edit/Delete a Mariner --------------------------- */
 // Route for adding a Mariner
 app.post('/add', async (req, res) => {
-    console.log(req.body);
+    req.body;
     // Get submitted form data
     let marinerId = req.body.marinerID;
     let firstName = req.body.firstName;
@@ -1020,7 +1020,7 @@ app.post('/add', async (req, res) => {
     let country = req.body.country;
     let homePhone = req.body.homePhone;
 
-    console.log(physDate);
+    physDate;
 
     // Insert SQL statement
     let sqlInsert =
@@ -1063,9 +1063,9 @@ app.post('/add', async (req, res) => {
     // Insert Mariner into database
     db.pool.query(insert_query, async (err, result) => {
         if (err) throw err;
-        console.log('New Mariner Added!');
-        console.log(result);
-        console.log(result.insertId);
+        ('New Mariner Added!');
+        result;
+        result.insertId;
 
         // Render the Search page after insertion
         res.redirect('search');
@@ -1073,7 +1073,7 @@ app.post('/add', async (req, res) => {
 });
 
 app.post('/edit', async (req, res) => {
-    console.log(req.body);
+    req.body;
     // Get Mariner Information from request body
     let marinerId = req.body.marinerIDNumber;
     let firstName = req.body.firstName;
@@ -1225,7 +1225,7 @@ app.delete('/delete/:id', async (req, res) => {
     let deleteRows = await db.query(delete_query);
     let deleteJSON = JSON.parse(JSON.stringify(deleteRows));
 
-    console.log(deleteJSON);
+    deleteJSON;
 
     res.send('Mariner Deleted!');
 });
@@ -1233,7 +1233,7 @@ app.delete('/delete/:id', async (req, res) => {
 /* --------------------------- Mariner Activities --------------------------- */
 // Route for MarinerActivities
 app.post('/activity', async (req, res) => {
-    console.log(req.body);
+    req.body;
     let activity = req.body.activity;
     let marinerID = req.body.marinerIDActivity;
     let processingAgent = req.body.activityProcessingAgent;
@@ -1321,12 +1321,12 @@ app.post('/licenses/:id', async (req, res) => {
         );
         licenseID = licenseIDQuery[0]['MAX(LicenseID)'];
     }
-    crNumber == '' ? (crNumber = null) : console.log('is defined');
+    crNumber == '' ? (crNumber = null) : 'is defined';
 
-    issueDate == '' ? (issueDate = null) : console.log('is defined');
-    expirationDate == '' ? (expirationDate = null) : console.log('is defined');
+    issueDate == '' ? (issueDate = null) : 'is defined';
+    expirationDate == '' ? (expirationDate = null) : 'is defined';
 
-    console.log(licenseID);
+    licenseID;
     // SQL Query to add license to database
     let insertSQL =
         'INSERT INTO Licenses SET LicenseName = ?,LicenseTypeID = ?, CountryID = ?, MarinerID = ?, Timestamp = CURRENT_TIMESTAMP(), IssueDate = ?, ExpirationDate = ?, PendingGC = ?, PendingGovt = ?, CRNumber = ?';
@@ -1346,7 +1346,7 @@ app.post('/licenses/:id', async (req, res) => {
 
     let insertJSON = insertRows[0];
 
-    console.log(insertJSON);
+    insertJSON;
 
     res.send({
         insertJSON: insertJSON,
@@ -1368,10 +1368,10 @@ app.put('/licenses/:id', async (req, res) => {
     let govtPending = req.body.govtPending;
     let crNumber = req.body.crNumber;
 
-    crNumber == '' ? (crNumber = null) : console.log('is defined');
+    crNumber == '' ? (crNumber = null) : 'is defined';
 
-    issueDate == '' ? (issueDate = null) : console.log('is defined');
-    expirationDate == '' ? (expirationDate = null) : console.log('is defined');
+    issueDate == '' ? (issueDate = null) : 'is defined';
+    expirationDate == '' ? (expirationDate = null) : 'is defined';
 
     // SQL Query to update the license
     let updateSQL =
@@ -1393,7 +1393,7 @@ app.put('/licenses/:id', async (req, res) => {
 
     let updateJSON = updateRows[0];
 
-    console.log(updateJSON);
+    updateJSON;
 
     res.send({
         updateJSON: updateJSON,
@@ -1427,7 +1427,7 @@ app.delete('/deleteLicense', async (req, res) => {
     let delete_license_query = mysql.format(deleteLicenseSQL, [licenseID]);
     let deleteRows = await db.query(delete_license_query);
 
-    console.log(deleteRows);
+    deleteRows;
     res.send(deleteRows);
 });
 
@@ -1573,11 +1573,11 @@ app.put('/licenses/govtactivities/:activityId', async (req, res) => {
         govtActivityNote,
         govtLicenseActivityId,
     ]);
-    console.log(activity_query);
+    // (activity_query);
     // Perform the query
     let activityUpdateRows = await db.query(activity_query);
 
-    console.log(activityUpdateRows);
+    // (activityUpdateRows);
     // Send the response to the client
     res.send({
         activityRows: activityUpdateRows,
@@ -1600,6 +1600,43 @@ app.delete('/licenses/govtactivities/:id', async (req, res) => {
         deleteJSON: deleteJSON,
     });
 });
+
+app.post('/licenses/batch/add/', async (req, res) => {
+    // (req.body);
+    let batchActivity = req.body.batchActivity;
+    let batchActivityType = req.body.batchActivityType;
+    let batchActivityLicenseIDs = req.body.batchAddBoxes;
+    let marinerID = req.body.marinerIDNumber;
+
+    let numInserts = batchActivityLicenseIDs.length;
+    // (batchActivityType);
+    // (batchActivityLicenseIDs);
+    // (numInserts);
+    batchActivityType == 'GCLicenseActivities' ? (col = 'GC') : (col = 'Govt');
+
+    let inserts = [];
+
+    for (let i = 0; i < numInserts; i++) {
+        let insertSQL =
+            'INSERT INTO ' +
+            batchActivityType +
+            ` ( ${col}ActivityID, ${col}ActivityNote, ${col}ActivityTimestamp, MarinerID, LicenseID) VALUES (0, ?, CURRENT_TIMESTAMP(), ?, ?)`;
+        // (insertSQL);
+
+        let insert_query = mysql.format(insertSQL, [
+            batchActivity,
+            marinerID,
+            batchActivityLicenseIDs[i],
+        ]);
+        // (insert_query);
+
+        inserts.push(await db.query(insert_query));
+    }
+
+    // (inserts);
+
+    res.send('Ok!');
+});
 /* --------------------------- License Attachments -------------------------- */
 
 // Get License Attachments for a given LicenseID
@@ -1613,7 +1650,7 @@ app.get('/licenses/attachments/:licenseId', async (req, res) => {
     let licenseRows = await db.query(license_query);
 
     let licenseJSON = licenseRows[0];
-    // console.log(licenseJSON);
+    // (licenseJSON);
     res.send({
         licenseJSON: licenseJSON,
     });
@@ -1634,8 +1671,8 @@ app.post(
 
         // Read the file as a buffer
         const file_buffer = fs.readFileSync('public/uploads/' + file.filename);
-        console.log(file);
-        console.log(file.filename);
+        // (file);
+        // (file.filename);
 
         let licenseID = req.params.licenseId;
 
@@ -1659,14 +1696,14 @@ app.post(
         // Delete the uploaded file from memory after insertion into the db
         let uploadedFile = 'public/uploads/' + file.filename;
         fs.unlinkSync(uploadedFile);
-        console.log('File Uploaded!');
+        // ('File Uploaded!');
 
         // Log information about the attachment insert to the console
-        console.log(attachmentRows);
+        // (attachmentRows);
         let attachmentJSON = JSON.parse(JSON.stringify(attachmentRows));
-        console.log(attachmentJSON);
+        // (attachmentJSON);
         attachmentID = attachmentJSON[0]['insertId'];
-        console.log('attachment ID: ' + attachmentID);
+        // ('attachment ID: ' + attachmentID);
 
         res.redirect('/licenses/' + marinerID);
         // res.send('File uploaded!');
@@ -1690,8 +1727,8 @@ app.get('/licenses/attachments/download/:attachmentId', async (req, res) => {
     db.pool.query(attachment_query, async (err, response) => {
         if (err) throw err;
 
-        console.log(response[0]);
-        console.log(response[0]['LicenseAttachment']);
+        // (response[0]);
+        // (response[0]['LicenseAttachment']);
 
         let attachmentName = response[0]['LicenseAttachmentName'];
         let marinerID = response[0]['MarinerID'];
@@ -1700,7 +1737,7 @@ app.get('/licenses/attachments/download/:attachmentId', async (req, res) => {
         let buff = await new Buffer.from(response[0]['LicenseAttachment'], {
             type: 'application/pdf',
         });
-        console.log(buff);
+        // (buff);
 
         const tempFilePath =
             'public/downloads/' +
@@ -1725,7 +1762,7 @@ app.get('/licenses/attachments/download/:attachmentId', async (req, res) => {
             // If there is an error throw an error
             if (err) console.error(err.message);
             // If the download completes, display success message
-            console.log('Download complete!');
+            // ('Download complete!');
             // Delete temporary file from server
             fs.unlinkSync(tempFilePath);
         });
@@ -1750,7 +1787,7 @@ app.delete('/licenses/attachments/:attachmentID', async (req, res) => {
 
 // Check if application exists for a Mariner
 app.get('/getApp', async (req, res) => {
-    console.log(req.query);
+    // (req.query);
     let marinerID = req.query.marinerID;
 
     // Check database to see if an application for the mariner exists
@@ -1764,8 +1801,8 @@ app.get('/getApp', async (req, res) => {
         // Stringify and parse the result as JSON
         let resultJSON = JSON.parse(JSON.stringify(result));
         if (resultJSON[0]) {
-            console.log(resultJSON[0]['applicationFileName']);
-            console.log(resultJSON[0]['applicationID']);
+            // (resultJSON[0]['applicationFileName']);
+            // (resultJSON[0]['applicationID']);
             // Send result back to frontend
             res.send({
                 appExists: true,
@@ -1785,16 +1822,16 @@ app.get('/getApp', async (req, res) => {
 app.post('/newAppUpload', upload.single('application'), async (req, res) => {
     // Get the file from the request
     let file = req.file;
-    // console.log(file);
-    console.log(req.body);
+    // (file);
+    // (req.body);
 
     // Read the file as a buffer
     const file_buffer = fs.readFileSync('public/uploads/' + file.filename);
-    console.log(file);
-    // console.log(file.filename);
+    // (file);
+    // (file.filename);
 
     // Get all the parameters for the new Mariner from the request body
-    console.log(req.body);
+    // (req.body);
     let marinerID = req.body.marinerIDNumber;
     let applicationID = req.body.applicationIDNumber;
     let processingAgent = req.body.processingAgent;
@@ -1831,7 +1868,7 @@ app.post('/newAppUpload', upload.single('application'), async (req, res) => {
     // Delete the uploaded file from memory after insertion into the db
     let uploadedFile = 'public/uploads/' + file.filename;
     await fs.unlinkSync(uploadedFile);
-    console.log('File Uploaded!');
+    // ('File Uploaded!');
 
     // Query for setting the applicationID in the Mariners table to the corresponding one in the applications table
     let checkAppIdSQL =
@@ -1839,11 +1876,11 @@ app.post('/newAppUpload', upload.single('application'), async (req, res) => {
     let check_app_id_query = mysql.format(checkAppIdSQL, [marinerID]);
 
     let checkAppRows = await db.query(check_app_id_query);
-    // console.log(checkAppRows);
+    // (checkAppRows);
     let rJSON = JSON.parse(JSON.stringify(checkAppRows));
-    // console.log(rJSON);
+    // (rJSON);
     let appId = rJSON[0][0]['applicationID'];
-    console.log(appId);
+    // (appId);
 
     let updateMarinerSQL =
         'UPDATE Mariners SET applicationID = ? WHERE MarinerID = ? ';
@@ -1869,15 +1906,15 @@ app.post('/appUpload', upload.single('application'), async (req, res) => {
 
     // Read the file as a buffer
     const file_buffer = fs.readFileSync('public/uploads/' + file.filename);
-    console.log(file);
-    console.log(file.filename);
+    // (file);
+    // (file.filename);
 
     // Parse the request body
     let marinerIDjson = JSON.parse(JSON.stringify(req.body));
 
     // Get the marinerID from the request body
     let marinerID = marinerIDjson.marinerIDNumber[1];
-    console.log(marinerIDjson);
+    // (marinerIDjson);
 
     // Query for inserting application into database
     let applicationSql = 'INSERT INTO applications VALUES (0, ?, ?, ?)';
@@ -1892,13 +1929,13 @@ app.post('/appUpload', upload.single('application'), async (req, res) => {
     // Delete the uploaded file from memory after insertion into the db
     let uploadedFile = 'public/uploads/' + file.filename;
     fs.unlinkSync(uploadedFile);
-    console.log('File Uploaded!');
+    // ('File Uploaded!');
 
-    console.log(appQueryRows);
+    // (appQueryRows);
     let appQueryJSON = JSON.parse(JSON.stringify(appQueryRows));
-    console.log(appQueryJSON);
+    // (appQueryJSON);
     applicationID = appQueryJSON[0]['insertId'];
-    console.log('application ID: ' + applicationID);
+    // ('application ID: ' + applicationID);
 
     // Update the Mariner with the applicationID
     let updateMarinerSQL =
@@ -1920,7 +1957,7 @@ app.post('/appUpload', upload.single('application'), async (req, res) => {
 app.get('/appDownload', async (req, res) => {
     // Get the MarinerID from the request body
     let marinerID = req.query.marinerID;
-    console.log('MarinerID: ' + marinerID);
+    // ('MarinerID: ' + marinerID);
 
     // SQL to find application that matches the mariner ID
     let appSQL = 'SELECT * FROM Applications WHERE MarinerID = ?';
@@ -1929,15 +1966,15 @@ app.get('/appDownload', async (req, res) => {
     // Get the Blob object from the database
     db.pool.query(app_query, async (error, response) => {
         if (error) throw error;
-        console.log(response[0]);
-        console.log(response[0]['ApplicationID']);
+        // (response[0]);
+        // (response[0]['ApplicationID']);
         let applicationID = response[0]['ApplicationID'];
 
         // Create a Buffer from the BLOB object
         let buff = await new Buffer.from(response[0]['ApplicationDocument'], {
             type: 'application/pdf',
         });
-        console.log(buff);
+        // (buff);
 
         const tempFilePath =
             'public/downloads/' +
@@ -1964,7 +2001,7 @@ app.get('/appDownload', async (req, res) => {
             // Throw an error if there is an error
             if (err) throw err;
             // If the download completes, display a success message
-            console.log('Download Complete!');
+            // ('Download Complete!');
             // Delete the temporary file from the server
             fs.unlink(tempFilePath);
         });
@@ -1983,7 +2020,7 @@ app.delete('/application', async (req, res) => {
     // Delete the application Document
     db.pool.query(delete_query, async (err, _res) => {
         if (err) throw err;
-        console.log('Application Deleted for MarinerID: ' + marinerID);
+        // ('Application Deleted for MarinerID: ' + marinerID);
     });
 
     // Update the Mariner to reflect the deletion
@@ -2011,8 +2048,8 @@ app.post('/attachment', upload.single('attachment'), async (req, res) => {
 
     // Read the file as a buffer
     const file_buffer = fs.readFileSync('public/uploads/' + file.filename);
-    console.log(file);
-    console.log(file.filename);
+    // (file);
+    // (file.filename);
 
     // Parse the request body
     let bodyJSON = JSON.parse(JSON.stringify(req.body));
@@ -2022,7 +2059,7 @@ app.post('/attachment', upload.single('attachment'), async (req, res) => {
     let processingAgentID = bodyJSON.processingAgent;
     let attachmentName = bodyJSON.attachmentName;
 
-    console.log(bodyJSON);
+    // (bodyJSON);
 
     // Query for inserting attachment into database
     let attachmentSql =
@@ -2041,14 +2078,14 @@ app.post('/attachment', upload.single('attachment'), async (req, res) => {
     // Delete the uploaded file from memory after insertion into the db
     let uploadedFile = 'public/uploads/' + file.filename;
     fs.unlinkSync(uploadedFile);
-    console.log('File Uploaded!');
+    // ('File Uploaded!');
 
     // Get information about attachment insert
-    console.log(attachmentRows);
+    // (attachmentRows);
     let attachmentJSON = JSON.parse(JSON.stringify(attachmentRows));
-    console.log(attachmentJSON);
+    // (attachmentJSON);
     attachmentID = attachmentJSON[0]['insertId'];
-    console.log('attachment ID: ' + attachmentID);
+    // ('attachment ID: ' + attachmentID);
 
     res.send({
         attachmentUploaded: true,
@@ -2063,8 +2100,8 @@ app.get('/attachment/download', async (req, res) => {
     let marinerID = req.query.marinerID;
     let attachmentID = req.query.attachmentID;
     let marinerFullName = req.query.fullName;
-    console.log('MarinerID: ' + marinerID);
-    console.log('AttachmentID: ' + attachmentID);
+    // ('MarinerID: ' + marinerID);
+    // ('AttachmentID: ' + attachmentID);
 
     // SQL to find application that matches the mariner ID
     let attachmentSQL =
@@ -2074,14 +2111,14 @@ app.get('/attachment/download', async (req, res) => {
     // Get the Blob object from the database
     db.pool.query(attachment_query, async (error, response) => {
         if (error) throw error;
-        console.log(response[0]);
-        console.log(response[0]['MarinerAttachmentID']);
+        // (response[0]);
+        // (response[0]['MarinerAttachmentID']);
 
         // Create a Buffer from the BLOB object
         let buff = await new Buffer.from(response[0]['MarinerAttachment'], {
             type: 'application/pdf',
         });
-        console.log(buff);
+        // (buff);
 
         // Path for temporary file
         const tempFilePath =
@@ -2107,14 +2144,14 @@ app.get('/attachment/download', async (req, res) => {
             tempFilePath,
             response[0]['MarinerAttachment']
         );
-        console.log(pdf);
+        // (pdf);
 
         // Send the document to the browser for download
         res.download(tempFilePath, fileName, (err) => {
             // Throw an error is there is an error
             if (err) throw err;
             // If the download completes, display a success message
-            console.log('Attachment Download Complete!');
+            // ('Attachment Download Complete!');
             // Delete the temporary file from the server
             fs.unlink(tempFilePath);
         });
@@ -2143,9 +2180,9 @@ app.delete('/attachment', async (req, res) => {
 
 // Search the database
 app.post('/search', async (_req, res) => {
-    console.log(_req.body);
+    // (_req.body);
     let category = _req.body.searchBy;
-    console.log('category:', category);
+    // ('category:', category);
     let sqlStatement;
     let parameterArray = [];
     let searchText = _req.body.searchText || _req.body.date;
@@ -2195,19 +2232,19 @@ app.post('/search', async (_req, res) => {
 
     // Place the Searched Text into the parameterArray
     parameterArray.push(searchText);
-    // console.log(parameterArray);
+    // (parameterArray);
 
     // Format SQL Query
     let search_query = mysql.format(sqlStatement, parameterArray);
-    // console.log(search_query);
+    // (search_query);
 
     // Perform SQL query
     let searchResultsRows = await db.query(search_query);
-    // console.log(searchResultsRows);
+    // (searchResultsRows);
 
     // Format result
     // let searchJSON = JSON.parse(JSON.stringify(searchResultsRows));
-    // console.log(searchJSON[0]);
+    // (searchJSON[0]);
     let results = searchResultsRows[0];
 
     const employerSQL =
@@ -2232,7 +2269,7 @@ app.post('/search', async (_req, res) => {
         if (mariner['EmployerID'] != null) {
             // Get the employerID Number
             let employerIDNumber = mariner['EmployerID'];
-            // console.log(employerIDNumber);
+            // (employerIDNumber);
             // Place it in the query
             let employer_query = mysql.format(employerSQL, [employerIDNumber]);
             let employerName;
@@ -2240,7 +2277,7 @@ app.post('/search', async (_req, res) => {
             const employerRows = await db.query(employer_query);
             // Parse the result and place the employerName into the object
             let employerJSON = JSON.parse(JSON.stringify(employerRows[0]));
-            // console.log(employerJSON);
+            // (employerJSON);
             if (employerJSON[0]) {
                 employerName = employerJSON[0]['EmployerName'];
                 formatted['employer'] = employerName;
@@ -2253,7 +2290,7 @@ app.post('/search', async (_req, res) => {
 
         // Get the AgentID Number
         let agentIDNumber = mariner['ProcessingAgent'];
-        // console.log(agentIDNumber);
+        // (agentIDNumber);
         // Place it in the query
         let agent_query = mysql.format(agentSQL, [agentIDNumber]);
         let agentName;
@@ -2261,7 +2298,7 @@ app.post('/search', async (_req, res) => {
         const agentRows = await db.query(agent_query);
         // Parse the result and place the AgentName into the Object
         let agentJSON = JSON.parse(JSON.stringify(agentRows[0]));
-        // console.log(agentJSON);
+        // (agentJSON);
         agentName = agentJSON[0]['AgentName'];
         if (agentName) {
             formatted['processingAgent'] = agentName;
@@ -2269,12 +2306,12 @@ app.post('/search', async (_req, res) => {
 
         // Get the date from the database
         let mySQLbirthDate = mariner['BirthDate'];
-        // console.log(mySQLbirthDate);
+        // (mySQLbirthDate);
         let jsDate = Date.parse(mySQLbirthDate);
-        // console.log(jsDate);
+        // (jsDate);
         // Convert to a String
         let dateString = mySQLbirthDate.toString();
-        console.log(dateString);
+        // (dateString);
         // Create an array with the components of the string
         let splitDate = dateString.split(' ');
         // Change the format of the birth date to date-MON-year
@@ -2290,7 +2327,7 @@ app.post('/search', async (_req, res) => {
 
         mariners.push(formatted);
     }
-    console.log(searchText);
+    searchText;
     res.render('search', {
         title: 'Search',
         results: mariners,
@@ -2315,14 +2352,14 @@ if (process.env.MACHINE == 'local') {
     // Database connection
     db.getConnection(function (err, _connection) {
         if (err) {
-            console.log('Error: Something went wrong! ' + err.stack);
+            'Error: Something went wrong! ' + err.stack;
         } else {
             // Select and print from the Agents table
             db.query(
                 'SELECT * FROM global_compliance.Agents',
                 function (error, results) {
                     if (error) throw error;
-                    console.log(results);
+                    results;
                 }
             );
         }
@@ -2330,7 +2367,7 @@ if (process.env.MACHINE == 'local') {
 } else {
     // Test MySQL Database Connection
     db.query('SELECT * FROM et2g6mv72e6t4f88.mariners AS items').then(
-        (result) => console.log(JSON.stringify(result[0]))
+        (result) => JSON.stringify(result[0])
     );
 }
 
@@ -2344,13 +2381,11 @@ if (process.env.MACHINE == 'local') {
             app
         )
         .listen(PORT, () => {
-            console.log(
-                `Listening to requests on https://localhost:${PORT}...`
-            );
+            `Listening to requests on https://localhost:${PORT}...`;
         });
 } else {
     // Set the application to listen on a port for requests
     app.listen(PORT, () => {
-        console.log(`Listening to requests on http://localhost:${PORT}...`);
+        `Listening to requests on http://localhost:${PORT}...`;
     });
 }

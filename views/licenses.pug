@@ -23,7 +23,7 @@ block content
         .container#licensesModule
           .row#batchActivitiesRow(style="display: none !important;")
             .col-6.d-flex.justify-content-start
-              button.btn.btn-secondary(id="batchActivitiesButton" type="button" value="batchActivities") Batch Add Activities
+              button.btn.btn-secondary(id="batch-add-activities-button" type="button" value="batchActivities") Batch Add Activities
             .col-6.d-flex.justify-content-end
               button.btn(id="deleteLicenseButton" type="button" style="background-color: #dd0303;" value="deleteLicense" onclick="deleteLicense()")
                   i.bi.bi-fire.text-white
@@ -215,6 +215,7 @@ block content
             include includes/licenseAttachmentModal
             include includes/editGCLicenseActivityModal
             include includes/editGovtLicenseActivityModal
+            include includes/batchAddActivitiesModal
 
   script.
     // Get information from server
@@ -1005,6 +1006,33 @@ block content
   script(src="/js/licenses.js")
 
   script.
+
+      let licenseCheckboxes = document.getElementById('licenseCheckboxes');
+
+      // For every license in the array, add a checkbox to the batch activities modal
+      for(license of licensesArray) {
+         console.log(license);
+         let licenseName = license['LicenseName'];
+         let trimmedName = licenseName.replace(/\s+/g,'');
+          let box = document.createElement('input');
+          box.type = 'checkbox';
+          box.value = license['LicenseID'];
+          box.id = 'checkBox' + trimmedName;
+          box.name = 'batchAddBoxes';
+
+          let label = document.createElement('label');
+          label.setAttribute('for', 'checkBox' + trimmedName);
+
+          let textnode = document.createTextNode(' ' + license['LicenseName']);
+          label.style.color = 'white';
+
+          label.appendChild(textnode);
+
+          licenseCheckboxes.appendChild(box);
+          licenseCheckboxes.appendChild(label);
+          licenseCheckboxes.appendChild(document.createElement('br'));
+      }
+
     // Place an empty option element into the dropdown for countries
       let newCountryBlankElement = document.createElement("option");
       newCountryBlankElement.value = 0;

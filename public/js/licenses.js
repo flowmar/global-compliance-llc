@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-11-11 12:14:30
+ * @Last Modified time: 2022-11-11 14:00:28
  */
 
 let licenseID,
@@ -23,6 +23,7 @@ const licenseModal = new mdb.Modal(newLicenseModal);
 const attachmentModal = new mdb.Modal(licenseAttachmentModal);
 const editGCActivityModal = new mdb.Modal(editGCLicenseActivityModal);
 const editGovtActivityModal = new mdb.Modal(editGovtLicenseActivityModal);
+const batchModal = new mdb.Modal(batchAddActivitiesModal);
 
 /**
  * The function collects the information from the form that is currently active and
@@ -958,6 +959,21 @@ function confirmAndSaveEditedGovtLicenseActivity() {
     }
 }
 
+function batchAddActivities() {
+    // Confirm saving of activities
+    if (confirm('Add activity to each of the checked licenses?')) {
+        // Get all information from form
+        let activity = $('#batchActivityTextBox').val();
+        let activityType = $('#batchActivityType').val();
+
+        
+
+        // Add activity
+
+        axios.post().then().catch();
+    }
+}
+
 // function getGCActivities( licenseID, formNumber )
 // {
 //     // Get the currently selected license's gc activities to be displayed in the UI
@@ -1030,6 +1046,11 @@ $(document).ready(function () {
     // Open the new license attachment modal when the upload license attachment button is clicked
     $('#license-attachment-button').on('click', function (e) {
         attachmentModal.show();
+    });
+
+    // Open the batch add activities modal when the button is clicked
+    $('#batch-add-activities-button').on('click', function (e) {
+        batchModal.show();
     });
 
     // Prevent the form from being submitted, instead run the saveNewLicense function
