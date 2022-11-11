@@ -243,7 +243,7 @@ block content
       for(let i = 0; i < countriesArray.length; i++) {
       // Citizenship input
       let element = document.createElement('option');
-      element.value = i + 1;
+      element.value = countriesArray[i]['CountryID'];
       element.text = countriesArray[i]['CountryName'];
       document.getElementById('countriesField').appendChild(element);
       }
@@ -255,7 +255,6 @@ block content
 
       // Place the license types into the licenseForm
       for(let i = 0; i < licenseTypesArray.length; i++) {
-
       // Citizenship input
       let element = document.createElement('option');
       element.value = i + 1;
@@ -440,9 +439,7 @@ block content
         let licenseTypeDropdown = $(selector + ' #licenseTypesField' + suffix);
         //- console.log(licenseTypeDropdown);
 
-        let formCountry = $('#countriesField').attr('id');
-        $(selector + ' #countriesField').attr('id', formCountry + suffix);
-        // Select the country dropdown on the current form
+        //- Select the country dropdown on the current form
         let countryDropdown = $(selector + ' #countriesField' + suffix);
         //- console.log(countryDropdown);
 
@@ -460,6 +457,11 @@ block content
             filterTypes(e.target.value, e.target.selectedOptions[0].text, licenseTypeDropdown);
           }
         });
+
+
+        let formCountry = $('#countriesField').attr('id');
+        $(selector + ' #countriesField').attr('id', formCountry + suffix);
+
 
         let formCrNumber = $('#crNumber').attr('id');
         $(selector +' #crNumber').attr('id', formCrNumber + suffix);
@@ -688,7 +690,7 @@ block content
           //- console.log(e.target.selectedOptions[0].text);
 
           // If the value is blank, empty the license type dropdown
-          if (e.target.value == 0) {
+          if (e.target.value == '') {
             licenseTypeDropdown.empty();
           } else {
             // Otherwise, filter the license types
@@ -857,6 +859,8 @@ block content
           $("#licenseTypesField" + suffix).val(licenseType);
           //- console.log($("#licenseTypesField" + suffix));
 
+          let countryValue = axios.get('/');
+
           $("#countriesField" + suffix).val(licenseCountry);
 
           // CR Number
@@ -1010,7 +1014,7 @@ block content
       for(let i = 0; i < countriesArray.length; i++) {
       // Citizenship input
       let element = document.createElement('option');
-      element.value = i + 1;
+      element.value = countriesArray[i]['CountryID'];
       element.text = countriesArray[i]['CountryName'];
       document.getElementById('newLicenseCountry').appendChild(element);
       }

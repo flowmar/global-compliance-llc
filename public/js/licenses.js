@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-10-23 04:16:37
+ * @Last Modified time: 2022-11-11 12:14:30
  */
 
 let licenseID,
@@ -184,6 +184,7 @@ function saveNewLicense() {
         .then((response) => {
             console.log(response);
             alert('License Added!');
+            location.reload();
         })
         .catch((error) => console.log(error));
 }
@@ -286,37 +287,41 @@ function saveGCActivity() {
     console.log('AGG');
     console.log(gcActivity);
     console.log(licenseID);
-
-    axios
-        .post('/licenses/gcactivities/' + licenseID, {
-            activityNote: gcActivity,
-            marinerID: marinerID,
-        })
-        .then((response) => {
-            console.log(response);
-            alert('Global Compliance Activity Uploaded!');
-            // Clear out the text field
-            activityBox.val('');
-            // Create a new table row on the GCActivity Table
-            let gcActivityTable = $('#gcActivityTableBody' + formNumber);
-            let newRow = document.createElement('tr');
-            newRow.classList = 'notHeader';
-            newRow.style.textAlign = 'center';
-            newRow.id = response.data.licenseActivitiesJSON.insertId;
-            // Create the cells and add them to the table row
-            let dateCell = document.createElement('td');
-            let date = new Date().toLocaleString();
-            dateCell.textContent = date;
-            newRow.appendChild(dateCell);
-            let noteCell = document.createElement('td');
-            noteCell.textContent = gcActivity;
-            newRow.appendChild(noteCell);
-            // Add the table row to the table
-            gcActivityTable.append(newRow);
-        })
-        .catch((error) => {
-            console.log(error.message);
-        });
+    if (gcActivity != '') {
+        axios
+            .post('/licenses/gcactivities/' + licenseID, {
+                activityNote: gcActivity,
+                marinerID: marinerID,
+            })
+            .then((response) => {
+                console.log(response);
+                alert('Global Compliance Activity Uploaded!');
+                // Clear out the text field
+                activityBox.val('');
+                // Create a new table row on the GCActivity Table
+                let gcActivityTable = $('#gcActivityTableBody' + formNumber);
+                let newRow = document.createElement('tr');
+                newRow.classList = 'notHeader';
+                newRow.style.textAlign = 'center';
+                newRow.id = response.data.licenseActivitiesJSON.insertId;
+                // Create the cells and add them to the table row
+                let dateCell = document.createElement('td');
+                let date = new Date().toLocaleString();
+                dateCell.textContent = date;
+                newRow.appendChild(dateCell);
+                let noteCell = document.createElement('td');
+                noteCell.textContent = gcActivity;
+                newRow.appendChild(noteCell);
+                // Add the table row to the table
+                gcActivityTable.append(newRow);
+                changeForm();
+            })
+            .catch((error) => {
+                console.log(error.message);
+            });
+    } else {
+        alert('Please enter a GC Activity');
+    }
 }
 
 /**
@@ -331,37 +336,43 @@ function saveGovtActivity() {
     console.log('AGG');
     console.log(govtActivity);
     console.log(licenseID);
-
-    axios
-        .post('/licenses/govtactivities/' + licenseID, {
-            activityNote: govtActivity,
-            marinerID: marinerID,
-        })
-        .then((response) => {
-            console.log(response);
-            alert('Government Activity Uploaded!');
-            // Clear out the text field
-            activityBox.val('');
-            // Create a new table row on the GCActivity Table
-            let govtActivityTable = $('#govtActivityTableBody' + formNumber);
-            let newRow = document.createElement('tr');
-            newRow.classList = 'notHeader';
-            newRow.style.textAlign = 'center';
-            newRow.id = response.data.licenseActivitiesJSON.insertId;
-            // Create the cells and add them to the table row
-            let dateCell = document.createElement('td');
-            let date = new Date().toLocaleString();
-            dateCell.textContent = date;
-            newRow.appendChild(dateCell);
-            let noteCell = document.createElement('td');
-            noteCell.textContent = govtActivity;
-            newRow.appendChild(noteCell);
-            // Add the table row to the table
-            govtActivityTable.append(newRow);
-        })
-        .catch((error) => {
-            console.log(error.message);
-        });
+    if (govtActivity != '') {
+        axios
+            .post('/licenses/govtactivities/' + licenseID, {
+                activityNote: govtActivity,
+                marinerID: marinerID,
+            })
+            .then((response) => {
+                console.log(response);
+                alert('Government Activity Uploaded!');
+                // Clear out the text field
+                activityBox.val('');
+                // Create a new table row on the GCActivity Table
+                let govtActivityTable = $(
+                    '#govtActivityTableBody' + formNumber
+                );
+                let newRow = document.createElement('tr');
+                newRow.classList = 'notHeader';
+                newRow.style.textAlign = 'center';
+                newRow.id = response.data.licenseActivitiesJSON.insertId;
+                // Create the cells and add them to the table row
+                let dateCell = document.createElement('td');
+                let date = new Date().toLocaleString();
+                dateCell.textContent = date;
+                newRow.appendChild(dateCell);
+                let noteCell = document.createElement('td');
+                noteCell.textContent = govtActivity;
+                newRow.appendChild(noteCell);
+                // Add the table row to the table
+                govtActivityTable.append(newRow);
+                changeForm();
+            })
+            .catch((error) => {
+                console.log(error.message);
+            });
+    } else {
+        alert('Please enter a Government Activity');
+    }
 }
 
 /**
@@ -379,7 +390,7 @@ function saveLicenseAttachment(formData) {
         })
         .then((response) => {
             console.log(response);
-            location.reload();
+            changeForm();
         })
         .catch((e) => console.error(e.message));
 }
@@ -511,7 +522,9 @@ function filterTypes(value, text, typeDropdown) {
     // Send request to retrieve matching license types
     axios.get('/licenseTypes/' + text).then((response) => {
         // Clear out any previous data
+        console.log(typeDropdown);
         typeDropdown.empty();
+        console.log(typeDropdown);
         let blankElement = document.createElement('option');
         blankElement.textContent = '';
         blankElement.value = 0;
@@ -539,6 +552,31 @@ function changeForm() {
         let licenseID = $('#licenseID' + formNumber).val();
         let gcActivity;
         let govtActivity;
+
+        // Empty the licenseType dropdown
+        $('#licenseTypesField' + formNumber).empty();
+        // Use the form number to get the appropriate license, and country of that license from the licenses array
+        let selectedLicense = licensesArray[parseInt(formNumber) - 1];
+        let selectedCountry = selectedLicense['CountryID'];
+
+        // Create a a new licenseTypeArray that is filtered
+        let filteredTypeArray = [];
+        licenseTypesArray.filter((type) => {
+            if (type['CountryID'] == selectedCountry) {
+                filteredTypeArray.push(type);
+            }
+        });
+        // Populate the licenseTypesField using the filteredTypeArray
+        for (let filteredType of filteredTypeArray) {
+            // Create a new option element
+            let option = document.createElement('option');
+            option.value = filteredType['LicenseTypeID'];
+            option.text = filteredType['Type'];
+            $('#licenseTypesField' + formNumber).append(option);
+        }
+        $('#licenseTypesField' + formNumber).val(
+            licensesArray[parseInt(formNumber) - 1]['LicenseTypeID']
+        );
 
         // Open the edit gcActivity modal when the button is clicked
         $('#edit-GC-activity-button' + formNumber).on('click', function (e) {
@@ -885,7 +923,7 @@ function confirmAndSaveEditedGCLicenseActivity() {
             .then((response) => {
                 console.log(response);
                 alert('Activity Updated!');
-                location.reload();
+                changeForm();
             })
             .catch((err) => console.error(err.message));
     }
@@ -914,7 +952,7 @@ function confirmAndSaveEditedGovtLicenseActivity() {
             .then((response) => {
                 console.log(response);
                 alert('Activity Updated!');
-                location.reload();
+                changeForm();
             })
             .catch((err) => console.error(err.message));
     }

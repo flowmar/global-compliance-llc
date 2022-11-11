@@ -4,7 +4,7 @@ require('newrelic');
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-09-30 23:56:00
+ * @Last Modified time: 2022-11-11 12:05:51
  */
 
 ('use strict');
@@ -764,10 +764,10 @@ app.get('/licenses/:id', async (req, res) => {
 
     // Get DISTINCT Countries from License Types Table
     const countries_query = mysql.format(
-        'SELECT DISTINCT CountryName FROM LicenseTypes'
+        'SELECT DISTINCT CountryName, CountryID FROM LicenseTypes'
     );
     const licenseCountryRows = await db.query(countries_query);
-
+    console.log(licenseCountryRows[0]);
     // Get all license types
     const license_type_query = mysql.format('SELECT * FROM LicenseTypes');
     const licenseTypeRows = await db.query(license_type_query);
@@ -1014,12 +1014,17 @@ app.post('/add', async (req, res) => {
     let physDate = req.body.physDate;
     let coContact = req.body.coContact;
     let imoNumber = req.body.imoNumber;
+    let city = req.body.city;
+    let state = req.body.state;
+    let zip = req.body.zipCode;
+    let country = req.body.country;
+    let homePhone = req.body.homePhone;
 
     console.log(physDate);
 
     // Insert SQL statement
     let sqlInsert =
-        'INSERT INTO Mariners SET MarinerID = ?, LastName = ?, FirstName = ?, MiddleName = ?, StreetAddress = ?, PhoneNumber =  ?, Email = ?, EmployerID = ?, RigID = ?, MarinerReferenceNumber = ?, PassportNumber = ?, Citizenship = ? , BirthCity = ?, BirthState = ?, BirthCountry = ?, BirthDate = ?, ProcessingAgent = ?, ApplicationID = ?, Status = ?, Height = ?, Weight = ?, HairColor = ?, EyeColor = ?, Marks = ?, PhysDate = ? , CoContact = ?, IMONum = ?';
+        'INSERT INTO Mariners SET MarinerID = ?, LastName = ?, FirstName = ?, MiddleName = ?, StreetAddress = ?, PhoneNumber =  ?, Email = ?, EmployerID = ?, RigID = ?, MarinerReferenceNumber = ?, PassportNumber = ?, Citizenship = ? , BirthCity = ?, BirthState = ?, BirthCountry = ?, BirthDate = ?, ProcessingAgent = ?, ApplicationID = ?, Status = ?, Height = ?, Weight = ?, HairColor = ?, EyeColor = ?, Marks = ?, PhysDate = ? , CoContact = ?, IMONum = ?, City = ?, State = ?, ZipCode = ?, Country = ?, HomePhone = ?';
     let insert_query = mysql.format(sqlInsert, [
         marinerId,
         lastName,
@@ -1048,6 +1053,11 @@ app.post('/add', async (req, res) => {
         physDate,
         coContact,
         imoNumber,
+        city,
+        state,
+        zip,
+        country,
+        homePhone,
     ]);
 
     // Insert Mariner into database
@@ -1092,6 +1102,11 @@ app.post('/edit', async (req, res) => {
     let physDate = req.body.physDate;
     let coContact = req.body.coContact;
     let imoNumber = req.body.imoNumber;
+    let city = req.body.city;
+    let state = req.body.state;
+    let zip = req.body.zipCode;
+    let country = req.body.country;
+    let homePhone = req.body.homePhone;
 
     if (applicationID == '') {
         applicationID = null;
@@ -1111,7 +1126,7 @@ app.post('/edit', async (req, res) => {
 
     // Create SQL Statement
     let updateMarinerSQL =
-        'UPDATE Mariners SET LastName = ?, FirstName = ?, MiddleName = ?, StreetAddress = ?, PhoneNumber =  ?, Email = ?, EmployerID = ?, RigID = ?, MarinerReferenceNumber = ?, PassportNumber = ?, Citizenship = ? , BirthCity = ?, BirthState = ?, BirthCountry = ?, BirthDate = ?, ProcessingAgent = ?, ApplicationID = ?, Status = ?, Height = ?, Weight = ?, HairColor = ?, EyeColor = ?, Marks = ?, PhysDate = ? , CoContact = ?, IMONum = ? WHERE MarinerID = ?';
+        'UPDATE Mariners SET LastName = ?, FirstName = ?, MiddleName = ?, StreetAddress = ?, PhoneNumber =  ?, Email = ?, EmployerID = ?, RigID = ?, MarinerReferenceNumber = ?, PassportNumber = ?, Citizenship = ? , BirthCity = ?, BirthState = ?, BirthCountry = ?, BirthDate = ?, ProcessingAgent = ?, ApplicationID = ?, Status = ?, Height = ?, Weight = ?, HairColor = ?, EyeColor = ?, Marks = ?, PhysDate = ? , CoContact = ?, IMONum = ? , City = ?, State = ?, ZipCode = ?, Country = ?, HomePhone = ? WHERE MarinerID = ?';
     let update_query = mysql.format(updateMarinerSQL, [
         lastName,
         firstName,
@@ -1139,6 +1154,11 @@ app.post('/edit', async (req, res) => {
         physDate,
         coContact,
         imoNumber,
+        city,
+        state,
+        zip,
+        country,
+        homePhone,
         marinerId,
     ]);
 
@@ -1260,7 +1280,7 @@ app.post('/activity/edit', async (req, res) => {
 
     // SQL query for editing activity
     let editSQL =
-        'UPDATE MarinerActivities SET ActivityNote =?, ActivityDate = CURRENT_TIMESTAMP(), ProcessingAgent = ? WHERE ActivityID =?';
+        'UPDATE MarinerActivities SET ActivityNote = ?, ActivityDate = CURRENT_TIMESTAMP(), ProcessingAgent = ? WHERE ActivityID =?';
     let edit_query = mysql.format(editSQL, [
         activity,
         processingAgent,
@@ -1649,6 +1669,8 @@ app.post(
         console.log('attachment ID: ' + attachmentID);
 
         res.redirect('/licenses/' + marinerID);
+        // res.send('File uploaded!');
+        // res.end();
     }
 );
 
@@ -1671,20 +1693,42 @@ app.get('/licenses/attachments/download/:attachmentId', async (req, res) => {
         console.log(response[0]);
         console.log(response[0]['LicenseAttachment']);
 
+        let attachmentName = response[0]['LicenseAttachmentName'];
+        let marinerID = response[0]['MarinerID'];
+        let licenseID = response[0]['LicenseID'];
+
         let buff = await new Buffer.from(response[0]['LicenseAttachment'], {
             type: 'application/pdf',
         });
         console.log(buff);
 
-        let pdf = await fs.writeFileSync(
-            'public/downloads/' + 'attach.pdf',
-            buff
-        );
-    });
+        const tempFilePath =
+            'public/downloads/' +
+            'attachment_' +
+            attachmentName +
+            '_for_mariner_' +
+            marinerID +
+            '.pdf';
 
-    res.download('public/downloads/attach.pdf', (err) => {
-        if (err) console.error(err.message);
-        fs.unlinkSync('public/downloads/attach.pdf');
+        const fileName =
+            'attachment_' +
+            attachmentName +
+            '_for_license_' +
+            licenseID +
+            '_for_mariner_' +
+            marinerID +
+            '.pdf';
+
+        let pdf = await fs.writeFileSync(tempFilePath, buff);
+
+        res.download(tempFilePath, fileName, (err) => {
+            // If there is an error throw an error
+            if (err) console.error(err.message);
+            // If the download completes, display success message
+            console.log('Download complete!');
+            // Delete temporary file from server
+            fs.unlinkSync(tempFilePath);
+        });
     });
 });
 

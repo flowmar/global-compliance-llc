@@ -373,6 +373,11 @@ block content
     $('#physDate').val(physDate);
     $('#coContact').val(marinerObject['CoContact']);
     $('#imoNumber').val(marinerObject['IMONum']);
+    $('#city').val(marinerObject['City']);
+    $('#state').val(marinerObject['State']);
+    $('#zip-code').val(marinerObject['ZipCode']);
+    $('#country').val(marinerObject['Country']);
+    $('#home-phone').val(marinerObject['HomePhone']);
 
     // Convert the birth date to a format that fits in the UI
     let dateString = new Date(marinerObject['BirthDate']).toISOString();

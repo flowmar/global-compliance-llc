@@ -111,6 +111,10 @@ block content
                 label.form-label(for="zip-code") Zip Code:
                 input.form-control.bg-white(id="zip-code" name="zipCode" type="text" disabled)
             .row.my-4
+              .col-4
+                label.form-label(for="country") Country:
+                input.form-control.bg-white(id="country" name="country" type="text" disabled)
+            .row.my-4
               .col-3
                 label.form-label(for="phone-number") Mobile Number:
                 input.form-control.bg-white(id="phone-number" name="phone" type="tel" onkeydown="phoneNumberFormatter()" disabled)
@@ -149,13 +153,6 @@ block content
               .col-4
                 label.form-label(for="imoNumber") IMO Number:
                 input.form-control.bg-white(id="imoNumber" name="imoNumber" data-parsley-type="digits" type="text" disabled)
-          .row.my-4
-            .col-4
-              label.form-label(for="passport-number") Passport Number:
-              input.form-control.bg-white(id="passport-number" name="passportNumber" data-parsley-type="digits" type="text" disabled)
-            .col-4
-              label.form-label(for="citizenship") Citizenship:
-              select.form-select.bg-white(id="citizenship" name="citizenship" aria-label="Select citizenship" disabled)
           .row.my-4
             .col-4
               label.form-label(for="processing-agent") Processing Agent:
@@ -288,6 +285,13 @@ block content
     $('#physDate').val(physDate);
     $('#coContact').val(marinerObject['CoContact']);
     $('#imoNumber').val(marinerObject['IMONum']);
+    $('#city').val(marinerObject['City']);
+    $('#state').val(marinerObject['State']);
+    $('#zip-code').val(marinerObject['ZipCode']);
+    $('#country').val(marinerObject['Country']);
+    $('#home-phone').val(marinerObject['HomePhone']);
+
+
 
 
 

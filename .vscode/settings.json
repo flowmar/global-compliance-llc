@@ -25,5 +25,7 @@
   "marquee.widgets.npm-stats.packageNames": [
     "global-compliance-llc"
   ],
-  "dotenv.enableAutocloaking": false
+  "dotenv.enableAutocloaking": false,
+  "autoHide.autoHideSideBar": false,
+  "autoHide.autoHidePanel": false
 }
