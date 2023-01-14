@@ -1,4 +1,4 @@
-form(id="licenseForm" data-parsley-validate action="/license" method='POST').container
+form(id="initialLicenseForm" data-parsley-validate action="/license" method='POST').container
                     .row
                       .col
                         .display-5.fw-bold License Information
@@ -48,6 +48,6 @@ form(id="licenseForm" data-parsley-validate action="/license" method='POST').con
                           input.form-check-input(id="govtPending" name="govtPending" type="checkbox")
                     .row#saveLicenseRow
                       .col.d-flex.justify-content-end
-                        button.btn.btn-success#saveButton(type="submit" form="licenseForm")
+                        button.btn.btn-success#saveButton(type="button" form="initialLicenseForm" onclick="saveLicenseInformation()")
                           i.bi.bi-sd-card(style="font-size: .9rem;")
                           span &nbsp; Save

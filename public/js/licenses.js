@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-11-11 14:00:28
+ * @Last Modified time: 2023-01-14 08:39:08
  */
 
 let licenseID,
@@ -121,6 +121,7 @@ function saveLicenseInformation() {
                 console.log('undisabled');
                 licenseIDTextField.val(response.data.insertJSON.insertId);
                 licenseIDTextField.prop('readonly', true);
+                $('#saveButton' + selectedFormNumber).prop('disabled', 'true');
                 counter += 1;
                 if (counter == numberOfLicenses) location.reload();
             })
@@ -154,6 +155,7 @@ function editLicenseInformation() {
         .then((response) => {
             console.log(response);
             alert('License Updated!');
+            location.reload();
         })
         .catch((error) => console.log(error));
 }
@@ -538,6 +540,13 @@ function filterTypes(value, text, typeDropdown) {
             element.textContent = type.Type;
             typeDropdown.append(element);
         }
+        // After Types are filtered, select the one that the license was already assigned to.
+        for (let i = 0; i < response.data.length; i++) {
+            let suffix = i + 1;
+            let fieldName = '#licenseTypesField' + suffix;
+            console.log(fieldName);
+            $(fieldName).val(selectedLicenseTypes[i]);
+        }
     });
 }
 
@@ -559,6 +568,25 @@ function changeForm() {
         // Use the form number to get the appropriate license, and country of that license from the licenses array
         let selectedLicense = licensesArray[parseInt(formNumber) - 1];
         let selectedCountry = selectedLicense['CountryID'];
+        let selectedCR = selectedLicense['CRNumber'];
+
+        // Fill in the Country dropdown with the correct country
+        let countryField = $('#countriesField' + formNumber);
+        countryField.val(selectedCountry);
+
+        // Fill in the CR Number field
+        let crField = $('#crNumber' + formNumber);
+        crField.val(selectedCR);
+
+        // Fill in the Issue Date field
+        let issueDateField = $('#issueDate' + formNumber);
+        let formattedIssueDate = selectedLicense['IssueDate'].slice(0, 10);
+        issueDateField.val(formattedIssueDate);
+
+        // Fill in the Expiry Date field
+        let expirationDateField = $('expirationDate' + formNumber);
+        console.log(selectedLicense['ExpirationDate']);
+        expirationDateField.val(selectedLicense['ExpirationDate']);
 
         // Create a a new licenseTypeArray that is filtered
         let filteredTypeArray = [];
@@ -704,7 +732,7 @@ function changeForm() {
             .get('/licenses/gcactivities/' + licenseID)
             .then((response) => {
                 console.log(response);
-                console.log(response.data.licenseActivitiesJSON);
+                // console.log(response.data.licenseActivitiesJSON);
 
                 // Display the activities in the GC activities table
 
@@ -765,7 +793,7 @@ function changeForm() {
             .get('/licenses/govtactivities/' + licenseID)
             .then((response) => {
                 console.log(response);
-                console.log(response.data.licenseActivitiesJSON);
+                // console.log(response.data.licenseActivitiesJSON);
 
                 // Display the activities in the Govt activities table
 
@@ -842,8 +870,8 @@ function changeForm() {
             .get('/licenses/attachments/' + licenseID)
             .then((response) => {
                 console.log(response);
-                console.log(response.data);
-                console.log(response.data.licenseJSON);
+                // console.log(response.data);
+                // console.log(response.data.licenseJSON);
 
                 // Loop through the response from the server and display the attachments in the UI
                 for (licenseAttachment of response.data.licenseJSON) {
@@ -924,6 +952,7 @@ function confirmAndSaveEditedGCLicenseActivity() {
             .then((response) => {
                 console.log(response);
                 alert('Activity Updated!');
+                $('#closeEditGCModal').trigger('click');
                 changeForm();
             })
             .catch((err) => console.error(err.message));
@@ -953,6 +982,7 @@ function confirmAndSaveEditedGovtLicenseActivity() {
             .then((response) => {
                 console.log(response);
                 alert('Activity Updated!');
+                $('#closeEditGovtModal').trigger('click');
                 changeForm();
             })
             .catch((err) => console.error(err.message));
@@ -965,12 +995,29 @@ function batchAddActivities() {
         // Get all information from form
         let activity = $('#batchActivityTextBox').val();
         let activityType = $('#batchActivityType').val();
-
-        
-
-        // Add activity
-
-        axios.post().then().catch();
+        // let marinerID = $('#marinerIDNumber').val();
+        let licenseBoxValues = [];
+        let selections = $('fieldset input');
+        console.log(selections);
+        for (let i = 0; i < selections.length; i++) {
+            let boxVal = selections[i].value;
+            console.log('boxval: ' + boxVal);
+            licenseBoxValues.push(boxVal);
+        }
+        console.log(licenseBoxValues);
+        // Add activity to licenses
+        axios
+            .post('/licenses/batch/add', {
+                batchActivity: activity,
+                batchActivityType: activityType,
+                marinerID: marinerID,
+                batchAddBoxes: licenseBoxValues,
+            })
+            .then((response) => {
+                console.log(response);
+                $('#closeBatchModal').trigger('click');
+            })
+            .catch((err) => console.error(err.message));
     }
 }
 
@@ -1036,47 +1083,3 @@ function batchAddActivities() {
 //         })
 //         .catch((error) => console.log(error.message));
 // }
-
-$(document).ready(function () {
-    // Open the new license modal when the add new license button is clicked
-    $('#addLicense').on('click', function (e) {
-        licenseModal.show();
-    });
-
-    // Open the new license attachment modal when the upload license attachment button is clicked
-    $('#license-attachment-button').on('click', function (e) {
-        attachmentModal.show();
-    });
-
-    // Open the batch add activities modal when the button is clicked
-    $('#batch-add-activities-button').on('click', function (e) {
-        batchModal.show();
-    });
-
-    // Prevent the form from being submitted, instead run the saveNewLicense function
-    $('#newLicenseForm')
-        .parsley()
-        .on('form:submit', function (e) {
-            return false;
-        })
-        .on('form:success', function (e) {
-            saveNewLicense();
-        });
-
-    // After the License Attachment form is submitted, reload the page
-    $('#newLicenseAttachmentForm')
-        .parsley()
-        .on('form:submit', function (event) {
-            return false;
-        })
-        .on('form:success', function (event) {
-            let formData = new FormData(this);
-            saveLicenseAttachment(formData);
-        });
-
-    // When a .nav-link is clicked, and becomes active, get the active form number
-    $('#licensesTabList .nav-item').on('click', '.nav-link', function (e) {
-        // Added a setTimeout function to allow enough time for the form number to be changed
-        setTimeout(changeForm, 100);
-    });
-});

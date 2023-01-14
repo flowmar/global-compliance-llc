@@ -4,7 +4,7 @@ require('newrelic');
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-11-11 15:33:53
+ * @Last Modified time: 2023-01-08 23:34:12
  */
 
 ('use strict');
@@ -1602,12 +1602,12 @@ app.delete('/licenses/govtactivities/:id', async (req, res) => {
 });
 
 app.post('/licenses/batch/add/', async (req, res) => {
-    // (req.body);
+    console.log(req.body);
     let batchActivity = req.body.batchActivity;
     let batchActivityType = req.body.batchActivityType;
     let batchActivityLicenseIDs = req.body.batchAddBoxes;
-    let marinerID = req.body.marinerIDNumber;
-
+    let marinerID = req.body.marinerID;
+    console.log(batchActivityLicenseIDs);
     let numInserts = batchActivityLicenseIDs.length;
     // (batchActivityType);
     // (batchActivityLicenseIDs);
@@ -2186,6 +2186,8 @@ app.post('/search', async (_req, res) => {
     let sqlStatement;
     let parameterArray = [];
     let searchText = _req.body.searchText || _req.body.date;
+    console.log(searchText);
+    console.log('AJAJAJJAJJ');
 
     switch (category) {
         case 'Mariner ID':
@@ -2229,6 +2231,7 @@ app.post('/search', async (_req, res) => {
     const all_employers_query = mysql.format(allEmployersSQL);
     const allEmployersRows = await db.query(all_employers_query);
     const allEmployersJSON = allEmployersRows[0];
+    console.log(allEmployersJSON);
 
     // Place the Searched Text into the parameterArray
     parameterArray.push(searchText);
@@ -2327,7 +2330,33 @@ app.post('/search', async (_req, res) => {
 
         mariners.push(formatted);
     }
-    searchText;
+
+    // Change the search text to the correct processing agent
+    if (category == 'Processing Agent') {
+        switch (searchText) {
+            case '1':
+                searchText = 'Arlene Martin';
+                break;
+            case '2':
+                searchText = 'Margaret Landry';
+                break;
+            case '3':
+                searchText = 'Austin Martin';
+                break;
+            case '4':
+                searchText = 'admin';
+                break;
+            default:
+                break;
+        }
+    }
+
+    // Change the search text to the correct Employer
+    if (category == 'Employer') {
+        let searchNumber = searchText - 1;
+        searchText = allEmployersJSON[searchNumber]['EmployerName'];
+    }
+
     res.render('search', {
         title: 'Search',
         results: mariners,
@@ -2381,11 +2410,13 @@ if (process.env.MACHINE == 'local') {
             app
         )
         .listen(PORT, () => {
-            `Listening to requests on https://localhost:${PORT}...`;
+            console.log(
+                `Listening to requests on https://localhost:${PORT}...`
+            );
         });
 } else {
     // Set the application to listen on a port for requests
     app.listen(PORT, () => {
-        `Listening to requests on http://localhost:${PORT}...`;
+        console.log(`Listening to requests on http://localhost:${PORT}...`);
     });
 }

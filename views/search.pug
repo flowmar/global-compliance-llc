@@ -159,7 +159,9 @@ block content
         element.name = 'searchText';
         searchInput.append(element);
         let bdpicker = $("#birth-date-picker").dropdownDatepicker({
-          monthFormat: "short"
+          monthFormat: "short",
+          required: true,
+          displayFormat: "ymd"
         });
         bdpicker.addClass("form-control");
         bdpicker.addClass('bg-indigo');

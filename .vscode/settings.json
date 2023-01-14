@@ -27,5 +27,5 @@
   ],
   "dotenv.enableAutocloaking": false,
   "autoHide.autoHideSideBar": false,
-  "autoHide.autoHidePanel": false
+  "autoHide.autoHidePanel": true
 }
