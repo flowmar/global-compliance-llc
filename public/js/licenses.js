@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2023-01-14 08:39:08
+ * @Last Modified time: 2023-01-14 12:19:37
  */
 
 let licenseID,
@@ -997,7 +997,7 @@ function batchAddActivities() {
         let activityType = $('#batchActivityType').val();
         // let marinerID = $('#marinerIDNumber').val();
         let licenseBoxValues = [];
-        let selections = $('fieldset input');
+        let selections = $('fieldset input:checked');
         console.log(selections);
         for (let i = 0; i < selections.length; i++) {
             let boxVal = selections[i].value;
