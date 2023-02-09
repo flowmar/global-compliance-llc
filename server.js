@@ -4,7 +4,7 @@ require('newrelic');
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2023-01-08 23:34:12
+ * @Last Modified time: 2023-02-08 22:49:18
  */
 
 ('use strict');
@@ -1011,6 +1011,7 @@ app.post('/add', async (req, res) => {
     let hair = req.body.hair;
     let eyeColor = req.body.eyeColor;
     let marks = req.body.marks;
+    let physLocation = req.body.physLocation;
     let physDate = req.body.physDate;
     let coContact = req.body.coContact;
     let imoNumber = req.body.imoNumber;
@@ -1020,11 +1021,11 @@ app.post('/add', async (req, res) => {
     let country = req.body.country;
     let homePhone = req.body.homePhone;
 
-    physDate;
+    // physDate;
 
     // Insert SQL statement
     let sqlInsert =
-        'INSERT INTO Mariners SET MarinerID = ?, LastName = ?, FirstName = ?, MiddleName = ?, StreetAddress = ?, PhoneNumber =  ?, Email = ?, EmployerID = ?, RigID = ?, MarinerReferenceNumber = ?, PassportNumber = ?, Citizenship = ? , BirthCity = ?, BirthState = ?, BirthCountry = ?, BirthDate = ?, ProcessingAgent = ?, ApplicationID = ?, Status = ?, Height = ?, Weight = ?, HairColor = ?, EyeColor = ?, Marks = ?, PhysDate = ? , CoContact = ?, IMONum = ?, City = ?, State = ?, ZipCode = ?, Country = ?, HomePhone = ?';
+        'INSERT INTO Mariners SET MarinerID = ?, LastName = ?, FirstName = ?, MiddleName = ?, StreetAddress = ?, PhoneNumber =  ?, Email = ?, EmployerID = ?, RigID = ?, MarinerReferenceNumber = ?, PassportNumber = ?, Citizenship = ? , BirthCity = ?, BirthState = ?, BirthCountry = ?, BirthDate = ?, ProcessingAgent = ?, ApplicationID = ?, Status = ?, Height = ?, Weight = ?, HairColor = ?, EyeColor = ?, Marks = ?, PhysLocation = ?, PhysDate = ? , CoContact = ?, IMONum = ?, City = ?, State = ?, ZipCode = ?, Country = ?, HomePhone = ?';
     let insert_query = mysql.format(sqlInsert, [
         marinerId,
         lastName,
@@ -1050,6 +1051,7 @@ app.post('/add', async (req, res) => {
         hair,
         eyeColor,
         marks,
+        physLocation,
         physDate,
         coContact,
         imoNumber,
@@ -1099,6 +1101,7 @@ app.post('/edit', async (req, res) => {
     let hair = req.body.hair;
     let eyeColor = req.body.eyeColor;
     let marks = req.body.marks;
+    let physLocation = req.body.physLocation;
     let physDate = req.body.physDate;
     let coContact = req.body.coContact;
     let imoNumber = req.body.imoNumber;
@@ -1126,7 +1129,7 @@ app.post('/edit', async (req, res) => {
 
     // Create SQL Statement
     let updateMarinerSQL =
-        'UPDATE Mariners SET LastName = ?, FirstName = ?, MiddleName = ?, StreetAddress = ?, PhoneNumber =  ?, Email = ?, EmployerID = ?, RigID = ?, MarinerReferenceNumber = ?, PassportNumber = ?, Citizenship = ? , BirthCity = ?, BirthState = ?, BirthCountry = ?, BirthDate = ?, ProcessingAgent = ?, ApplicationID = ?, Status = ?, Height = ?, Weight = ?, HairColor = ?, EyeColor = ?, Marks = ?, PhysDate = ? , CoContact = ?, IMONum = ? , City = ?, State = ?, ZipCode = ?, Country = ?, HomePhone = ? WHERE MarinerID = ?';
+        'UPDATE Mariners SET LastName = ?, FirstName = ?, MiddleName = ?, StreetAddress = ?, PhoneNumber =  ?, Email = ?, EmployerID = ?, RigID = ?, MarinerReferenceNumber = ?, PassportNumber = ?, Citizenship = ? , BirthCity = ?, BirthState = ?, BirthCountry = ?, BirthDate = ?, ProcessingAgent = ?, ApplicationID = ?, Status = ?, Height = ?, Weight = ?, HairColor = ?, EyeColor = ?, Marks = ?, PhysLocation = ?, PhysDate = ? , CoContact = ?, IMONum = ? , City = ?, State = ?, ZipCode = ?, Country = ?, HomePhone = ? WHERE MarinerID = ?';
     let update_query = mysql.format(updateMarinerSQL, [
         lastName,
         firstName,
@@ -1151,6 +1154,7 @@ app.post('/edit', async (req, res) => {
         hair,
         eyeColor,
         marks,
+        physLocation,
         physDate,
         coContact,
         imoNumber,
@@ -2187,7 +2191,7 @@ app.post('/search', async (_req, res) => {
     let parameterArray = [];
     let searchText = _req.body.searchText || _req.body.date;
     console.log(searchText);
-    console.log('AJAJAJJAJJ');
+    // console.log('AJAJAJJAJJ');
 
     switch (category) {
         case 'Mariner ID':

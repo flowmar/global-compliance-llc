@@ -85,13 +85,15 @@ block content
               label.form-label(for="birth-date") Birth Date:
               input.form-control.bg-white.text-dark(id="birth-date" name="birthDate" data-parsley-required="true" type="date" disabled)
           .row.my-4
-              .col-7
-                label.form-label(for="marks") Distinguishing Marks:
-                input.form-control.bg-white(id="marks" name="marks" disabled)
-              .col-2
-              .col-3
-                label.form-label(for="physDate") Date of Physical:
-                input.form-control.bg-white(id="physDate" name="physDate" data-parsley-required="false" type="date" disabled)
+            .col-4
+              label.form-label(for="marks") Distinguishing Marks:
+              input.form-control.bg-white(id="marks" name="marks" disabled)
+            .col-4
+              label.form-label(for="physLocation") Physical Location:
+              input.form-control.bg-white.text-dark(id="physLocation" name="physLocation" disabled)
+            .col-4
+              label.form-label(for="physDate") Date of Physical:
+              input.form-control.bg-white(id="physDate" name="physDate" data-parsley-required="false" type="date" disabled)
           .row.my-3
           hr
           .row.my-4
@@ -280,6 +282,7 @@ block content
     $('#hairColor').val(marinerObject['HairColor']);
     $('#eyeColor').val(marinerObject['EyeColor']);
     $('#marks').val(marinerObject['Marks']);
+    $('#physLocation').val(marinerObject['PhysLocation']);
     let physDateString = marinerObject['PhysDate'].toString();
     let physDate = physDateString.slice(0, 10);
     $('#physDate').val(physDate);

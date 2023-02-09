@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2023-01-14 12:19:37
+ * @Last Modified time: 2023-01-19 07:04:11
  */
 
 let licenseID,
@@ -1016,6 +1016,7 @@ function batchAddActivities() {
             .then((response) => {
                 console.log(response);
                 $('#closeBatchModal').trigger('click');
+                location.reload();
             })
             .catch((err) => console.error(err.message));
     }
