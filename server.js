@@ -4,7 +4,7 @@ require('newrelic');
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2023-02-08 22:49:18
+ * @Last Modified time: 2023-02-13 22:45:19
  */
 
 ('use strict');
@@ -751,7 +751,7 @@ app.get('/licenses/:id', async (req, res) => {
     let marinerSQL = `SELECT FirstName, MiddleName, LastName FROM Mariners WHERE MarinerID = ${marinerID}`;
     let marinerRows = await db.query(marinerSQL);
     let marinerJSON = marinerRows[0][0];
-    marinerJSON;
+    console.log(marinerJSON);
 
     // SQL query to get the Licenses for the mariner
     let licenseSQL = 'SELECT * FROM Licenses WHERE MarinerID = ?';
@@ -760,17 +760,24 @@ app.get('/licenses/:id', async (req, res) => {
     // Query the database
     let licenseRows = await db.query(license_query);
     let licenseJSON = licenseRows[0];
-    licenseJSON;
+    console.log(licenseJSON);
 
     // Get DISTINCT Countries from License Types Table
     const countries_query = mysql.format(
         'SELECT DISTINCT CountryName, CountryID FROM LicenseTypes'
     );
     const licenseCountryRows = await db.query(countries_query);
-    licenseCountryRows[0];
+    console.log(licenseCountryRows[0]);
     // Get all license types
-    const license_type_query = mysql.format('SELECT * FROM LicenseTypes');
+    // const license_type_query = mysql.format('SELECT * FROM LicenseTypes');
+    // const licenseTypeRows = await db.query(license_type_query);
+
+    // Get distinct license types
+    const license_type_query = mysql.format(
+        'SELECT * FROM LicenseTypesDistinct'
+    );
     const licenseTypeRows = await db.query(license_type_query);
+    console.log(licenseTypeRows);
 
     res.render('licenses', {
         title: 'Licenses',
@@ -898,17 +905,31 @@ app.get('/licenseTypes/:id', async (req, res) => {
 });
 
 /* ---------------------------------- Forms --------------------------------- */
-// Handles license type name and country for summary table
+// Handles license type name for summary table
 app.get('/licenseTypes/names/:id', async (req, res) => {
     let licenseTypeID = req.params.id;
 
     // SQL for LicenseType info
     const licenseTypeSQL =
-        'SELECT Type, CountryName FROM LicenseTypes WHERE LicenseTypeID = ? ';
+        'SELECT Type FROM LicenseTypesDistinct WHERE id = ? ';
     const license_query = mysql.format(licenseTypeSQL, [licenseTypeID]);
 
     const result = await db.query(license_query);
-    result[0];
+    console.log(result[0]);
+    res.send(result[0]);
+});
+
+// Handles country name for summary table
+app.get('/licenseCountry/names/:id', async (req, res) => {
+    let licenseCountryID = req.params.id;
+
+    // SQL for LicenseCountry info
+    const licenseCountrySQL =
+        'SELECT CountryName FROM countries WHERE CountryID = ?';
+    const country_query = mysql.format(licenseCountrySQL, [licenseCountryID]);
+
+    const result = await db.query(country_query);
+    console.log(result[0]);
     res.send(result[0]);
 });
 
@@ -1310,7 +1331,7 @@ app.post('/activity/edit', async (req, res) => {
 app.post('/licenses/:id', async (req, res) => {
     let marinerID = req.params.id;
     let licenseID = req.body.licenseID;
-    let licenseName = req.body.licenseName;
+    // let licenseName = req.body.licenseName;
     let licenseType = req.body.licenseType;
     let licenseCountry = req.body.licenseCountry;
     let issueDate = req.body.issueDate;
@@ -1333,9 +1354,8 @@ app.post('/licenses/:id', async (req, res) => {
     licenseID;
     // SQL Query to add license to database
     let insertSQL =
-        'INSERT INTO Licenses SET LicenseName = ?,LicenseTypeID = ?, CountryID = ?, MarinerID = ?, Timestamp = CURRENT_TIMESTAMP(), IssueDate = ?, ExpirationDate = ?, PendingGC = ?, PendingGovt = ?, CRNumber = ?';
+        'INSERT INTO Licenses SET LicenseTypeID = ?, CountryID = ?, MarinerID = ?, Timestamp = CURRENT_TIMESTAMP(), IssueDate = ?, ExpirationDate = ?, PendingGC = ?, PendingGovt = ?, CRNumber = ?';
     let insert_query = mysql.format(insertSQL, [
-        licenseName,
         licenseType,
         licenseCountry,
         marinerID,
@@ -1363,7 +1383,7 @@ app.put('/licenses/:id', async (req, res) => {
     let marinerID = req.params.id;
     // Get the variables form the body
     let licenseID = req.body.licenseID;
-    let licenseName = req.body.licenseName;
+    // let licenseName = req.body.licenseName;
     let licenseType = req.body.licenseType;
     let licenseCountry = req.body.licenseCountry;
     let issueDate = req.body.issueDate;
@@ -1379,9 +1399,8 @@ app.put('/licenses/:id', async (req, res) => {
 
     // SQL Query to update the license
     let updateSQL =
-        'UPDATE Licenses SET LicenseName = ?,LicenseTypeID = ?, CountryID = ?, MarinerID = ?, Timestamp = CURRENT_TIMESTAMP(), IssueDate = ?, ExpirationDate = ?, PendingGC = ?, PendingGovt = ?, CRNumber = ? WHERE LicenseID = ?';
+        'UPDATE Licenses SET LicenseTypeID = ?, CountryID = ?, MarinerID = ?, Timestamp = CURRENT_TIMESTAMP(), IssueDate = ?, ExpirationDate = ?, PendingGC = ?, PendingGovt = ?, CRNumber = ? WHERE LicenseID = ?';
     let update_query = mysql.format(updateSQL, [
-        licenseName,
         licenseType,
         licenseCountry,
         marinerID,

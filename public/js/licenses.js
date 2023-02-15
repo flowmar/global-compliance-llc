@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-10 01:55:38
  * @Last Modified by: flowmar
- * @Last Modified time: 2023-01-19 07:04:11
+ * @Last Modified time: 2023-02-14 21:19:49
  */
 
 let licenseID,
@@ -83,9 +83,9 @@ function collectFormInformation() {
     govtPending = govtPending ? 1 : 0;
     console.log(govtPending);
 
-    licenseName = $(
-        selectedFormID + ' #licenseName' + selectedFormNumber
-    ).val();
+    // licenseName = $(
+    //     selectedFormID + ' #licenseName' + selectedFormNumber
+    // ).val();
 }
 
 /**
@@ -101,7 +101,6 @@ function saveLicenseInformation() {
         axios
             .post('/licenses/' + marinerID, {
                 licenseID: licenseID,
-                licenseName: licenseName,
                 licenseType: licenseType,
                 licenseCountry: licenseCountry,
                 issueDate: issueDate,
@@ -143,7 +142,7 @@ function editLicenseInformation() {
     axios
         .put('/licenses/' + marinerID, {
             licenseID: licenseID,
-            licenseName: licenseName,
+            // licenseName: licenseName,
             licenseType: licenseType,
             licenseCountry: licenseCountry,
             issueDate: issueDate,
@@ -175,7 +174,7 @@ function saveNewLicense() {
     axios
         .post('/licenses/' + marinerID, {
             licenseID: '',
-            licenseName: $('#newLicenseName').val(),
+            // licenseName: $('#newLicenseName').val(),
             licenseType: $('#newLicenseType').val(),
             licenseCountry: $('#newLicenseCountry').val(),
             issueDate: $('#newLicenseIssueDate').val(),
@@ -564,7 +563,7 @@ function changeForm() {
         let govtActivity;
 
         // Empty the licenseType dropdown
-        $('#licenseTypesField' + formNumber).empty();
+        // $('#licenseTypesField' + formNumber).empty();
         // Use the form number to get the appropriate license, and country of that license from the licenses array
         let selectedLicense = licensesArray[parseInt(formNumber) - 1];
         let selectedCountry = selectedLicense['CountryID'];
@@ -589,23 +588,23 @@ function changeForm() {
         expirationDateField.val(selectedLicense['ExpirationDate']);
 
         // Create a a new licenseTypeArray that is filtered
-        let filteredTypeArray = [];
-        licenseTypesArray.filter((type) => {
-            if (type['CountryID'] == selectedCountry) {
-                filteredTypeArray.push(type);
-            }
-        });
-        // Populate the licenseTypesField using the filteredTypeArray
-        for (let filteredType of filteredTypeArray) {
-            // Create a new option element
-            let option = document.createElement('option');
-            option.value = filteredType['LicenseTypeID'];
-            option.text = filteredType['Type'];
-            $('#licenseTypesField' + formNumber).append(option);
-        }
-        $('#licenseTypesField' + formNumber).val(
-            licensesArray[parseInt(formNumber) - 1]['LicenseTypeID']
-        );
+        // let filteredTypeArray = [];
+        // licenseTypesArray.filter((type) => {
+        //     if (type['CountryID'] == selectedCountry) {
+        //         filteredTypeArray.push(type);
+        //     }
+        // });
+        // // Populate the licenseTypesField using the filteredTypeArray
+        // for (let filteredType of filteredTypeArray) {
+        //     // Create a new option element
+        //     let option = document.createElement('option');
+        //     option.value = filteredType['LicenseTypeID'];
+        //     option.text = filteredType['Type'];
+        //     $('#licenseTypesField' + formNumber).append(option);
+        // }
+        // $('#licenseTypesField' + formNumber).val(
+        //     licensesArray[parseInt(formNumber) - 1]['LicenseTypeID']
+        // );
 
         // Open the edit gcActivity modal when the button is clicked
         $('#edit-GC-activity-button' + formNumber).on('click', function (e) {

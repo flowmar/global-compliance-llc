@@ -52,8 +52,8 @@ block content
                         input.form-control(id="marinerIDhidden" name="marinerID" type="text" value=`${marinerID}` hidden)
                       .col-1
                       .col-4
-                        label.form-label License Name:
-                        input.form-control#licenseName(name="licenseName" data-parsley-required="true" type="text")
+                        //- label.form-label License Name:
+                        //- input.form-control#licenseName(name="licenseName" data-parsley-required="true" type="text" disabled)
                       .col-1
                       .col-3
                         label.form-label LicenseID:
@@ -305,19 +305,32 @@ block content
         {
           // Create a label for the text field
           let label = document.createElement('label');
-          label.setAttribute('for', "nameLicense" + i);
-          label.textContent = "License " + i + " Name:";
+          label.setAttribute('for', "typeLicense" + i);
+          label.textContent = "License " + i + " Type:";
 
           // Create the text field for the license name
-          let element = document.createElement('input');
-          element.classList = 'form-control bg-white';
-          element.setAttribute('id', "nameLicense" + i);
+          let element = document.createElement('select');
+          element.classList = 'form-select bg-white';
+          element.setAttribute('id', "typeLicense" + i);
 
           // Create a wrapper to place them into
           let div = document.createElement('div');
           div.classList = 'col-4 my-2'
           div.appendChild(label);
           div.appendChild(element);
+
+          // Loop through the license types array, create an option for each, append to the select
+          for(let t = 0; t < licenseTypesArray.length; t++){
+
+          // Create options for the license types
+          let typeOption = document.createElement('option');
+          typeOption.textContent = licenseTypesArray[t]['Type'];
+          typeOption.value = licenseTypesArray[t]['id'];
+
+          // Append the option to the select
+          element.appendChild(typeOption);
+          }
+
 
           // Append the text fields to the license names row
           licenseNamesRow.append(div);
@@ -345,7 +358,7 @@ block content
         // When the create button is clicked...
         createLicensesButton.on('click', function (e) {
 
-        // Array to hold the license names
+        // Array to hold the license types
         let licenseNamesArray = [];
 
         // Get the text from each of the license name text fields
@@ -353,19 +366,19 @@ block content
         {
 
           // Create the selector for the license text field
-          let licenseSelector = "#nameLicense" + j;
+          let licenseSelector = "#typeLicense" + j;
           //- console.log(licenseSelector);
 
           // Select the text field
-          let licenseTextbox = $(licenseSelector);
+          let licenseSelect = $(licenseSelector);
           //- console.log(licenseTextbox);
 
           // Get the value in the text field
-          let licenseName = licenseTextbox.val();
+          let licenseType = licenseSelect.val();
           //- console.log(licenseName);
 
           // Add the license name to the names array
-          licenseNamesArray.push(licenseName);
+          licenseNamesArray.push(licenseType);
         }
 
         // Show the licenses area
@@ -390,7 +403,8 @@ block content
         navLink.role = 'tab';
         navLink.setAttribute('aria-controls', 'license-tabs-' + (k + 1));
         navLink.setAttribute('aria-selected', 'false');
-        navLink.textContent = licenseNamesArray[k];
+        let typeSelected = licenseNamesArray[k];
+        navLink.textContent = licenseTypesArray[typeSelected -1]['Type'];
 
         // Append the navLink to the navItem
         navItem.appendChild(navLink);
@@ -412,6 +426,10 @@ block content
         // Replace spaces with hyphens and make the name lowercase
         let formIdName = licenseNamesArray[k].toLowerCase() + ' form';
         let formIdFormatted = formIdName.replace(/\s/g, '-');
+        formIdFormatted = formIdFormatted.replace(/\//g, '-');
+        formIdFormatted = formIdFormatted.replace(/\</g, '-');
+        formIdFormatted = formIdFormatted.replace(/\>/g, '-');
+
 
         // Set the id of the form clone to start with 1
         formClone.setAttribute('id', formIdFormatted);
@@ -443,6 +461,19 @@ block content
         let licenseTypeDropdown = $(selector + ' #licenseTypesField' + suffix);
         console.log(licenseTypeDropdown);
 
+        // Fill in license types into the dropdown
+        for (let b = 0; b < licenseTypesArray.length; b++) {
+          let typeOption = document.createElement('option');
+          typeOption.text = licenseTypesArray[b]['Type'];
+          typeOption.value = licenseTypesArray[b]['id'];
+          console.log(licenseTypesArray);
+          console.log(licenseTypesArray[b]['id']);
+          licenseTypeDropdown.append(typeOption);
+        }
+
+        licenseTypeDropdown.val(licenseNamesArray[k]);
+
+
         let formCountry = $('#countriesField').attr('id');
         $(selector + ' #countriesField').attr('id', formCountry + suffix);
 
@@ -451,19 +482,19 @@ block content
         console.log(countryDropdown);
 
         // Set an event listener for change in the input
-        countryDropdown.on('input', function(e) {
-          console.log("VALUE:");
-          console.log(e.target.value);
-          console.log(e.target.selectedOptions[0].text);
+        //- countryDropdown.on('input', function(e) {
+        //-   console.log("VALUE:");
+        //-   console.log(e.target.value);
+        //-   console.log(e.target.selectedOptions[0].text);
 
-          // If the value is blank, empty the license type dropdown
-          if (e.target.value == 0) {
-            licenseTypeDropdown.empty();
-          } else {
-            // Otherwise, filter the license types
-            filterTypes(e.target.value, e.target.selectedOptions[0].text, licenseTypeDropdown);
-          }
-        });
+        //-   // If the value is blank, empty the license type dropdown
+        //-   if (e.target.value == 0) {
+        //-     licenseTypeDropdown.empty();
+        //-   } else {
+        //-     // Otherwise, filter the license types
+        //-     filterTypes(e.target.value, e.target.selectedOptions[0].text, licenseTypeDropdown);
+        //-   }
+        //- });
 
 
         let formCrNumber = $('#crNumber').attr('id');
@@ -611,7 +642,15 @@ block content
         let licenseNamesArray = [];
 
         for(let j = 0; j < licensesArray.length; j++) {
-          licenseNamesArray.push(licensesArray[j]['LicenseName']);
+          // Get the license type ID
+          let licenseTypeIdNum = licensesArray[j]['LicenseTypeID'];
+
+          // Get the name of the corresponding license
+          //- console.log(licenseTypesArray);
+          let licenseTypeName = licenseTypesArray[licenseTypeIdNum -1]['Type'];
+          //- console.log("LTN:" + licenseTypeName);
+          // Push the name of the license to the array
+          licenseNamesArray.push(licenseTypeName);
         }
 
         // Generate Tabs for each license in the names array
@@ -651,6 +690,10 @@ block content
         // Replace spaces with hyphens and make the name lowercase
         let formIdName = licenseNamesArray[k].toLowerCase() + ' form';
         let formIdFormatted = formIdName.replace(/\s/g, '-');
+        formIdFormatted = formIdFormatted.replace(/\//g, '-');
+        formIdFormatted = formIdFormatted.replace(/\</g, '-');
+        formIdFormatted = formIdFormatted.replace(/\>/g, '-');
+
 
         // Set the id of the form clone
         formClone.setAttribute('id', formIdFormatted);
@@ -673,14 +716,28 @@ block content
 
         $(selector + ' #licenseID').attr('id', 'licenseID' + suffix);
 
-        $(selector + ' #licenseName').attr('id', 'licenseName' + suffix);
+        //- $(selector + ' #licenseName').attr('id', 'licenseName' + suffix);
 
         $(selector + ' #licenseIDhidden').attr('id', 'licenseIDhidden' + suffix);
 
         let formLicenseType = $('#licenseTypesField').attr('id');
         $(selector + ' #licenseTypesField').attr('id', formLicenseType + suffix);
         let licenseTypeDropdown = $(selector + ' #licenseTypesField' + suffix);
-        //- console.log(licenseTypeDropdown);
+        console.log("dropdown:");
+        console.log(licenseTypeDropdown);
+
+        let dropdown = document.querySelector(selector + ' #licenseTypesField' + suffix);
+        console.log(dropdown);
+
+        //- // Fill in license types into the dropdown
+        for (let d = 0; d < licenseTypesArray.length; d++) {
+          let typeOption = document.createElement('option');
+          typeOption.text = licenseTypesArray[d]['Type'];
+          typeOption.value = licenseTypesArray[d]['id'];
+          //- console.log(licenseTypesArray);
+          //- console.log(licenseTypesArray[d]['id']);
+          dropdown.appendChild(typeOption);
+        }
 
         let formCountry = $('#countriesField').attr('id');
         $(selector + ' #countriesField').attr('id', formCountry + suffix);
@@ -689,19 +746,19 @@ block content
         console.log(countryDropdown);
 
         // Set an event listener for change in the input
-        countryDropdown.on('input', function(e) {
-          console.log("VALUE:");
-          console.log(e.target.value);
-          console.log(e.target.selectedOptions[0].text);
+        //- countryDropdown.on('input', function(e) {
+        //-   console.log("VALUE:");
+        //-   console.log(e.target.value);
+        //-   console.log(e.target.selectedOptions[0].text);
 
-          // If the value is blank, empty the license type dropdown
-          if (e.target.value == '') {
-            licenseTypeDropdown.empty();
-          } else {
-            // Otherwise, filter the license types
-            filterTypes(e.target.value, e.target.selectedOptions[0].text, licenseTypeDropdown);
-          }
-        });
+        //-   // If the value is blank, empty the license type dropdown
+        //-   if (e.target.value == '') {
+        //-     licenseTypeDropdown.empty();
+        //-   } else {
+        //-     // Otherwise, filter the license types
+        //-     filterTypes(e.target.value, e.target.selectedOptions[0].text, licenseTypeDropdown);
+        //-   }
+        //- });
 
         let formCRNumber = $('#crNumber').attr('id');
         $(selector + ' #crNumber').attr('id', formCRNumber + suffix);
@@ -838,7 +895,7 @@ block content
           let license = licensesArray[n];
           console.log("License:");
           console.log(license);
-          let licenseName = license.LicenseName;
+          //- let licenseName = license.LicenseName;
           let licenseID = license.LicenseID;
           let licenseType = license.LicenseTypeID;
           selectedLicenseTypes.push(license.LicenseTypeID);
@@ -927,9 +984,9 @@ block content
           dateCell.style = 'text-align: center;';
           dateCell.textContent = formattedTimestamp;
 
-          let nameCell = document.createElement('td');
-          nameCell.style = 'text-align: center;';
-          nameCell.textContent = licenseName;
+          //- let nameCell = document.createElement('td');
+          //- nameCell.style = 'text-align: center;';
+          //- nameCell.textContent = licenseName;
 
           // License Type Cell and Country Cell
           let typeCell = document.createElement('td');
@@ -944,11 +1001,20 @@ block content
           //Use the license type ID
           axios.get('/licenseTypes/names/' + licenseType).then((response) => {
             typeName = response.data[0].Type;
-            countryName = response.data[0].CountryName;
+            //- countryName = response.data[0].CountryName;/
             typeCell.textContent = typeName;
-            countryCell.textContent = countryName;
-            //- console.log(typeName)
+            //- countryCell.textContent = countryName;
+            console.log("tn:" + typeName)
+            //- console.log(countryName);
           }).catch((error) => console.log(error.message));
+
+        // Use the country ID
+        axios.get('/licenseCountry/names/' + licenseCountry).then((response) => {
+          countryName = response.data[0].CountryName;
+          countryCell.textContent = countryName;
+        }).catch((error) => console.log(error.message));
+
+
           let issueCell = document.createElement('td');
           issueCell.style = 'text-align: center;';
 
@@ -999,7 +1065,7 @@ block content
           // Append the table row to it
           summaryBody.append(summaryTableRow);
           // Append the cells to the row
-          summaryTableRow.append(idCell, dateCell, nameCell, typeCell, countryCell, issueCell, expCell, gcCell, govtCell);
+          summaryTableRow.append(idCell, dateCell, typeCell, countryCell, issueCell, expCell, gcCell, govtCell);
         }
         // Make it visible
         $('.invisible').removeClass('invisible');
@@ -1080,9 +1146,19 @@ block content
 
       // For every license in the array, add a checkbox to the batch activities modal
       for(license of licensesArray) {
-         console.log(license);
-         let licenseName = license['LicenseName'];
-         let trimmedName = licenseName.replace(/\s+/g,'');
+          console.log(license);
+          //- let licenseName = license['LicenseName'];
+          // Get license type id
+          let licenseTypeId = license['LicenseTypeID'];
+          console.log(licenseTypeId);
+          // Get license type name
+          let licenseTypeName = licenseTypesArray[licenseTypeId - 1];
+          console.log(licenseTypeName);
+          licenseTypeName = licenseTypeName["Type"];
+          let trimmedName = licenseTypeName.replace(/\s+/g,'');
+          trimmedName = trimmedName.replace(/\//g, '-');
+          trimmedName = trimmedName.replace(/\</g, '-');
+          trimmedName = trimmedName.replace(/\>/g, '-');
           let box = document.createElement('input');
           box.type = 'checkbox';
           box.value = license['LicenseID'];
@@ -1092,7 +1168,7 @@ block content
           let label = document.createElement('label');
           label.setAttribute('for', 'checkBox' + trimmedName);
 
-          let textnode = document.createTextNode(' ' + license['LicenseName']);
+          let textnode = document.createTextNode(' ' + licenseTypeName);
           label.style.color = 'white';
 
           label.appendChild(textnode);
@@ -1123,11 +1199,20 @@ block content
 
       // When the country is changed, filter the license types dropdown
       let newLicenseTypeDropdown = $('#newLicenseType');
-      $('#newLicenseCountry').on('input', function(e) {
-        if(e.target.value == 0) {
-          $('#newLicenseCountry').empty();
+      //- $('#newLicenseCountry').on('input', function(e) {
+      //-   if(e.target.value == 0) {
+      //-     $('#newLicenseCountry').empty();
+      //-   }
+      //-   else {
+      //-     filterTypes(e.target.value, e.target.selectedOptions[0].text, newLicenseTypeDropdown);
+      //-   }
+      //- });
+      // Add license types to new license type dropdown
+      for (let q = 0; q < licenseTypesArray.length; q++) {
+          let typeOption = document.createElement('option');
+          typeOption.text = licenseTypesArray[q]['Type'];
+          typeOption.value = licenseTypesArray[q]['id'];
+          //- console.log(licenseTypesArray);
+          //- console.log(licenseTypesArray[q]['id']);
+          newLicenseTypeDropdown.append(typeOption);
         }
-        else {
-          filterTypes(e.target.value, e.target.selectedOptions[0].text, newLicenseTypeDropdown);
-        }
-      });
