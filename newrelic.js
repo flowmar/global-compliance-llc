@@ -9,11 +9,11 @@ exports.config = {
   /**
   * Array of application names.
   */
-  app_name: ['global compliance'],
+  app_name: ['global-compliance-backend'],
   /**
   * Your New Relic license key.
   */
-  license_key: '9d0ab6f965eb3a033f92481dbfc4f3c0FFFFNRAL',
+  license_key: '253d14e0b1aa079e43059ac7e6f64d48FFFFNRAL',
   logging: {
     /**
     * Level at which to log. 'trace' is most useful to New Relic when diagnosing
