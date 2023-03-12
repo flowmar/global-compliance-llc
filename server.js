@@ -4,7 +4,7 @@ require('newrelic');
  * @Author: flowmar
  * @Date: 2022-07-02 22:56:29
  * @Last Modified by: flowmar
- * @Last Modified time: 2023-02-13 22:45:19
+ * @Last Modified time: 2023-03-11 21:43:19
  */
 
 ('use strict');
@@ -2418,8 +2418,8 @@ if (process.env.MACHINE == 'local') {
     });
 } else {
     // Test MySQL Database Connection
-    db.query('SELECT * FROM et2g6mv72e6t4f88.mariners AS items').then(
-        (result) => JSON.stringify(result[0])
+    db.query('SELECT * FROM n4vuqpddmr1cqkdv.mariners AS items').then((result) =>
+        JSON.stringify(result[0])
     );
 }
 
