@@ -2,7 +2,7 @@
  * @Author: flowmar
  * @Date: 2022-07-02 23:11:46
  * @Last Modified by: flowmar
- * @Last Modified time: 2022-07-25 21:49:01
+ * @Last Modified time: 2023-03-11 21:59:49
  */
 
 const mysql = require('mysql2/promise');
@@ -33,10 +33,10 @@ if (process.env.MACHINE == 'local') {
     } else {
         pool = mysql.createPool({
             port: 3306,
-            host: 'eyvqcfxf5reja3nv.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
-            user: 'nqz7brmzxbdnzm48',
-            password: 'ok7qa3sku1bwqony',
-            database: 'et2g6mv72e6t4f88',
+            host: 'ohunm00fjsjs1uzy.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+            user: 'zn26ow89aymc68dd',
+            password: 'qekt3b5gz9s5fn84',
+            database: 'n4vuqpddmr1cqkdv',
         });
     }
 
